@@ -1,0 +1,302 @@
+package com.example.my8;
+
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.media.ExifInterface;
+import android.net.Uri;
+import android.provider.MediaStore;
+import android.support.design.widget.TabLayout;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+public class MainActivity extends AppCompatActivity {
+
+    /**
+     * The {@link android.support.v4.view.PagerAdapter} that will provide
+     * fragments for each of the sections. We use a
+     * {@link FragmentPagerAdapter} derivative, which will keep every
+     * loaded fragment in memory. If this becomes too memory intensive, it
+     * may be best to switch to a
+     * {@link android.support.v4.app.FragmentStatePagerAdapter}.
+     */
+    private SectionsPagerAdapter mSectionsPagerAdapter;
+    final int REQ_CODE_SELECT_IMAGE = 100;
+
+    /**
+     * The {@link ViewPager} that will host the section contents.
+     */
+    private ViewPager mViewPager;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        // Create the adapter that will return a fragment for each of the three
+        // primary sections of the activity.
+        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+
+        // Set up the ViewPager with the sections adapter.
+        mViewPager = (ViewPager) findViewById(R.id.container);
+        mViewPager.setAdapter(mSectionsPagerAdapter);
+
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        tabLayout.setupWithViewPager(mViewPager);
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_PICK);
+                intent.setType(android.provider.MediaStore.Images.Media.CONTENT_TYPE);
+                intent.setData(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(intent, REQ_CODE_SELECT_IMAGE);
+            }
+        });
+        mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageSelected(int position) {
+                if (position == 0)
+                    vis();
+                else
+                    invis();
+            }
+            @Override public void onPageScrolled(int position, float positionOffest, int positionOffsetPixels) {}
+            @Override public void onPageScrollStateChanged(int state) {}
+        });
+    }
+    public void vis(){
+        View myView = findViewById(R.id.fab);
+        Animation ani = AnimationUtils.loadAnimation(this, R.anim.button_visible);
+        if(myView.getVisibility()==View.INVISIBLE) {
+            myView.setVisibility(View.VISIBLE);
+            myView.startAnimation(ani);
+        }
+    }
+    public void invis(){
+        View myView = findViewById(R.id.fab);
+        Animation ani = AnimationUtils.loadAnimation(this, R.anim.button_invisible);
+        if(myView.getVisibility()==View.VISIBLE) {
+            myView.setVisibility(View.INVISIBLE);
+            myView.startAnimation(ani);
+        }
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if(requestCode == REQ_CODE_SELECT_IMAGE)
+        {
+            if(resultCode== Activity.RESULT_OK)
+            {
+                try {
+                    //Uri에서 이미지 이름을 얻어온다.
+                    String name_Str = getImageNameToUri(data.getData());
+
+                    //이미지 데이터를 비트맵으로 받아온다.
+//                    Bitmap image_bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
+                    String myAttribute="";
+                    ExifInterface exif = new ExifInterface(name_Str);
+                    float aaa[] = new float[2];
+                    exif.getLatLong(aaa);
+                    Intent intent2 = new Intent(this, SelectEvent.class);
+                    intent2.putExtra("latitude", aaa[0] + "");
+                    intent2.putExtra("longitude", aaa[1] + "");
+                    intent2.putExtra("datetime",  getTagString(ExifInterface.TAG_DATETIME, exif));
+
+                    intent2.putExtra("imagename", name_Str);
+                    intent2.putExtra("infodata", myAttribute);
+                    startActivity(intent2);
+                } catch (FileNotFoundException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                } catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+    private String getTagString(String tag, ExifInterface exif) {
+        return (tag + " : " + exif.getAttribute(tag) + "\n");
+    }
+    public String getImageNameToUri(Uri data)
+    {
+        String[] proj = { MediaStore.Images.Media.DATA };
+        Cursor cursor = managedQuery(data, proj, null, null, null);
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+
+        cursor.moveToFirst();
+
+        String imgPath = cursor.getString(column_index);
+        String imgName = imgPath.substring(imgPath.lastIndexOf("/")+1);
+
+        return imgPath;
+        //return imgName;
+    }
+
+
+    /**
+     * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
+     * one of the sections/tabs/pages.
+     */
+    public class SectionsPagerAdapter extends FragmentPagerAdapter {
+
+        public SectionsPagerAdapter(FragmentManager fm) {super(fm);}
+        @Override
+        public Fragment getItem(int position) {
+            // getItem is called to instantiate the fragment for the given page.
+            // Return a PlaceholderFragment (defined as a static inner class below).
+            switch(position){
+                case 0:
+                    return new PlaygroundFragment();
+            }
+            return PlaceholderFragment.newInstance(position + 1);
+        }
+
+        @Override
+        public int getCount() {
+            // Show 3 total pages.
+            return 4;
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            switch (position) {
+                case 0: return "놀이터";
+                case 1: return "친구";
+                case 2: return "스탬프";
+                case 3: return "위시리스트";
+            }
+            return null;
+        }
+    }
+
+    /**
+     * Playground fragment
+     */
+    public static class PlaygroundFragment extends Fragment{
+        public PlaygroundFragment(){}
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            View rootView = inflater.inflate(R.layout.playground, container, false);
+
+            LinearLayoutManager layoutManager=new LinearLayoutManager(container.getContext());
+            RecyclerView events = (RecyclerView) rootView.findViewById(R.id.pg_view);
+            events.setHasFixedSize(true);
+            events.setLayoutManager(layoutManager);
+            List<Playground_item> items=new ArrayList<>();
+            items.add(new Playground_item(container.getContext()));
+            items.add(new Playground_item(container.getContext()));
+            items.add(new Playground_item(container.getContext()));
+            items.add(new Playground_item(container.getContext()));
+            events.setAdapter(new PgAdapter(container.getContext(),items,R.layout.playground));
+
+//            RecyclerView recyclerView=(RecyclerView)rootView.findViewById(R.id.pg_view);
+//            LinearLayoutManager layoutManager=new LinearLayoutManager(container.getContext());
+//            recyclerView.setHasFixedSize(true);
+//            recyclerView.setLayoutManager(layoutManager);
+//            List<Recycler_item> items=new ArrayList<>();
+//            Recycler_item[] item=new Recycler_item[5];
+//            item[0]=new Recycler_item(0,"#1");
+//            item[1]=new Recycler_item(0,"#2");
+//            item[2]=new Recycler_item(0,"#3");
+//            item[3]=new Recycler_item(0,"#4");
+//            item[4]=new Recycler_item(0,"#5");
+//            for(int i=0;i<5;i++) items.add(item[i]);
+//            recyclerView.setAdapter(new RecyclerAdapter(container.getContext(),items,R.layout.playground));
+
+            return rootView;
+        }
+    }
+    /**
+     * A placeholder fragment containing a simple view.
+     */
+    public static class PlaceholderFragment extends Fragment {
+        /**
+         * The fragment argument representing the section number for this
+         * fragment.
+         */
+        private static final String ARG_SECTION_NUMBER = "section_number";
+
+        /**
+         * Returns a new instance of this fragment for the given section
+         * number.
+         */
+        public static PlaceholderFragment newInstance(int sectionNumber) {
+            PlaceholderFragment fragment = new PlaceholderFragment();
+            Bundle args = new Bundle();
+            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+            fragment.setArguments(args);
+            return fragment;
+        }
+
+        public PlaceholderFragment() {
+        }
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+            TextView textView = (TextView) rootView.findViewById(R.id.section_label);
+            textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
+            return rootView;
+        }
+    }
+}

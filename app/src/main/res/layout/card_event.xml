@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <android.support.v7.widget.CardView
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/pg_card_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        card_view:cardCornerRadius="2dp"
+        card_view:cardUseCompatPadding="true"
+        >
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:baselineAligned="true"
+            android:divider="#000000"
+            >
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <ImageView android:id="@+id/pg_writer_photo"
+                    android:layout_margin="4dp"
+                    android:layout_width="24dp" android:layout_height="24dp"
+                    android:src="@mipmap/ic_user"
+                    />
+                <TextView android:id="@+id/pg_writer"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:hint="누구야" android:layout_gravity="center_vertical"
+                    android:textStyle="bold"/>
+                <TextView
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="님이 참여했습니다." android:layout_gravity="center_vertical"/>
+            </LinearLayout>
+            <TextView android:id="@+id/pg_title"
+                android:layout_marginLeft="8dp" android:layout_marginRight="8dp"
+                android:layout_marginTop="16dp" android:layout_marginBottom="16dp"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:hint="감천문화마을 봉사"
+                android:textStyle="bold" android:textSize="26sp"
+                />
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/pg_stamp_view"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/pg_image_size"
+                android:layout_marginBottom="16dp"/>
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp">
+                <TextView android:id="@+id/pg_participate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:hint="몇"
+                    android:textStyle="bold"
+                    android:layout_gravity="center_vertical"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="명이 참여한 활동입니다."
+                    android:layout_weight="1"
+                    android:layout_gravity="center_vertical"/>
+                <TextView android:id="@+id/pg_addWL"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="위시리스트에 추가"
+                    android:textStyle="bold"/>
+            </LinearLayout>
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+</LinearLayout>
