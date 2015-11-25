@@ -1,5 +1,6 @@
 package com.example.my8;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -24,10 +25,12 @@ import com.google.android.gms.maps.model.MarkerOptions;
 public class SelectEvent extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
+    public static Activity select_event_Activity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        select_event_Activity = SelectEvent.this;
         setContentView(R.layout.activity_select_event);
         //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         //setSupportActionBar(toolbar);
