@@ -67,4 +67,12 @@ public class Stamp extends ParseObject {
     public void setPhotoFile(ParseFile file) {
         put("photo", file);
     }
+
+    public ParseObject getEvent() {
+        return getParseObject("containedBy");
+    }
+
+    public void setEvent(Event event) {
+        put("containedBy", event);
+    }
 }

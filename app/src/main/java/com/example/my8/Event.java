@@ -19,51 +19,11 @@ public class Event extends ParseObject {
         // A default constructor is required.
     }
 
-    public Date getTime() {
-        return getDate("time");
+    public String getTitle() {
+        return getString("title");
     }
 
-    public void setTime(Date time) {
-        put("time", time);
-    }
-
-    public String getComment() {
-        return getString("comment");
-    }
-
-    public void setComment(String comment) {
-        put("comment", comment);
-    }
-
-    public ParseUser getUser() {
-        return getParseUser("user");
-    }
-
-    public void setUser(ParseUser user) {
-        put("user", user);
-    }
-
-    public ParseGeoPoint getLocation() {
-        return getParseGeoPoint("location");
-    }
-
-    public void setLocation(ParseGeoPoint location) {
-        put("location", location);
-    }
-    /*
-        public String getRating() {
-            return getString("rating");
-        }
-
-        public void setRating(String rating) {
-            put("rating", rating);
-        }
-    */
-    public ParseFile getPhotoFile() {
-        return getParseFile("photo");
-    }
-
-    public void setPhotoFile(ParseFile file) {
-        put("photo", file);
+    public void setTitle(String title) {
+        put("title", title);
     }
 }
