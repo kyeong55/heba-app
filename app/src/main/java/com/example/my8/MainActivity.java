@@ -97,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
             @Override public void onPageScrollStateChanged(int state) {}
         });
     }
+    // "+" button appears
     public void vis(){
         View myView = findViewById(R.id.fab);
         Animation ani = AnimationUtils.loadAnimation(this, R.anim.button_visible);
@@ -105,6 +106,7 @@ public class MainActivity extends AppCompatActivity {
             myView.startAnimation(ani);
         }
     }
+    // "+" button disappears
     public void invis(){
         View myView = findViewById(R.id.fab);
         Animation ani = AnimationUtils.loadAnimation(this, R.anim.button_invisible);
@@ -142,22 +144,18 @@ public class MainActivity extends AppCompatActivity {
             if(resultCode== Activity.RESULT_OK)
             {
                 try {
-                    //Uri에서 이미지 이름을 얻어온다.
-                    String name_Str = getImageNameToUri(data.getData());
-
-                    //이미지 데이터를 비트맵으로 받아온다.
-//                    Bitmap image_bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
-                    String myAttribute="";
-                    ExifInterface exif = new ExifInterface(name_Str);
-                    float aaa[] = new float[2];
-                    exif.getLatLong(aaa);
+                    // Get image path from uri
+                    String img_path = getImageNameToUri(data.getData());
+                    // Extract geopoint of the image
+                    ExifInterface exif = new ExifInterface(img_path);
+                    float geopoint[] = new float[2];
+                    exif.getLatLong(geopoint);
+                    // Build up a intent & start new activity
                     Intent intent2 = new Intent(this, SelectEvent.class);
-                    intent2.putExtra("latitude", aaa[0] + "");
-                    intent2.putExtra("longitude", aaa[1] + "");
+                    intent2.putExtra("latitude", geopoint[0] + "");
+                    intent2.putExtra("longitude", geopoint[1] + "");
                     intent2.putExtra("datetime",  getTagString(ExifInterface.TAG_DATETIME, exif));
-
-                    intent2.putExtra("imagename", name_Str);
-                    intent2.putExtra("infodata", myAttribute);
+                    intent2.putExtra("image_path", img_path);
                     startActivity(intent2);
                 } catch (FileNotFoundException e) {
                     // TODO Auto-generated catch block
@@ -165,8 +163,7 @@ public class MainActivity extends AppCompatActivity {
                 } catch (IOException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
-                } catch (Exception e)
-                {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -180,14 +177,11 @@ public class MainActivity extends AppCompatActivity {
         String[] proj = { MediaStore.Images.Media.DATA };
         Cursor cursor = managedQuery(data, proj, null, null, null);
         int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-
         cursor.moveToFirst();
 
         String imgPath = cursor.getString(column_index);
-        String imgName = imgPath.substring(imgPath.lastIndexOf("/")+1);
 
         return imgPath;
-        //return imgName;
     }
 
 
