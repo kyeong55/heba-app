@@ -1,5 +1,6 @@
 package com.example.my8;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -37,14 +38,18 @@ class Select_Event_Image_item {
 }
 public class SelectEventImageAdapter extends RecyclerView.Adapter<SelectEventImageAdapter.ViewHolder> {
     Context context;
+    String Stamp_Image_path;
     List<Select_Event_Image_item> items;
-    public SelectEventImageAdapter(Context context){
+
+    public SelectEventImageAdapter(Context context, String path){
         this.context=context;
+        this.Stamp_Image_path = path;
         items=new ArrayList<>();
     }
-    public SelectEventImageAdapter(Context context, List<Select_Event_Image_item> items) {
+    public SelectEventImageAdapter(Context context, List<Select_Event_Image_item> items, String path) {
         this.context=context;
         this.items=items;
+        this.Stamp_Image_path = path;
     }
 
     @Override
@@ -53,13 +58,18 @@ public class SelectEventImageAdapter extends RecyclerView.Adapter<SelectEventIma
         return new ViewHolder(v);
     }
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, final int position) {
         final Select_Event_Image_item item =items.get(position);
         //holder.image.setImageBitmap(item.getImage());
         holder.cardview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, "Stamp ID: "+item.getID(), Toast.LENGTH_SHORT).show();
+                Intent i = new Intent(context, Create_Event.class);
+                i.putExtra("position", position + "");
+                i.putExtra("image_path", Stamp_Image_path);
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(i);
+                //Toast.makeText(context, "Stamp ID: "+item.getID(), Toast.LENGTH_SHORT).show();
             }
         });
     }

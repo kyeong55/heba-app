@@ -45,7 +45,7 @@ public class SelectEvent extends FragmentActivity implements OnMapReadyCallback 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);
 
-        SelectEventImageAdapter sadapter = new SelectEventImageAdapter(getApplicationContext());
+        SelectEventImageAdapter sadapter = new SelectEventImageAdapter(getApplicationContext(), intent.getStringExtra("image_path"));
 
         recyclerView.setAdapter(sadapter);
         for(int j = 0; j < 4; j++) {
