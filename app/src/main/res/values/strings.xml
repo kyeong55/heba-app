@@ -24,4 +24,6 @@
     <string name="parse">Parse</string>
     <string name="slogan">The world is your wall</string>
     <string name="progress_login">Logging you in&#8230;</string>
+
+    <string name="logout">로그아웃</string>
 </resources>

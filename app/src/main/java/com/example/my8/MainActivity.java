@@ -11,6 +11,8 @@ import android.provider.MediaStore;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.PagerAdapter;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -22,6 +24,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -30,26 +33,34 @@ import android.view.ViewGroup;
 
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.parse.ParseUser;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.parse.ParseUser.logOut;
+
 public class MainActivity extends AppCompatActivity {
 
     /**
-     * The {@link android.support.v4.view.PagerAdapter} that will provide
+     * The {@link PagerAdapter} that will provide
      * fragments for each of the sections. We use a
      * {@link FragmentPagerAdapter} derivative, which will keep every
      * loaded fragment in memory. If this becomes too memory intensive, it
      * may be best to switch to a
-     * {@link android.support.v4.app.FragmentStatePagerAdapter}.
+     * {@link FragmentStatePagerAdapter}.
      */
     private SectionsPagerAdapter mSectionsPagerAdapter;
     final int REQ_CODE_SELECT_IMAGE = 100;
@@ -58,6 +69,11 @@ public class MainActivity extends AppCompatActivity {
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    private GoogleApiClient client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,8 +98,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(Intent.ACTION_PICK);
-                intent.setType(android.provider.MediaStore.Images.Media.CONTENT_TYPE);
-                intent.setData(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                intent.setType(MediaStore.Images.Media.CONTENT_TYPE);
+                intent.setData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 startActivityForResult(intent, REQ_CODE_SELECT_IMAGE);
             }
         });
@@ -95,28 +111,40 @@ public class MainActivity extends AppCompatActivity {
                 else
                     invis();
             }
-            @Override public void onPageScrolled(int position, float positionOffest, int positionOffsetPixels) {}
-            @Override public void onPageScrollStateChanged(int state) {}
+
+            @Override
+            public void onPageScrolled(int position, float positionOffest, int positionOffsetPixels) {
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+            }
         });
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
+
     // "+" button appears
-    public void vis(){
+    public void vis() {
         View myView = findViewById(R.id.fab);
         Animation ani = AnimationUtils.loadAnimation(this, R.anim.button_visible);
-        if(myView.getVisibility()==View.INVISIBLE) {
+        if (myView.getVisibility() == View.INVISIBLE) {
             myView.setVisibility(View.VISIBLE);
             myView.startAnimation(ani);
         }
     }
+
     // "+" button disappears
-    public void invis(){
+    public void invis() {
         View myView = findViewById(R.id.fab);
         Animation ani = AnimationUtils.loadAnimation(this, R.anim.button_invisible);
-        if(myView.getVisibility()==View.VISIBLE) {
+        if (myView.getVisibility() == View.VISIBLE) {
             myView.setVisibility(View.INVISIBLE);
             myView.startAnimation(ani);
         }
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -132,19 +160,23 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        if (id == R.id.action_logout) {
+            // Call the Parse log out method
+            ParseUser.logOut();
+            // Start and intent for the dispatch activity
+            Intent intent = new Intent(this, DispatchActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
         }
 
         return super.onOptionsItemSelected(item);
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        if(requestCode == REQ_CODE_SELECT_IMAGE)
-        {
-            if(resultCode== Activity.RESULT_OK)
-            {
+        if (requestCode == REQ_CODE_SELECT_IMAGE) {
+            if (resultCode == Activity.RESULT_OK) {
                 try {
                     // Get image path from uri
                     String img_path = getImageNameToUri(data.getData());
@@ -156,7 +188,7 @@ public class MainActivity extends AppCompatActivity {
                     Intent intent2 = new Intent(this, SelectEvent.class);
                     intent2.putExtra("latitude", geopoint[0] + "");
                     intent2.putExtra("longitude", geopoint[1] + "");
-                    intent2.putExtra("datetime",  getTagString(ExifInterface.TAG_DATETIME, exif));
+                    intent2.putExtra("datetime", getTagString(ExifInterface.TAG_DATETIME, exif));
                     intent2.putExtra("image_path", img_path);
                     startActivity(intent2);
                 } catch (FileNotFoundException e) {
@@ -171,12 +203,13 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
     private String getTagString(String tag, ExifInterface exif) {
         return (tag + " : " + exif.getAttribute(tag) + "\n");
     }
-    public String getImageNameToUri(Uri data)
-    {
-        String[] proj = { MediaStore.Images.Media.DATA };
+
+    public String getImageNameToUri(Uri data) {
+        String[] proj = {MediaStore.Images.Media.DATA};
         Cursor cursor = managedQuery(data, proj, null, null, null);
         int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
         cursor.moveToFirst();
@@ -186,6 +219,46 @@ public class MainActivity extends AppCompatActivity {
         return imgPath;
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client.connect();
+        Action viewAction = Action.newAction(
+                Action.TYPE_VIEW, // TODO: choose an action type.
+                "Main Page", // TODO: Define a title for the content shown.
+                // TODO: If you have web page content that matches this app activity's content,
+                // make sure this auto-generated web page URL is correct.
+                // Otherwise, set the URL to null.
+                Uri.parse("http://host/path"),
+                // TODO: Make sure this auto-generated app deep link URI is correct.
+                Uri.parse("android-app://com.example.my8/http/host/path")
+        );
+        AppIndex.AppIndexApi.start(client, viewAction);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        Action viewAction = Action.newAction(
+                Action.TYPE_VIEW, // TODO: choose an action type.
+                "Main Page", // TODO: Define a title for the content shown.
+                // TODO: If you have web page content that matches this app activity's content,
+                // make sure this auto-generated web page URL is correct.
+                // Otherwise, set the URL to null.
+                Uri.parse("http://host/path"),
+                // TODO: Make sure this auto-generated app deep link URI is correct.
+                Uri.parse("android-app://com.example.my8/http/host/path")
+        );
+        AppIndex.AppIndexApi.end(client, viewAction);
+        client.disconnect();
+    }
+
 
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
@@ -193,12 +266,15 @@ public class MainActivity extends AppCompatActivity {
      */
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
-        public SectionsPagerAdapter(FragmentManager fm) {super(fm);}
+        public SectionsPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
         @Override
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
-            switch(position){
+            switch (position) {
                 case 0:
                     return new PlaygroundFragment();
                 case 2:
@@ -216,10 +292,14 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public CharSequence getPageTitle(int position) {
             switch (position) {
-                case 0: return "놀이터";
-                case 1: return "친구";
-                case 2: return "스탬프";
-                case 3: return "위시리스트";
+                case 0:
+                    return "놀이터";
+                case 1:
+                    return "친구";
+                case 2:
+                    return "스탬프";
+                case 3:
+                    return "위시리스트";
             }
             return null;
         }
@@ -228,15 +308,18 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Playground fragment
      */
-    public static class PlaygroundFragment extends Fragment{
-        public PlaygroundFragment(){}
+    public static class PlaygroundFragment extends Fragment {
+        public PlaygroundFragment() {
+        }
+
         PgAdapter pgadapter;
+
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.playground, container, false);
             final ViewGroup c = container;
-            LinearLayoutManager layoutManager=new LinearLayoutManager(container.getContext());
+            LinearLayoutManager layoutManager = new LinearLayoutManager(container.getContext());
             RecyclerView events = (RecyclerView) rootView.findViewById(R.id.pg_view);
             events.setHasFixedSize(true);
             events.setLayoutManager(layoutManager);
@@ -244,7 +327,7 @@ public class MainActivity extends AppCompatActivity {
             // TODO Fetch event list from the server
             items.add(new Playground_item(container.getContext()));
             items.add(new Playground_item(container.getContext()));
-            pgadapter = new PgAdapter(container.getContext(),items,R.layout.playground);
+            pgadapter = new PgAdapter(container.getContext(), items, R.layout.playground);
             events.setAdapter(pgadapter);
             FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.refresh);
             fab.setOnClickListener(new View.OnClickListener() {
@@ -255,8 +338,9 @@ public class MainActivity extends AppCompatActivity {
             });
             return rootView;
         }
-        public void addEventToPG(ViewGroup container){
-            Playground_item newItem = new Playground_item(88,"새로 추가된거","이태경",2015,container.getContext());
+
+        public void addEventToPG(ViewGroup container) {
+            Playground_item newItem = new Playground_item(88, "새로 추가된거", "이태경", 2015, container.getContext());
             pgadapter.add(newItem);
         }
     }
@@ -264,8 +348,10 @@ public class MainActivity extends AppCompatActivity {
     /**
      * My Stamp fragment
      */
-    public static class MyStampFragment extends Fragment{
-        public MyStampFragment(){}
+    public static class MyStampFragment extends Fragment {
+        public MyStampFragment() {
+        }
+
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
@@ -283,6 +369,7 @@ public class MainActivity extends AppCompatActivity {
             return rootView;
         }
     }
+
     /**
      * A placeholder fragment containing a simple view.
      */
