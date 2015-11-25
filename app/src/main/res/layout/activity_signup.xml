@@ -12,7 +12,10 @@ tools:context=".SignUpActivity" >
 
     <LinearLayout
         style="@style/LoginFormContainer"
-        android:orientation="vertical" >
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
 
         <EditText
             android:id="@+id/username_edit_text"
