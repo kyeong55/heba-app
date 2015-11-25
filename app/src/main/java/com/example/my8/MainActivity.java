@@ -160,10 +160,10 @@ public class MainActivity extends AppCompatActivity {
                     intent2.putExtra("image_path", img_path);
                     startActivity(intent2);
                 } catch (FileNotFoundException e) {
-                    // TODO Auto-generated catch block
+                    // auto-generated catch block
                     e.printStackTrace();
                 } catch (IOException e) {
-                    // TODO Auto-generated catch block
+                    // auto-generated catch block
                     e.printStackTrace();
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -241,6 +241,7 @@ public class MainActivity extends AppCompatActivity {
             events.setHasFixedSize(true);
             events.setLayoutManager(layoutManager);
             List<Playground_item> items = new ArrayList<>();
+            // TODO Fetch event list from the server
             items.add(new Playground_item(container.getContext()));
             items.add(new Playground_item(container.getContext()));
             pgadapter = new PgAdapter(container.getContext(),items,R.layout.playground);
@@ -275,10 +276,10 @@ public class MainActivity extends AppCompatActivity {
             TextView stamp_count = (TextView) rootView.findViewById(R.id.ms_stamp_count);//stamp 개수
 
 //            GridLayoutManager layoutManager = new Grid
-            LinearLayoutManager layoutManager=new LinearLayoutManager(container.getContext());
-            RecyclerView events = (RecyclerView) rootView.findViewById(R.id.pg_view);
-            events.setHasFixedSize(true);
-            events.setLayoutManager(layoutManager);
+//            LinearLayoutManager layoutManager=new LinearLayoutManager(container.getContext());
+//            RecyclerView events = (RecyclerView) rootView.findViewById(R.id.pg_view);
+//            events.setHasFixedSize(true);
+//            events.setLayoutManager(layoutManager);
             return rootView;
         }
     }

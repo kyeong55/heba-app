@@ -26,51 +26,57 @@ class Playground_item {
     int participate;
 
     ImageAdapter Iadapter;
-    int maxStamp=10;
+    static final int maxStamp=10;
 
-    int getID(){return eventID;}
-    String getTitle(){return title;}
-    String getWriter(){return writer;}
-    String getParticipate(){return ""+participate;}
-    ImageAdapter getIadapter(){return Iadapter;}
-
-    public Playground_item(Context cont){
+    /* Constructors */
+    // For debugging
+    public Playground_item(Context cont) {
         this.eventID=1;
         this.title="테스트 이벤트";
         this.writer="누구야";
         this.participate=0;
-        Iadapter = new ImageAdapter(cont);
+        this.Iadapter = new ImageAdapter(cont);
         List<Playground_item> items=new ArrayList<>();
         for(int i=0;i<10;i++){
             addStamp(null,i);
         }
     }
-    public Playground_item(int eventID, String title, String writer, int participate, Context cont){
+    public Playground_item(int eventID, String title, String writer, int participate, Context cont) {
         this.eventID=eventID;
         this.title=title;
         this.writer=writer;
         this.participate=participate;
-        Iadapter = new ImageAdapter(cont);
+        this.Iadapter = new ImageAdapter(cont);
     }
-    public void addStamp(Bitmap image, int stampID){
-        //Iadapter에 stamp 추가
-        Iadapter.add(stampID,image);
+
+    /* Member functions */
+    int getID() { return eventID; }
+    String getTitle() { return title; }
+    String getWriter() { return writer; }
+    String getParticipate() { return ""+participate; }
+    ImageAdapter getIadapter() { return Iadapter; }
+    public void addStamp(Bitmap image, int stampID) {
+        // Iadapter에 stamp 추가
+        Iadapter.add(stampID, image);
         participate++;
     }
 }
+
+
 public class PgAdapter extends RecyclerView.Adapter<PgAdapter.ViewHolder> {
     Context context;
     List<Playground_item> items;
     int item_layout;
 
+    /* Constructors */
     public PgAdapter(Context context){
         this.context=context;
-        items=new ArrayList<>();
+        items = new ArrayList<>();
     }
     public PgAdapter(Context context, List<Playground_item> items, int item_layout) {
-        this.context=context;
-        this.items=items;
-        this.item_layout=item_layout;
+        this.context = context;
+        this.items = items;
+        this.item_layout = item_layout;
     }
 
     @Override
@@ -80,7 +86,9 @@ public class PgAdapter extends RecyclerView.Adapter<PgAdapter.ViewHolder> {
     }
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        final Playground_item item=items.get(position);
+        // Fetch item from the ArrayList
+        final Playground_item item = items.get(position);
+        // Bind item with view
         holder.title.setText(item.getTitle());
         holder.writer.setText(item.getWriter());
         holder.participate.setText(item.getParticipate());
@@ -88,8 +96,10 @@ public class PgAdapter extends RecyclerView.Adapter<PgAdapter.ViewHolder> {
             @Override
             public void onClick(View v) {
                 Toast.makeText(context, "위시리스트에 추가되었습니다", Toast.LENGTH_SHORT).show();
+                // TODO Add event to user's wishlist
             }
         });
+        // Attach image carousel to the view
         LinearLayoutManager layoutManager=new LinearLayoutManager(context);
         layoutManager.setOrientation(layoutManager.HORIZONTAL);
         holder.stamps.setHasFixedSize(true);
