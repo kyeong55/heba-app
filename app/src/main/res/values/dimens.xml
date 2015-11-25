@@ -13,4 +13,5 @@
     <dimen name="profile_image_padding">16dp</dimen>
     <dimen name="user_name_size">24sp</dimen>
     <dimen name="user_name_padding">8dp</dimen>
+    <dimen name="stamp_image_height">160dp</dimen>
 </resources>
