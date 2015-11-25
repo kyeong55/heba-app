@@ -100,6 +100,10 @@ public class PgAdapter extends RecyclerView.Adapter<PgAdapter.ViewHolder> {
     public int getItemCount() {
         return this.items.size();
     }
+    public void add(Playground_item item){
+        items.add(0,item);
+        notifyItemInserted(0);
+    }
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView title;
         ImageView writer_photo;

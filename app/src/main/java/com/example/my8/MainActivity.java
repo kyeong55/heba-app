@@ -12,6 +12,7 @@ import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -30,6 +31,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -199,6 +201,8 @@ public class MainActivity extends AppCompatActivity {
             switch(position){
                 case 0:
                     return new PlaygroundFragment();
+                case 2:
+                    return new MyStampFragment();
             }
             return PlaceholderFragment.newInstance(position + 1);
         }
@@ -226,36 +230,55 @@ public class MainActivity extends AppCompatActivity {
      */
     public static class PlaygroundFragment extends Fragment{
         public PlaygroundFragment(){}
+        PgAdapter pgadapter;
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.playground, container, false);
-
+            final ViewGroup c = container;
             LinearLayoutManager layoutManager=new LinearLayoutManager(container.getContext());
             RecyclerView events = (RecyclerView) rootView.findViewById(R.id.pg_view);
             events.setHasFixedSize(true);
             events.setLayoutManager(layoutManager);
-            List<Playground_item> items=new ArrayList<>();
+            List<Playground_item> items = new ArrayList<>();
             items.add(new Playground_item(container.getContext()));
             items.add(new Playground_item(container.getContext()));
-            items.add(new Playground_item(container.getContext()));
-            items.add(new Playground_item(container.getContext()));
-            events.setAdapter(new PgAdapter(container.getContext(),items,R.layout.playground));
+            pgadapter = new PgAdapter(container.getContext(),items,R.layout.playground);
+            events.setAdapter(pgadapter);
+            FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.refresh);
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    addEventToPG(c);
+                }
+            });
+            return rootView;
+        }
+        public void addEventToPG(ViewGroup container){
+            Playground_item newItem = new Playground_item(88,"새로 추가된거","이태경",2015,container.getContext());
+            pgadapter.add(newItem);
+        }
+    }
 
-//            RecyclerView recyclerView=(RecyclerView)rootView.findViewById(R.id.pg_view);
-//            LinearLayoutManager layoutManager=new LinearLayoutManager(container.getContext());
-//            recyclerView.setHasFixedSize(true);
-//            recyclerView.setLayoutManager(layoutManager);
-//            List<Recycler_item> items=new ArrayList<>();
-//            Recycler_item[] item=new Recycler_item[5];
-//            item[0]=new Recycler_item(0,"#1");
-//            item[1]=new Recycler_item(0,"#2");
-//            item[2]=new Recycler_item(0,"#3");
-//            item[3]=new Recycler_item(0,"#4");
-//            item[4]=new Recycler_item(0,"#5");
-//            for(int i=0;i<5;i++) items.add(item[i]);
-//            recyclerView.setAdapter(new RecyclerAdapter(container.getContext(),items,R.layout.playground));
+    /**
+     * My Stamp fragment
+     */
+    public static class MyStampFragment extends Fragment{
+        public MyStampFragment(){}
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            View rootView = inflater.inflate(R.layout.my_stamp, container, false);
+            ImageView profile = (ImageView) rootView.findViewById(R.id.ms_profile_image);//profile 사진
+            ImageView cover = (ImageView) rootView.findViewById(R.id.ms_cover_image);//cover 사진
+            TextView user_name = (TextView) rootView.findViewById(R.id.ms_user_name);//user 이름
+            TextView stamp_count = (TextView) rootView.findViewById(R.id.ms_stamp_count);//stamp 개수
 
+//            GridLayoutManager layoutManager = new Grid
+            LinearLayoutManager layoutManager=new LinearLayoutManager(container.getContext());
+            RecyclerView events = (RecyclerView) rootView.findViewById(R.id.pg_view);
+            events.setHasFixedSize(true);
+            events.setLayoutManager(layoutManager);
             return rootView;
         }
     }
