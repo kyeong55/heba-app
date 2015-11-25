@@ -12,12 +12,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
     <EditText
-        android:id="@+id/content_position"
+        android:id="@+id/event_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
     <ImageView
-        android:id="@+id/content_image"
+        android:id="@+id/stamp_photo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+    <EditText
+        android:id="@+id/stamp_comment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="스탬프 내용을 입력해주세요."/>
 
 </LinearLayout>

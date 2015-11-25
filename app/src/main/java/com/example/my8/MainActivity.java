@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.location.Location;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.provider.MediaStore;
@@ -185,12 +186,12 @@ public class MainActivity extends AppCompatActivity {
                     float geopoint[] = new float[2];
                     exif.getLatLong(geopoint);
                     // Build up a intent & start new activity
-                    Intent intent2 = new Intent(this, SelectEvent.class);
-                    intent2.putExtra("latitude", geopoint[0] + "");
-                    intent2.putExtra("longitude", geopoint[1] + "");
-                    intent2.putExtra("datetime", getTagString(ExifInterface.TAG_DATETIME, exif));
-                    intent2.putExtra("image_path", img_path);
-                    startActivity(intent2);
+                    Intent toSelectEventActivity = new Intent(this, SelectEvent.class);
+                    toSelectEventActivity.putExtra("latitude", geopoint[0] + "");
+                    toSelectEventActivity.putExtra("longitude", geopoint[1] + "");
+                    toSelectEventActivity.putExtra("datetime", exif.getAttribute(ExifInterface.TAG_DATETIME));
+                    toSelectEventActivity.putExtra("image_path", img_path);
+                    startActivity(toSelectEventActivity);
                 } catch (FileNotFoundException e) {
                     // auto-generated catch block
                     e.printStackTrace();

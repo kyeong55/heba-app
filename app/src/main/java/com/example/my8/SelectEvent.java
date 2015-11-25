@@ -48,7 +48,12 @@ public class SelectEvent extends FragmentActivity implements OnMapReadyCallback 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);
 
-        SelectEventImageAdapter sadapter = new SelectEventImageAdapter(getApplicationContext(), intent.getStringExtra("image_path"));
+        String stampInfo[] = new String[4];
+        stampInfo[0] = intent.getStringExtra("latitude");
+        stampInfo[1] = intent.getStringExtra("longitude");
+        stampInfo[2] = intent.getStringExtra("datetime");
+        stampInfo[3] = intent.getStringExtra("image_path");
+        SelectEventImageAdapter sadapter = new SelectEventImageAdapter(getApplicationContext(), stampInfo);
 
         recyclerView.setAdapter(sadapter);
         for(int j = 0; j < 4; j++) {
@@ -75,8 +80,10 @@ public class SelectEvent extends FragmentActivity implements OnMapReadyCallback 
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
+        Intent intent = getIntent();
+
         // Add a marker in Sydney and move the camera
-        LatLng loc = new LatLng(Double.parseDouble(getIntent().getStringExtra("latitude")), Double.parseDouble(getIntent().getStringExtra("longitude")));
+        LatLng loc = new LatLng(Double.parseDouble(intent.getStringExtra("latitude")), Double.parseDouble(intent.getStringExtra("longitude")));
         mMap.addMarker(new MarkerOptions().position(loc).title("Marker in picture"));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(loc, 14));
     }

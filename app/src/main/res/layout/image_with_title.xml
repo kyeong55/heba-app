@@ -21,7 +21,7 @@
             <TextView android:id="@+id/image_with_title_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Stamp 내용을 입력해주세요"
+                android:hint="Event 제목"
                 />
         </LinearLayout>
 

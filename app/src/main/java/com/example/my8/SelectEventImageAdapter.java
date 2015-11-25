@@ -14,7 +14,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 /**
- * Created by HyunhoHa on 2015-11-24.
+ * Created by Hy
  */
 class Select_Event_Image_item {
     Bitmap image;
@@ -39,11 +39,17 @@ class Select_Event_Image_item {
 public class SelectEventImageAdapter extends RecyclerView.Adapter<SelectEventImageAdapter.ViewHolder> {
     Context context;
     String Stamp_Image_path;
+    String latitude;
+    String longitude;
+    String datetime;
     List<Select_Event_Image_item> items;
 
-    public SelectEventImageAdapter(Context context, String path){
+    public SelectEventImageAdapter(Context context, String[] stampInfo){
         this.context=context;
-        this.Stamp_Image_path = path;
+        this.latitude = stampInfo[0];
+        this.longitude = stampInfo[1];
+        this.datetime = stampInfo[2];
+        this.Stamp_Image_path = stampInfo[3];
         items=new ArrayList<>();
     }
     public SelectEventImageAdapter(Context context, List<Select_Event_Image_item> items, String path) {
@@ -59,16 +65,19 @@ public class SelectEventImageAdapter extends RecyclerView.Adapter<SelectEventIma
     }
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
-        final Select_Event_Image_item item =items.get(position);
+        final Select_Event_Image_item item = items.get(position);
         //holder.image.setImageBitmap(item.getImage());
         holder.cardview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(context, Create_Event.class);
-                i.putExtra("position", position + "");
-                i.putExtra("image_path", Stamp_Image_path);
-                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                context.startActivity(i);
+                Intent toCreateEventActivity = new Intent(context, Create_Event.class);
+                toCreateEventActivity.putExtra("longitude", longitude);
+                toCreateEventActivity.putExtra("latitude", latitude);
+                toCreateEventActivity.putExtra("eventId", items.get(position).getID());
+                toCreateEventActivity.putExtra("datetime", datetime);
+                toCreateEventActivity.putExtra("image_path", Stamp_Image_path);
+                toCreateEventActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(toCreateEventActivity);
                 //Toast.makeText(context, "Stamp ID: "+item.getID(), Toast.LENGTH_SHORT).show();
             }
         });
