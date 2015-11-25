@@ -356,16 +356,31 @@ public class MainActivity extends AppCompatActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.my_stamp, container, false);
-            ImageView profile = (ImageView) rootView.findViewById(R.id.ms_profile_image);//profile 사진
-            ImageView cover = (ImageView) rootView.findViewById(R.id.ms_cover_image);//cover 사진
-            TextView user_name = (TextView) rootView.findViewById(R.id.ms_user_name);//user 이름
-            TextView stamp_count = (TextView) rootView.findViewById(R.id.ms_stamp_count);//stamp 개수
+            View header= inflater.inflate(R.layout.my_stamp_header, container, false);
+            ImageView profile = (ImageView) header.findViewById(R.id.ms_profile_image);//profile 사진
+            ImageView cover = (ImageView) header.findViewById(R.id.ms_cover_image);//cover 사진
+            TextView user_name = (TextView) header.findViewById(R.id.ms_user_name);//user 이름
+            TextView stamp_count = (TextView) header.findViewById(R.id.ms_stamp_count);//stamp 개수
+            //TODO: user info (profile, cover, name, stamp_cont
 
-//            GridLayoutManager layoutManager = new Grid
-//            LinearLayoutManager layoutManager=new LinearLayoutManager(container.getContext());
-//            RecyclerView events = (RecyclerView) rootView.findViewById(R.id.pg_view);
-//            events.setHasFixedSize(true);
-//            events.setLayoutManager(layoutManager);
+            final GridLayoutManager layoutManager = new GridLayoutManager(container.getContext(),2);
+            layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+                @Override
+                public int getSpanSize(int position) {
+                    return (position==0) ? layoutManager.getSpanCount() : 1;
+                }
+            });
+            RecyclerView events = (RecyclerView) rootView.findViewById(R.id.ms_view);
+            events.setHasFixedSize(true);
+            events.setLayoutManager(layoutManager);
+
+            //TODO: MyStamp List insertion (ActionListener는 MyStampAdapter에 구현)
+            List<MyStamp_item> items = new ArrayList<>();
+            for(int i =0;i<10;i++){
+                items.add(new MyStamp_item(i,null));
+            }
+            MyStampAdapter msadapter = new MyStampAdapter(container.getContext(),header,items);
+            events.setAdapter(msadapter);
             return rootView;
         }
     }
