@@ -16,9 +16,9 @@ public class StarterApplication extends Application {
         super.onCreate();
 
         /* Enable Local Datastore. */
-        Parse.enableLocalDatastore(this);
-        ParseObject.registerSubclass(Event.class);
         ParseObject.registerSubclass(Stamp.class);
+        ParseObject.registerSubclass(Event.class);
+        Parse.enableLocalDatastore(this);
         Parse.initialize(this,
                 "FxIKD0gxTd4rdcDyHxKZZG9XxeBMrKT1KmgM7xCl",
                 "BDkifQnOh7JCDhp5Olbkr86daYT14O4yYlAj71sN");

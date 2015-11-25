@@ -326,6 +326,12 @@ public class MainActivity extends AppCompatActivity {
             events.setLayoutManager(layoutManager);
             List<Playground_item> items = new ArrayList<>();
             // TODO Fetch event list from the server
+
+
+
+
+
+
             items.add(new Playground_item(container.getContext()));
             items.add(new Playground_item(container.getContext()));
             pgadapter = new PgAdapter(container.getContext(), items, R.layout.playground);
