@@ -9,8 +9,11 @@
         android:layout_height="match_parent"/>
     <android.support.design.widget.FloatingActionButton android:id="@+id/refresh"
         android:layout_width="wrap_content" android:layout_height="wrap_content"
-        android:layout_gravity="bottom" android:layout_margin="@dimen/fab_margin"
-        android:src="@drawable/ic_add_white_24dp"
+        app:rippleColor="#FFFFFF"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="@dimen/fab_margin"
+        android:src="@drawable/ic_cached_white_24dp"
         app:backgroundTint="@color/colorPrimary"
+        app:fabSize="mini"
         />
 </FrameLayout>
