@@ -4,4 +4,24 @@
     <string name="section_format">Hello World from section!!!!!!!!!!!!!!!!!!!!!: %1$d</string>
     <string name="title_activity_select_event">SelectEvent</string>
     <string name="title_activity_maps">Map</string>
+    <string name="title_activity_login">Sign in</string>
+
+    <!-- String related to Sign up, Log in -->
+    <string name="signup">Sign up</string>
+    <string name="prompt_username">Name</string>
+    <string name="prompt_password">Password</string>
+    <string name="prompt_password_again">Password Again</string>
+    <string name="error_intro">"Please "</string>
+    <string name="error_blank_username">enter a username</string>
+    <string name="error_blank_password">enter a password</string>
+    <string name="error_mismatched_passwords">enter the same password twice</string>
+    <string name="error_join">", and "</string>
+    <string name="error_end">.</string>
+    <string name="progress_signup">Signing you up&#8230;</string>
+
+    <string name="login">Log in</string>
+    <string name="powered_by">Powered by</string>
+    <string name="parse">Parse</string>
+    <string name="slogan">The world is your wall</string>
+    <string name="progress_login">Logging you in&#8230;</string>
 </resources>
