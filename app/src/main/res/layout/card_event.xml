@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/recyclerview_padding"
+        android:paddingRight="@dimen/recyclerview_padding">
     <android.support.v7.widget.CardView
         xmlns:card_view="http://schemas.android.com/apk/res-auto"
         android:id="@+id/pg_card_view"
@@ -41,11 +46,16 @@
                 android:hint="감천문화마을 봉사"
                 android:textStyle="bold" android:textSize="26sp"
                 />
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/pg_image_size"/>
+            <!--
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/pg_stamp_view"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/pg_image_size"
                 android:layout_marginBottom="16dp"/>
+                -->
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
@@ -71,4 +81,11 @@
             </LinearLayout>
         </LinearLayout>
     </android.support.v7.widget.CardView>
-</LinearLayout>
+    </LinearLayout>
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/pg_stamp_view"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/pg_image_size"
+        android:layout_marginBottom="16dp"
+        android:layout_marginTop="100dp"/>
+</FrameLayout>

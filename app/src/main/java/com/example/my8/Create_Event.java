@@ -31,6 +31,7 @@ public class Create_Event extends AppCompatActivity {
     private String stampComment;
     private Bitmap stampPhoto;
     private String eventTitle;
+    private Bitmap stampPhotoScaled;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +44,9 @@ public class Create_Event extends AppCompatActivity {
         //view stamp photo
         ImageView stampImageView = (ImageView)findViewById(R.id.stamp_photo);
         stampPhoto = BitmapFactory.decodeFile(getIntent().getStringExtra("image_path"));
-        stampImageView.setImageBitmap(stampPhoto);
+        stampPhotoScaled = Bitmap.createScaledBitmap(stampPhoto, 500, 500
+                * stampPhoto.getHeight() / stampPhoto.getWidth(), false);
+        stampImageView.setImageBitmap(stampPhotoScaled);
 
         titleEditText.setHint("이벤트 제목을 입력해주세요.");
 
@@ -70,8 +73,6 @@ public class Create_Event extends AppCompatActivity {
                 Log.w("debug!!!!!", "stampComment: " + stampComment);
 
                 //stamp photo
-                Bitmap stampPhotoScaled = Bitmap.createScaledBitmap(stampPhoto, 200, 200
-                        * stampPhoto.getHeight() / stampPhoto.getWidth(), false);
                 ByteArrayOutputStream bos = new ByteArrayOutputStream();
                 stampPhotoScaled.compress(Bitmap.CompressFormat.JPEG, 100, bos);
                 byte[] scaledPhoto = bos.toByteArray();
