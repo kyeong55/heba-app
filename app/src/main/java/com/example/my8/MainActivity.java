@@ -1,6 +1,7 @@
 package com.example.my8;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -9,11 +10,15 @@ import android.location.Location;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -44,6 +49,8 @@ import android.widget.Toast;
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.parse.LogInCallback;
+import com.parse.LogOutCallback;
 import com.parse.ParseUser;
 
 import java.io.FileNotFoundException;
@@ -53,7 +60,8 @@ import java.util.List;
 
 import static com.parse.ParseUser.logOut;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener {
 
     /**
      * The {@link PagerAdapter} that will provide
@@ -83,13 +91,15 @@ public class MainActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        // Create the adapter that will return a fragment for each of the three
-        // primary sections of the activity.
+
+        // Create the adapter that will return a fragment for each activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
+        // Set up the number of holding pages
+        mViewPager.setOffscreenPageLimit(4);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
@@ -121,6 +131,13 @@ public class MainActivity extends AppCompatActivity {
             public void onPageScrollStateChanged(int state) {
             }
         });
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.main_drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
@@ -146,6 +163,41 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+
+        if (id == R.id.nav_profile_image) {
+            // Handle the camera action
+        } else if (id == R.id.nav_cover_image) {
+        } else if (id == R.id.nav_passward) {
+        } else if (id == R.id.nav_logout) {
+            // Call the Parse log out method
+            final ProgressDialog dialog = new ProgressDialog(MainActivity.this);
+            dialog.setMessage(getString(R.string.progress_logout));
+            dialog.show();
+            ParseUser.logOutInBackground( new LogOutCallback() {
+                @Override
+                public void done(com.parse.ParseException e) {
+                    dialog.dismiss();
+                    Intent intent = new Intent(MainActivity.this, DispatchActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                }
+            });
+            // Start and intent for the dispatch activity
+//            Intent intent = new Intent(this, DispatchActivity.class);
+//            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+//            startActivity(intent);
+        }
+
+//        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+//        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -159,16 +211,6 @@ public class MainActivity extends AppCompatActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_logout) {
-            // Call the Parse log out method
-            ParseUser.logOut();
-            // Start and intent for the dispatch activity
-            Intent intent = new Intent(this, DispatchActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -204,11 +246,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-
-    private String getTagString(String tag, ExifInterface exif) {
-        return (tag + " : " + exif.getAttribute(tag) + "\n");
-    }
-
     public String getImageNameToUri(Uri data) {
         String[] proj = {MediaStore.Images.Media.DATA};
         Cursor cursor = managedQuery(data, proj, null, null, null);
@@ -336,13 +373,18 @@ public class MainActivity extends AppCompatActivity {
             items.add(new Playground_item(container.getContext()));
             pgadapter = new PgAdapter(container.getContext(), items, R.layout.playground);
             events.setAdapter(pgadapter);
-            FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.refresh);
-            fab.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    addEventToPG(c);
-                }
-            });
+            final SwipeRefreshLayout mySwipeRefreshLayout = (SwipeRefreshLayout)rootView.findViewById(R.id.pg_swipe_layout);
+            mySwipeRefreshLayout.setOnRefreshListener(
+                    new SwipeRefreshLayout.OnRefreshListener() {
+                        @Override
+                        public void onRefresh() {
+                            // This method performs the actual data-refresh operation.
+                            // TODO: refresh playground (Top)
+                            addEventToPG(c);
+                            mySwipeRefreshLayout.setRefreshing(false);
+                        }
+                    }
+            );
             return rootView;
         }
 
@@ -350,6 +392,7 @@ public class MainActivity extends AppCompatActivity {
             Playground_item newItem = new Playground_item(88, "새로 추가된거", "이태경", 2015, container.getContext());
             pgadapter.add(newItem);
         }
+
     }
 
     /**

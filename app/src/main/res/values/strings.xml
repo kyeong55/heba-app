@@ -6,7 +6,7 @@
     <string name="title_activity_maps">Map</string>
     <string name="title_activity_login">Sign in</string>
 
-    <!-- String related to Sign up, Log in -->
+    <!-- String related to Sign up, Log in, Log out -->
     <string name="signup">회원가입</string>
     <string name="prompt_username">아이디</string>
     <string name="prompt_password">비밀번호</string>
@@ -23,4 +23,9 @@
     <string name="progress_login">로그인중&#8230;</string>
 
     <string name="logout">로그아웃</string>
+    <string name="progress_logout">로그아웃중&#8230;</string>
+
+    <!-- String for Navigation View -->
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
 </resources>

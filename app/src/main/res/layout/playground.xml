@@ -3,17 +3,13 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/pg_view"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/pg_swipe_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-    <android.support.design.widget.FloatingActionButton android:id="@+id/refresh"
-        android:layout_width="wrap_content" android:layout_height="wrap_content"
-        app:rippleColor="#FFFFFF"
-        android:layout_gravity="center_horizontal"
-        android:layout_margin="@dimen/fab_margin"
-        android:src="@drawable/ic_cached_white_24dp"
-        app:backgroundTint="@color/colorPrimary"
-        app:fabSize="mini"
-        />
+        android:layout_height="wrap_content">
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/pg_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </android.support.v4.widget.SwipeRefreshLayout>
 </FrameLayout>
