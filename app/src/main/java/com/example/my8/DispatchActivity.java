@@ -18,6 +18,7 @@ public class DispatchActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_dispatch);
         // Check if there is current user info
         if (ParseUser.getCurrentUser() != null) {
             // Start an intent for the logged in activity
@@ -26,7 +27,9 @@ public class DispatchActivity extends AppCompatActivity {
             startActivity(intent);
         } else {
             // Start and intent for the logged out activity
-            startActivity(new Intent(this, WelcomeActivity.class));
+            Intent intent = new Intent(this, WelcomeActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
         }
     }
 }
