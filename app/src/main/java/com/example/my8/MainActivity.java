@@ -54,6 +54,7 @@ import com.parse.FindCallback;
 import com.parse.LogInCallback;
 import com.parse.LogOutCallback;
 import com.parse.ParseException;
+import com.parse.ParseImageView;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
@@ -415,8 +416,12 @@ public class MainActivity extends AppCompatActivity
                 public void done(List<ParseObject> objects, ParseException e) {
                     List<Playground_item> items = new ArrayList<>();
                     for (ParseObject event : objects) {
+                        Event test = (Event)event;
+                        String test_msg = test.getTitle();
+                        Log.w("debugging", test_msg);
                         items.add(new Playground_item(container.getContext(), (Event)event));
                     }
+                    Log.w("debugging", "done");
                     pgadapter.setItems(items);
                     pgadapter.notifyDataSetChanged();
                     if (onRefresh) { mySwipeRefreshLayout.setRefreshing(false); }
