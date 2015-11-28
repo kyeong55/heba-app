@@ -58,6 +58,8 @@
         <activity android:name=".WelcomeActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".LoginActivity" />
+        <activity android:name=".Stamp_info"
+            android:theme="@style/AppTheme.InfoPage"/>
         <!--
              ATTENTION: This was auto-generated to add Google Play services to your project for
              App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -66,7 +68,6 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
-        <activity android:name=".Stamp_info"></activity>
     </application>
 
 </manifest>

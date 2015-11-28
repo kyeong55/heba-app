@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:paddingLeft="@dimen/recyclerview_padding"
     android:paddingRight="@dimen/recyclerview_padding"
     >
@@ -17,7 +17,7 @@
         android:id="@+id/ms_cover_image"
         android:layout_height="@dimen/cover_image_height"
         android:layout_width="match_parent"
-        android:src="@mipmap/ic_user"
+        android:src="@drawable/cover_image_default"
         android:scaleType="centerCrop"
         />
     <LinearLayout
@@ -35,11 +35,9 @@
             android:layout_marginBottom="@dimen/profile_image_padding"/>
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
             android:orientation="vertical">
-            <Space
-                android:layout_height="@dimen/cover_image_padding"
-                android:layout_width="match_parent"/>
             <TextView
                 android:id="@+id/ms_user_name"
                 android:layout_width="wrap_content"
@@ -53,7 +51,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="4dp">
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="@dimen/user_info_padding_bottom">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

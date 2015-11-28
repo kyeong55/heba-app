@@ -112,7 +112,6 @@ public class PgAdapter extends RecyclerView.Adapter<PgAdapter.ViewHolder> {
     }
     public void add(Playground_item item){
         items.add(0,item);
-        notifyItemInserted(0);
     }
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView title;

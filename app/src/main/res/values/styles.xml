@@ -30,4 +30,9 @@
         <item name="android:padding">16dp</item>
     </style>
 
+    <style name="AppTheme.InfoPage">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="colorPrimaryDark">@color/colorBlack</item>
+    </style>
 </resources>

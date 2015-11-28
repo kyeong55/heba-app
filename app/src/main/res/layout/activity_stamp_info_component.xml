@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorBlack">
+
+    <ImageView
+        android:id="@+id/stamp_info_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@mipmap/ic_user"/>
+    <LinearLayout
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:background="@drawable/info_text_background"
+        android:layout_gravity="bottom">
+        <TextView
+            android:id="@+id/stamp_info_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorWhite"
+            android:padding="16dp"
+            android:text="장영재가 안들어오길래 조모임을 이틀연속으로 밤새서 하는 줄 알았다. 그런데 집을 갔더군"/>
+    </LinearLayout>
+
+</FrameLayout>
