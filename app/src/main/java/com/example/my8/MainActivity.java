@@ -50,8 +50,12 @@ import android.widget.Toast;
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.parse.FindCallback;
 import com.parse.LogInCallback;
 import com.parse.LogOutCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import java.io.FileNotFoundException;
@@ -367,45 +371,57 @@ public class MainActivity extends AppCompatActivity
      * Playground fragment
      */
     public static class PlaygroundFragment extends Fragment {
+        RecyclerView pgView;
+        PgAdapter pgadapter;
+        SwipeRefreshLayout mySwipeRefreshLayout;
+
         public PlaygroundFragment() {
         }
 
-        PgAdapter pgadapter;
-
         @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+        public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                                  Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.playground, container, false);
-            final ViewGroup c = container;
             LinearLayoutManager layoutManager = new LinearLayoutManager(container.getContext());
-            RecyclerView events = (RecyclerView) rootView.findViewById(R.id.pg_view);
-            events.setHasFixedSize(true);
-            events.setLayoutManager(layoutManager);
-            List<Playground_item> items = new ArrayList<>();
-            // TODO Fetch event list from the server
 
+            View rootView = inflater.inflate(R.layout.playground, container, false);
+            pgView = (RecyclerView) rootView.findViewById(R.id.pg_view);
+            pgView.setHasFixedSize(true);
+            pgView.setLayoutManager(layoutManager);
 
+            pgadapter = new PgAdapter(container.getContext());
+            pgView.setAdapter(pgadapter);
 
+            refresh(container, false);
 
-
-
-            items.add(new Playground_item(container.getContext()));
-            items.add(new Playground_item(container.getContext()));
-            pgadapter = new PgAdapter(container.getContext(), items, R.layout.playground);
-            events.setAdapter(pgadapter);
-            final SwipeRefreshLayout mySwipeRefreshLayout = (SwipeRefreshLayout)rootView.findViewById(R.id.pg_swipe_layout);
+            mySwipeRefreshLayout = (SwipeRefreshLayout)rootView.findViewById(R.id.pg_swipe_layout);
             mySwipeRefreshLayout.setOnRefreshListener(
                     new SwipeRefreshLayout.OnRefreshListener() {
                         @Override
                         public void onRefresh() {
                             // This method performs the actual data-refresh operation.
-                            // TODO: refresh playground (Top)
-                            addEventToPG(c);
-                            mySwipeRefreshLayout.setRefreshing(false);
+                            refresh(container, true);
                         }
                     }
             );
             return rootView;
+        }
+
+        public void refresh(final ViewGroup container, final boolean onRefresh) {
+            ParseQuery<ParseObject> query = ParseQuery.getQuery("Event");
+            query.orderByDescending("updatedAt");
+            query.setLimit(10);
+            query.findInBackground(new FindCallback<ParseObject>() {
+                @Override
+                public void done(List<ParseObject> objects, ParseException e) {
+                    List<Playground_item> items = new ArrayList<>();
+                    for (ParseObject event : objects) {
+                        items.add(new Playground_item(container.getContext(), (Event)event));
+                    }
+                    pgadapter.setItems(items);
+                    pgadapter.notifyDataSetChanged();
+                    if (onRefresh) { mySwipeRefreshLayout.setRefreshing(false); }
+                }
+            });
         }
 
         public void addEventToPG(ViewGroup container) {

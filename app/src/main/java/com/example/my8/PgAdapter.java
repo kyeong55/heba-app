@@ -20,12 +20,31 @@ import java.util.List;
  * Created by 이태경 on 2015-11-14.
  */
 class Playground_item {
+    ImageAdapter Iadapter;
+    Event event;
+
+    public Playground_item(Context cont, Event event) {
+        this.Iadapter = new ImageAdapter(cont);
+        this.event = event;
+
+        this.eventID=1;
+        this.writer="누구야";
+        this.participate=0;
+        List<Playground_item> items=new ArrayList<>();
+        for(int i=0;i<10;i++){
+            addStamp(null,i);
+        }
+    }
+
+    public String getTitle() {
+        return event.getTitle();
+    }
+
     int eventID;
     String title;
     String writer;
     int participate;
 
-    ImageAdapter Iadapter;
     static final int maxStamp=10;
 
     /* Constructors */
@@ -51,7 +70,6 @@ class Playground_item {
 
     /* Member functions */
     int getID() { return eventID; }
-    String getTitle() { return title; }
     String getWriter() { return writer; }
     String getParticipate() { return ""+participate; }
     ImageAdapter getIadapter() { return Iadapter; }
@@ -66,17 +84,14 @@ class Playground_item {
 public class PgAdapter extends RecyclerView.Adapter<PgAdapter.ViewHolder> {
     Context context;
     List<Playground_item> items;
-    int item_layout;
 
     /* Constructors */
     public PgAdapter(Context context){
         this.context=context;
         items = new ArrayList<>();
     }
-    public PgAdapter(Context context, List<Playground_item> items, int item_layout) {
-        this.context = context;
+    public void setItems(List<Playground_item> items) {
         this.items = items;
-        this.item_layout = item_layout;
     }
 
     @Override
