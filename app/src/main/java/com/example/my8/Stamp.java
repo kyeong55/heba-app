@@ -20,36 +20,43 @@ public class Stamp extends ParseObject {
         // A default constructor is required.
     }
 
+    public static final String DATETIME = "datetime";
+    public static final String COMMENT = "comment";
+    public static final String USER = "User";
+    public static final String LOCATION = "location";
+    public static final String PHOTO = "photo";
+    public static final String EVENT = "event";
+
     public Date getDatetime() {
-        return getDate("datetime");
+        return getDate(DATETIME);
     }
 
     public void setDatetime(Date datetime) {
-        put("datetime", datetime);
+        put(DATETIME, datetime);
     }
 
     public String getComment() {
-        return getString("comment");
+        return getString(COMMENT);
     }
 
     public void setComment(String comment) {
-        put("comment", comment);
+        put(COMMENT, comment);
     }
 
     public ParseUser getUser() {
-        return getParseUser("user");
+        return getParseUser(USER);
     }
 
     public void setUser(ParseUser user) {
-        put("user", user);
+        put(USER, user);
     }
 
     public ParseGeoPoint getLocation() {
-        return getParseGeoPoint("location");
+        return getParseGeoPoint(LOCATION);
     }
 
     public void setLocation(ParseGeoPoint location) {
-        put("location", location);
+        put(LOCATION, location);
     }
 /*
     public String getRating() {
@@ -61,18 +68,18 @@ public class Stamp extends ParseObject {
     }
 */
     public ParseFile getPhotoFile() {
-        return getParseFile("photo");
+        return getParseFile(PHOTO);
     }
 
     public void setPhotoFile(ParseFile file) {
-        put("photo", file);
+        put(PHOTO, file);
     }
 
     public ParseObject getEvent() {
-        return getParseObject("event");
+        return getParseObject(EVENT);
     }
 
     public void setEvent(Event event) {
-        put("event", event);
+        put(EVENT, event);
     }
 }

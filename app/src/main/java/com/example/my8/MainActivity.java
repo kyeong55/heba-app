@@ -51,9 +51,11 @@ import android.widget.Toast;
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.parse.CountCallback;
 import com.parse.FindCallback;
 import com.parse.LogInCallback;
 import com.parse.LogOutCallback;
+import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseImageView;
 import com.parse.ParseObject;
@@ -114,6 +116,10 @@ public class MainActivity extends AppCompatActivity
                     vis();
                 else
                     invis();
+                if (position == 2) {
+                    // TODO only refresh when new stamp added or profile updated
+                    ((MyStampFragment)mSectionsPagerAdapter.getItem(position)).refresh();
+                }
             }
 
             @Override
@@ -264,9 +270,6 @@ public class MainActivity extends AppCompatActivity
                 } catch (FileNotFoundException e) {
                     // auto-generated catch block
                     e.printStackTrace();
-                } catch (IOException e) {
-                    // auto-generated catch block
-                    e.printStackTrace();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -280,9 +283,7 @@ public class MainActivity extends AppCompatActivity
         int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
         cursor.moveToFirst();
 
-        String imgPath = cursor.getString(column_index);
-
-        return imgPath;
+        return cursor.getString(column_index);
     }
 
     @Override
@@ -332,8 +333,12 @@ public class MainActivity extends AppCompatActivity
      */
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
+        PlaygroundFragment pgFragment;
+        MyStampFragment msFragment;
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
+            pgFragment = new PlaygroundFragment();
+            msFragment = new MyStampFragment();
         }
 
         @Override
@@ -342,9 +347,9 @@ public class MainActivity extends AppCompatActivity
             // Return a PlaceholderFragment (defined as a static inner class below).
             switch (position) {
                 case 0:
-                    return new PlaygroundFragment();
+                    return pgFragment;
                 case 2:
-                    return new MyStampFragment();
+                    return msFragment;
             }
             return PlaceholderFragment.newInstance(position + 1);
         }
@@ -448,6 +453,9 @@ public class MainActivity extends AppCompatActivity
      * My Stamp fragment
      */
     public static class MyStampFragment extends Fragment {
+        public View header;
+        public MyStampAdapter msAdapter;
+
         public MyStampFragment() {
         }
 
@@ -455,32 +463,72 @@ public class MainActivity extends AppCompatActivity
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.my_stamp, container, false);
-            View header= inflater.inflate(R.layout.my_stamp_header, container, false);
-            ImageView profile = (ImageView) header.findViewById(R.id.ms_profile_image);//profile 사진
-            ImageView cover = (ImageView) header.findViewById(R.id.ms_cover_image);//cover 사진
-            TextView user_name = (TextView) header.findViewById(R.id.ms_user_name);//user 이름
-            TextView stamp_count = (TextView) header.findViewById(R.id.ms_stamp_count);//stamp 개수
-            //TODO: user info (profile, cover, name, stamp_cont
+            header = inflater.inflate(R.layout.my_stamp_header, container, false);
 
             final GridLayoutManager layoutManager = new GridLayoutManager(container.getContext(),2);
             layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
                 @Override
                 public int getSpanSize(int position) {
-                    return (position==0) ? layoutManager.getSpanCount() : 1;
+                    return (position == 0) ? layoutManager.getSpanCount() : 1;
                 }
             });
             RecyclerView events = (RecyclerView) rootView.findViewById(R.id.ms_view);
             events.setHasFixedSize(true);
             events.setLayoutManager(layoutManager);
 
-            //TODO: MyStamp List insertion (ActionListener는 MyStampAdapter에 구현)
-            List<MyStamp_item> items = new ArrayList<>();
-            for(int i =0;i<10;i++){
-                items.add(new MyStamp_item(i,null));
-            }
-            MyStampAdapter msadapter = new MyStampAdapter(container.getContext(),header,items);
-            events.setAdapter(msadapter);
+            msAdapter = new MyStampAdapter(container.getContext(),header);
+            events.setAdapter(msAdapter);
+
+            refresh();
+
             return rootView;
+        }
+
+        public void refresh() {
+            if (header == null) return;
+            Log.d("debugging", "Hello Sexy");
+            ParseImageView profile = (ParseImageView) header.findViewById(R.id.ms_profile_image); // profile 사진
+            ParseImageView cover = (ParseImageView) header.findViewById(R.id.ms_cover_image); // cover 사진
+            TextView user_name = (TextView) header.findViewById(R.id.ms_user_name); // user 이름
+            final TextView stamp_count = (TextView) header.findViewById(R.id.ms_stamp_count); // stamp 개수
+
+            ParseUser user = ParseUser.getCurrentUser();
+            user_name.setText(user.getUsername());
+            // TODO update cover and profile photo
+            // profile.setParseFile(user.getProfile());
+            // profile.loadInBackground();
+            // cover.setParseFile(user.getCover());
+            // cover.loadInBackground();
+            ParseQuery<ParseObject> query = ParseQuery.getQuery("Stamp");
+            query.whereEqualTo(Stamp.USER, user);
+            query.orderByDescending("updatedAt");
+//            query.countInBackground(new CountCallback() {
+//                @Override
+//                public void done(int count, ParseException e) {
+//                    if (e == null) {
+//                        stamp_count.setText(count);
+//                    }
+//                }
+//            });
+            query.setLimit(10);
+            query.findInBackground(new FindCallback<ParseObject>() {
+                @Override
+                public void done(List<ParseObject> objects, ParseException e) {
+                    if (e == null) {
+                        List<MyStamp_item> items = new ArrayList<>();
+                        for (ParseObject stampObj : objects) {
+                            Stamp stamp = (Stamp) stampObj;
+                            items.add(new MyStamp_item(stamp));
+                        }
+                        msAdapter.setItems(items);
+                        msAdapter.notifyDataSetChanged();
+                    } else {
+                        Toast.makeText(getContext(),
+                                "Error on retrieving MyStamp: " + e.getMessage(),
+                                Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
         }
     }
 

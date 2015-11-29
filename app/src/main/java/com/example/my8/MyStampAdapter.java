@@ -11,6 +11,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.parse.ParseFile;
+import com.parse.ParseImageView;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,17 +21,13 @@ import java.util.List;
  * Created by 이태경 on 2015-11-25.
  */
 class MyStamp_item {
-    int stampID;
-    Bitmap image;
+    Stamp stamp;
 
-    int maxStamp=10;
+    String getID() { return this.stamp.getObjectId(); }
+    ParseFile getImageFile() { return this.stamp.getPhotoFile(); }
 
-    int getID(){return this.stampID;}
-    Bitmap getImage(){return this.image;}
-
-    public MyStamp_item(int stampID, Bitmap image){
-        this.stampID=stampID;
-        this.image=image;
+    public MyStamp_item(Stamp stamp){
+        this.stamp = stamp;
     }
 }
 public class MyStampAdapter extends RecyclerView.Adapter<MyStampAdapter.ViewHolder>{
@@ -38,13 +37,13 @@ public class MyStampAdapter extends RecyclerView.Adapter<MyStampAdapter.ViewHold
     final int VIEW_TYPE_HEADER=0;
     final int VIEW_TYPE_ITEM=1;
     public MyStampAdapter(Context context,View header){
-        this.context=context;
-        items=new ArrayList<>();
+        this.context = context;
+        this.items = new ArrayList<>();
         this.header = header;
     }
     public MyStampAdapter(Context context, View header, List<MyStamp_item> items) {
-        this.context=context;
-        this.items=items;
+        this.context = context;
+        this.items = items;
         this.header = header;
     }
 
@@ -57,21 +56,21 @@ public class MyStampAdapter extends RecyclerView.Adapter<MyStampAdapter.ViewHold
     }
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        if(isHeader(position)){
-
-        }
-        else{
+        if(!isHeader(position)) {
             final MyStamp_item item = items.get(position-1);
-            //holder.image.setImageBitmap(item.getImage());
+            holder.stamp.setParseFile(item.getImageFile());
+            holder.stamp.loadInBackground();
             holder.stamp.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    // TODO stamp info view should be linked
                     Toast.makeText(context, "Stamp ID: " + item.getID(), Toast.LENGTH_SHORT).show();
                 }
             });
         }
-
-
+    }
+    public void setItems(List<MyStamp_item> items) {
+        this.items = items;
     }
     @Override
     public int getItemCount() {
@@ -85,22 +84,22 @@ public class MyStampAdapter extends RecyclerView.Adapter<MyStampAdapter.ViewHold
         return isHeader(position) ? VIEW_TYPE_HEADER : VIEW_TYPE_ITEM;
     }
     public class ViewHolder extends RecyclerView.ViewHolder {
-        ImageView header_profile_image;
-        ImageView header_cover_image;
+        ParseImageView header_profile_image;
+        ParseImageView header_cover_image;
         TextView header_user_name;
         TextView header_stamp_count;
-        ImageView stamp;
+        ParseImageView stamp;
 
         public ViewHolder(View itemView, int viewtype) {
             super(itemView);
             if(viewtype == VIEW_TYPE_HEADER){
-                header_profile_image = (ImageView)itemView.findViewById(R.id.ms_profile_image);
-                header_cover_image = (ImageView)itemView.findViewById(R.id.ms_cover_image);
+                header_profile_image = (ParseImageView)itemView.findViewById(R.id.ms_profile_image);
+                header_cover_image = (ParseImageView)itemView.findViewById(R.id.ms_cover_image);
                 header_user_name = (TextView)itemView.findViewById(R.id.ms_user_name);
                 header_stamp_count = (TextView)itemView.findViewById(R.id.ms_stamp_count);
             }
             else if(viewtype == VIEW_TYPE_ITEM){
-                stamp = (ImageView)itemView.findViewById(R.id.ms_stamp);
+                stamp = (ParseImageView)itemView.findViewById(R.id.ms_stamp);
             }
         }
     }

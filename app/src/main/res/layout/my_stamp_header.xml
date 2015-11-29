@@ -13,7 +13,7 @@
         card_view:cardCornerRadius="0dp"
         card_view:cardUseCompatPadding="true"
         >
-    <ImageView
+    <com.parse.ParseImageView
         android:id="@+id/ms_cover_image"
         android:layout_height="@dimen/cover_image_height"
         android:layout_width="match_parent"
@@ -25,7 +25,7 @@
         android:layout_height="@dimen/cover_image_height"
         android:background="@drawable/cover_photo_background"
         android:orientation="horizontal">
-        <ImageView
+        <com.parse.ParseImageView
             android:id="@+id/ms_profile_image"
             android:layout_height="@dimen/profile_image_width"
             android:layout_width="@dimen/profile_image_width"
