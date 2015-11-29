@@ -414,17 +414,21 @@ public class MainActivity extends AppCompatActivity
             query.findInBackground(new FindCallback<ParseObject>() {
                 @Override
                 public void done(List<ParseObject> objects, ParseException e) {
-                    List<Playground_item> items = new ArrayList<>();
-                    for (ParseObject event : objects) {
-                        Event test = (Event)event;
-                        String test_msg = test.getTitle();
-                        Log.w("debugging", test_msg);
-                        items.add(new Playground_item(container.getContext(), (Event)event));
+                    if (e == null) {
+                        List<Playground_item> items = new ArrayList<>();
+                        for (ParseObject event : objects) {
+                            Event test = (Event) event;
+                            String test_msg = test.getTitle();
+                            Log.w("debugging", test_msg);
+                            items.add(new Playground_item(container.getContext(), (Event) event));
+                        }
+                        Log.w("debugging", "done");
+                        pgadapter.setItems(items);
+                        pgadapter.notifyDataSetChanged();
+                        if (onRefresh) {
+                            mySwipeRefreshLayout.setRefreshing(false);
+                        }
                     }
-                    Log.w("debugging", "done");
-                    pgadapter.setItems(items);
-                    pgadapter.notifyDataSetChanged();
-                    if (onRefresh) { mySwipeRefreshLayout.setRefreshing(false); }
                 }
             });
         }
