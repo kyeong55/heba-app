@@ -87,6 +87,8 @@ public class MainActivity extends AppCompatActivity
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
+
+    NavigationView navigationView;
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -150,8 +152,9 @@ public class MainActivity extends AppCompatActivity
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        navigationViewRefresh();
 
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -178,6 +181,16 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    // Refresh user info in option menu
+    public void navigationViewRefresh(){
+        View header = navigationView.getHeaderView(0);
+        TextView userName = (TextView) header.findViewById(R.id.option_user_name);
+        ImageView profileImage = (ImageView) header.findViewById(R.id.option_profile_image);
+        ImageView coverImage = (ImageView) header.findViewById(R.id.option_cover_image);
+        TextView stampCount = (TextView) header.findViewById(R.id.option_stamp_count);
+        // TODO: refresh user info (name, profile image, cover, stamp count)
+    }
+
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.main_drawer_layout);
@@ -198,8 +211,10 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_profile_image) {
             // TODO: Edit profile image
+            navigationViewRefresh();
         } else if (id == R.id.nav_cover_image) {
             // TODO: Edit cover image
+            navigationViewRefresh();
         } else if (id == R.id.nav_passward) {
             // TODO: Edit passward
         } else if (id == R.id.nav_logout) {
@@ -400,7 +415,7 @@ public class MainActivity extends AppCompatActivity
             pgadapter = new PgAdapter(container.getContext());
             pgView.setAdapter(pgadapter);
 
-            refresh(container, false);
+
 
             mySwipeRefreshLayout = (SwipeRefreshLayout)rootView.findViewById(R.id.pg_swipe_layout);
             mySwipeRefreshLayout.setOnRefreshListener(
@@ -412,6 +427,8 @@ public class MainActivity extends AppCompatActivity
                         }
                     }
             );
+            mySwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary,R.color.colorPrimaryDark);
+            refresh(container, false);
             return rootView;
         }
 

@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-
+    <item android:title="친구">
+        <menu>
+            <item android:id="@+id/nav_friends_list"
+                android:title="친구 목록"/>
+            <item android:id="@+id/nav_friends_request"
+                android:title="친구 요청"/>
+        </menu>
+    </item>
     <item android:title="프로필">
         <menu>
             <item android:id="@+id/nav_profile_image"
