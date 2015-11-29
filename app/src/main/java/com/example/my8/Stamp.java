@@ -22,7 +22,7 @@ public class Stamp extends ParseObject {
 
     public static final String DATETIME = "datetime";
     public static final String COMMENT = "comment";
-    public static final String USER = "User";
+    public static final String USER = "user";
     public static final String LOCATION = "location";
     public static final String PHOTO = "photo";
     public static final String EVENT = "event";
