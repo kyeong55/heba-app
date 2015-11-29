@@ -16,6 +16,12 @@
     <dimen name="user_info_padding_bottom">20dp</dimen>
     <!-- Playground -->
     <dimen name="pg_image_size">220dp</dimen>
+    <!-- Friends -->
+    <dimen name="friends_card_margin">16dp</dimen>
+    <dimen name="friends_image_width">80dp</dimen>
+    <dimen name="friends_name_text_size">16sp</dimen>
     <!-- My Stamp -->
     <dimen name="stamp_image_height">160dp</dimen>
+    <!-- Search -->
+
 </resources>

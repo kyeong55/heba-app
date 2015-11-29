@@ -29,8 +29,8 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <!-- String related to Search -->
-    <string name="search_label">search_label</string>
-    <string name="search_hint">검색</string>
-    <string name="title_activity_search">SearchActivity</string>
+    <!-- String related to profile -->
+    <string name="number_of_stamp">총 스탬프 개수:  </string>
+    <!-- String related to Friends Activity -->
+    <string name="friends_add">친구추가</string>
 </resources>

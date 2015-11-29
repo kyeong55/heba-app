@@ -58,7 +58,7 @@
                     android:layout_height="wrap_content"
                     android:textColor="#FFFFFF"
                     android:layout_marginLeft="@dimen/user_name_padding"
-                    android:text="총 스탬프 개수: "/>
+                    android:text="@string/number_of_stamp"/>
                 <TextView
                     android:id="@+id/ms_stamp_count"
                     android:layout_height="wrap_content"
