@@ -96,12 +96,6 @@ public class PlaygroundStampAdapter extends RecyclerView.Adapter<PlaygroundStamp
             @Override
             public void onClick(View v) {
                 //todo pass image_id
-
-                Intent i = new Intent(context, Stamp_info.class);
-                i.putExtra("currentstamppos", position);
-                i.putExtra("stamplistid", getEventStampList(5));
-                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                context.startActivity(i);
             }
         });
     }
