@@ -412,7 +412,7 @@ public class MainActivity extends AppCompatActivity
             pgView.setHasFixedSize(true);
             pgView.setLayoutManager(layoutManager);
 
-            pgadapter = new PgAdapter(container.getContext());
+            pgadapter = new PgAdapter(container);
             pgView.setAdapter(pgadapter);
 
 
@@ -445,7 +445,7 @@ public class MainActivity extends AppCompatActivity
                             Event test = (Event) event;
                             String test_msg = test.getTitle();
                             Log.w("debugging", test_msg);
-                            items.add(new Playground_item(container.getContext(), (Event) event));
+                            items.add(new Playground_item(container, (Event) event));
                         }
                         Log.w("debugging", "done");
                         pgadapter.setItems(items);

@@ -5,6 +5,7 @@ import com.parse.ParseClassName;
 import com.parse.ParseFile;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import java.util.Date;
@@ -81,5 +82,9 @@ public class Stamp extends ParseObject {
 
     public void setEvent(Event event) {
         put(EVENT, event);
+    }
+
+    public static ParseQuery<Stamp> getQuery() {
+        return ParseQuery.getQuery(Stamp.class);
     }
 }

@@ -9,7 +9,7 @@
         card_view:cardCornerRadius="2dp"
         card_view:cardUseCompatPadding="true"
         android:id="@+id/image_card">
-        <ImageView android:id="@+id/image_view"
+        <com.parse.ParseImageView android:id="@+id/image_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:src="@mipmap/ic_user"

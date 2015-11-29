@@ -4,6 +4,7 @@ import com.parse.ParseClassName;
 import com.parse.ParseFile;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import java.util.Date;
@@ -25,5 +26,9 @@ public class Event extends ParseObject {
 
     public void setTitle(String title) {
         put("title", title);
+    }
+
+    public static ParseQuery<Event> getQuery() {
+        return ParseQuery.getQuery(Event.class);
     }
 }

@@ -20,11 +20,13 @@ import java.util.List;
  * Created by 이태경 on 2015-11-14.
  */
 class Playground_item {
+    PlaygroundStampAdapter playgroundStampAdapter;
     ImageAdapter Iadapter;
     Event event;
 
-    public Playground_item(Context cont, Event event) {
-        this.Iadapter = new ImageAdapter(cont);
+    public Playground_item(ViewGroup container, Event event) {
+        this.playgroundStampAdapter = new PlaygroundStampAdapter(container.getContext(), container, event);
+        this.Iadapter = new ImageAdapter(container.getContext());
         this.event = event;
 
         this.eventID=1;
@@ -38,6 +40,10 @@ class Playground_item {
 
     public String getTitle() {
         return event.getTitle();
+    }
+
+    public PlaygroundStampAdapter getPlaygroundStampAdapter() {
+        return this.playgroundStampAdapter;
     }
 
     int eventID;
@@ -82,12 +88,14 @@ class Playground_item {
 
 
 public class PgAdapter extends RecyclerView.Adapter<PgAdapter.ViewHolder> {
+    ViewGroup container;
     Context context;
     List<Playground_item> items;
 
     /* Constructors */
-    public PgAdapter(Context context){
-        this.context=context;
+    public PgAdapter(ViewGroup container){
+        this.container = container;
+        this.context = container.getContext();
         items = new ArrayList<>();
     }
     public void setItems(List<Playground_item> items) {
@@ -119,7 +127,7 @@ public class PgAdapter extends RecyclerView.Adapter<PgAdapter.ViewHolder> {
         layoutManager.setOrientation(layoutManager.HORIZONTAL);
         holder.stamps.setHasFixedSize(true);
         holder.stamps.setLayoutManager(layoutManager);
-        holder.stamps.setAdapter(item.getIadapter());
+        holder.stamps.setAdapter(item.getPlaygroundStampAdapter());
     }
     @Override
     public int getItemCount() {
