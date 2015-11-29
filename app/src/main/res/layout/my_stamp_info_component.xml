@@ -5,11 +5,10 @@
     android:layout_height="match_parent"
     android:background="@color/colorBlack">
 
-    <ImageView
+    <com.parse.ParseImageView
         android:id="@+id/stamp_info_image"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:src="@mipmap/ic_user"/>
+        android:layout_height="match_parent"/>
     <LinearLayout
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
@@ -20,8 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/colorWhite"
-            android:padding="16dp"
-            android:text="장영재가 안들어오길래 조모임을 이틀연속으로 밤새서 하는 줄 알았다. 그런데 집을 갔더군"/>
+            android:padding="16dp"/>
     </LinearLayout>
 
 </FrameLayout>

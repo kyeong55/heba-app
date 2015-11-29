@@ -1,15 +1,12 @@
 package com.example.my8;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.support.v7.widget.CardView;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.parse.ParseFile;
 import com.parse.ParseImageView;
@@ -63,14 +60,26 @@ public class MyStampAdapter extends RecyclerView.Adapter<MyStampAdapter.ViewHold
             holder.stamp.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // TODO stamp info view should be linked
-                    Toast.makeText(context, "Stamp ID: " + item.getID(), Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(context, MyStampInfoActivity.class);
+                    String stampId = item.getID();
+                    ArrayList<String> stampIdList = getStampObjectIdArrayList();
+                    int pos = stampIdList.indexOf(stampId);
+                    intent.putExtra("clicked_stamp_pos", pos);
+                    intent.putExtra("stamp_id_list", stampIdList);
+                    context.startActivity(intent);
                 }
             });
         }
     }
     public void setItems(List<MyStamp_item> items) {
         this.items = items;
+    }
+    private ArrayList<String> getStampObjectIdArrayList() {
+        ArrayList<String> stampIdList = new ArrayList<>();
+        for (MyStamp_item stamp : items) {
+            stampIdList.add(stamp.getID());
+        }
+        return stampIdList;
     }
     @Override
     public int getItemCount() {

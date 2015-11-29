@@ -21,6 +21,7 @@ public class Stamp extends ParseObject {
         // A default constructor is required.
     }
 
+    public static final String CLASSNAME = "Stamp";
     public static final String DATETIME = "datetime";
     public static final String COMMENT = "comment";
     public static final String USER = "user";
