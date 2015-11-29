@@ -66,6 +66,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
     public int getItemCount() {
         return this.items.size();
     }
+    //TODO: test용 나중에 지우기
     public void add(){
         items.add(new Friends_item());
     }
