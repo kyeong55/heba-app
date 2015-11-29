@@ -189,6 +189,8 @@ public class MainActivity extends AppCompatActivity
         ImageView coverImage = (ImageView) header.findViewById(R.id.option_cover_image);
         TextView stampCount = (TextView) header.findViewById(R.id.option_stamp_count);
         // TODO: refresh user info (name, profile image, cover, stamp count)
+        ParseUser user = ParseUser.getCurrentUser();
+        userName.setText(user.getUsername());
     }
 
     @Override
@@ -349,10 +351,12 @@ public class MainActivity extends AppCompatActivity
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
         PlaygroundFragment pgFragment;
+        FriendsFragment fFragment;
         MyStampFragment msFragment;
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
             pgFragment = new PlaygroundFragment();
+            fFragment = new FriendsFragment();
             msFragment = new MyStampFragment();
         }
 
@@ -363,6 +367,8 @@ public class MainActivity extends AppCompatActivity
             switch (position) {
                 case 0:
                     return pgFragment;
+                case 1:
+                    return fFragment;
                 case 2:
                     return msFragment;
             }
@@ -548,6 +554,74 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    /**
+     * Friends Fragment
+     */
+    public static class FriendsFragment extends Fragment {
+        RecyclerView friendsView;
+        FriendsAdapter friendsAdapter;
+        SwipeRefreshLayout mySwipeRefreshLayout;
+
+        public FriendsFragment() {
+        }
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, final ViewGroup container,
+                                 Bundle savedInstanceState) {
+            LinearLayoutManager layoutManager = new LinearLayoutManager(container.getContext());
+
+            View rootView = inflater.inflate(R.layout.friends, container, false);
+            friendsView = (RecyclerView) rootView.findViewById(R.id.friends_view);
+            friendsView.setHasFixedSize(true);
+            friendsView.setLayoutManager(layoutManager);
+
+            friendsAdapter = new FriendsAdapter(container.getContext());
+            friendsView.setAdapter(friendsAdapter);
+
+            mySwipeRefreshLayout = (SwipeRefreshLayout)rootView.findViewById(R.id.friends_swipe_layout);
+            mySwipeRefreshLayout.setOnRefreshListener(
+                    new SwipeRefreshLayout.OnRefreshListener() {
+                        @Override
+                        public void onRefresh() {
+                            // This method performs the actual data-refresh operation.
+//                            refresh(container, true);
+                            mySwipeRefreshLayout.setRefreshing(false);
+                        }
+                    }
+            );
+            mySwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorPrimaryDark);
+//            refresh(container, false);
+            friendsAdapter.add();
+            friendsAdapter.add();
+            return rootView;
+        }
+
+//        public void refresh(final ViewGroup container, final boolean onRefresh) {
+//            ParseQuery<ParseObject> query = ParseQuery.getQuery("Event");
+//            query.orderByDescending("updatedAt");
+//            query.setLimit(10);
+//            query.findInBackground(new FindCallback<ParseObject>() {
+//                @Override
+//                public void done(List<ParseObject> objects, ParseException e) {
+//                    if (e == null) {
+//                        List<Playground_item> items = new ArrayList<>();
+//                        for (ParseObject event : objects) {
+//                            Event test = (Event) event;
+//                            String test_msg = test.getTitle();
+//                            Log.w("debugging", test_msg);
+//                            items.add(new Playground_item(container.getContext(), (Event) event));
+//                        }
+//                        Log.w("debugging", "done");
+//                        pgadapter.setItems(items);
+//                        pgadapter.notifyDataSetChanged();
+//                        if (onRefresh) {
+//                            mySwipeRefreshLayout.setRefreshing(false);
+//                        }
+//                    }
+//                }
+//            });
+//        }
+    }
     /**
      * A placeholder fragment containing a simple view.
      */

@@ -13,8 +13,8 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical">
-            <ImageView
-                android:id="@+id/ms_stamp"
+            <com.parse.ParseImageView
+                android:id="@+id/friends_profile_image"
                 android:layout_width="@dimen/friends_image_width"
                 android:layout_height="@dimen/friends_image_width"
                 android:layout_margin="@dimen/friends_card_margin"
