@@ -94,10 +94,17 @@ public class Create_Event extends AppCompatActivity {
                 stamp.setComment(stampComment);
                 stamp.setUser(ParseUser.getCurrentUser());
 
-                ParseACL postACL = new ParseACL(ParseUser.getCurrentUser());
-                postACL.setPublicReadAccess(true);
-                stamp.setACL(postACL);
+                //event
+                Event event = new Event();
+                eventTitle = titleEditText.getText().toString();
+                event.setTitle(eventTitle);
 
+                //event.setACL(postACL);
+
+                //stamp-event relation
+                stamp.setEvent(event);
+
+                //save
                 stamp.saveInBackground(new SaveCallback() {
                     @Override
                     public void done(com.parse.ParseException e) {
@@ -107,17 +114,6 @@ public class Create_Event extends AppCompatActivity {
                     }
                 });
 
-                //event
-                Event event = new Event();
-                eventTitle = titleEditText.getText().toString();
-                event.setTitle(eventTitle);
-
-                event.setACL(postACL);
-
-                //stamp-event relation
-                //stamp.setEvent(event);
-
-                //save
                 event.saveInBackground();
 
                 SelectEvent selectEventActivity = (SelectEvent) SelectEvent.select_event_Activity;

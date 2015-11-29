@@ -24,6 +24,7 @@ public class StarterApplication extends Application {
                 "BDkifQnOh7JCDhp5Olbkr86daYT14O4yYlAj71sN");
 
         ParseACL defaultACL = new ParseACL();
+        defaultACL.setPublicReadAccess(true);
         ParseACL.setDefaultACL(defaultACL, true);
     }
 }

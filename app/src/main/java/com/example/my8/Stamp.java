@@ -69,10 +69,10 @@ public class Stamp extends ParseObject {
     }
 
     public ParseObject getEvent() {
-        return getParseObject("containedBy");
+        return getParseObject("event");
     }
 
     public void setEvent(Event event) {
-        put("containedBy", event);
+        put("event", event);
     }
 }
