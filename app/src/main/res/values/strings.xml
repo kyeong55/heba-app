@@ -28,4 +28,9 @@
     <!-- String for Navigation View -->
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <!-- String related to Search -->
+    <string name="search_label">search_label</string>
+    <string name="search_hint">검색</string>
+    <string name="title_activity_search">SearchActivity</string>
 </resources>

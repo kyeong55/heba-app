@@ -24,6 +24,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 
 import android.support.v4.app.Fragment;
@@ -235,6 +236,8 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
         if(id == R.id.action_search) {
             //TODO: search
+            Intent searchIntent = new Intent(this,SearchActivity.class);
+            startActivity(searchIntent);
         }
         return super.onOptionsItemSelected(item);
     }
