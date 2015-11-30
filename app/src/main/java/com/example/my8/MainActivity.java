@@ -459,7 +459,7 @@ public class MainActivity extends AppCompatActivity
                         }
                     }
             );
-            mySwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary,R.color.colorPrimaryDark);
+            mySwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorPrimaryDark);
             return rootView;
         }
 
@@ -473,20 +473,16 @@ public class MainActivity extends AppCompatActivity
                 public void done(List<Event> events, ParseException e) {
                     if (e == null) {
                         List<Playground_item> newItems = new ArrayList<>();
-                        for (ParseObject event : events) {
-                            Event test = (Event) event;
-                            String test_msg = test.getTitle();
-                            Log.w("debugging", test_msg);
-                            newItems.add(new Playground_item(container, (Event) event));
+                        for (Event event : events) {
+                            newItems.add(new Playground_item(container, event));
                         }
                         items = newItems;
-                        Log.w("debugging", "done");
                         pgadapter.setItems(items);
                         pgadapter.notifyDataSetChanged();
                         if (onRefresh) {
                             mySwipeRefreshLayout.setRefreshing(false);
                         }
-                        pgadapter.addedAll=false;
+                        pgadapter.addedAll = false;
                         pgadapter.setIsAdding(false);
                     }
                 }
@@ -520,8 +516,10 @@ public class MainActivity extends AppCompatActivity
      * My Stamp fragment
      */
     public static class MyStampFragment extends Fragment {
-        public View header;
-        public MyStampAdapter msAdapter;
+        private View header;
+        private MyStampAdapter msAdapter;
+
+        private List<MyStamp_item> items = new ArrayList<>();
 
         public MyStampFragment() {
         }
@@ -542,6 +540,7 @@ public class MainActivity extends AppCompatActivity
             RecyclerView events = (RecyclerView) rootView.findViewById(R.id.ms_view);
             events.setHasFixedSize(true);
             events.setLayoutManager(layoutManager);
+            events.addOnChildAttachStateChangeListener(new ChildAttachListener(layoutManager));
 
             msAdapter = new MyStampAdapter(container.getContext(),header);
             events.setAdapter(msAdapter);
@@ -576,14 +575,15 @@ public class MainActivity extends AppCompatActivity
 //                    }
 //                }
 //            });
-            query.setLimit(10);
+            query.setLimit(8);
             query.findInBackground(new FindCallback<Stamp>() {
                 @Override
                 public void done(List<Stamp> stamps, ParseException e) {
                     if (e == null) {
-                        List<MyStamp_item> items = new ArrayList<>();
+                        List<MyStamp_item> newItems = new ArrayList<>();
                         for (Stamp stamp : stamps)
-                            items.add(new MyStamp_item(stamp));
+                            newItems.add(new MyStamp_item(stamp));
+                        items = newItems;
                         msAdapter.setItems(items);
                         msAdapter.notifyDataSetChanged();
                     } else {
@@ -593,6 +593,28 @@ public class MainActivity extends AppCompatActivity
                     }
                 }
             });
+        }
+
+        private class ChildAttachListener implements RecyclerView.OnChildAttachStateChangeListener {
+            LinearLayoutManager llm;
+
+            public ChildAttachListener(LinearLayoutManager llm){
+                super();
+                this.llm = llm;
+            }
+
+            @Override
+            public void onChildViewAttachedToWindow(View view) {
+                if (items.size() - 2 <= llm.findLastVisibleItemPosition()) {
+                    if(!msAdapter.isAdding() && (items.size()>=5)&&(!msAdapter.addedAll))
+                        msAdapter.add();
+                }
+            }
+
+            @Override
+            public void onChildViewDetachedFromWindow(View view) {
+
+            }
         }
     }
 

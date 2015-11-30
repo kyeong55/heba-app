@@ -12,11 +12,17 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.parse.FindCallback;
+import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseImageView;
+import com.parse.ParseQuery;
+import com.parse.ParseUser;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -31,18 +37,28 @@ class MyStamp_item {
     public MyStamp_item(Stamp stamp){
         this.stamp = stamp;
     }
+
+    public Date getUpdateTime() {
+        return stamp.getUpdatedAt();
+    }
 }
 public class MyStampAdapter extends RecyclerView.Adapter<MyStampAdapter.ViewHolder>{
-    Context context;
-    List<MyStamp_item> items;
-    View header;
-    final int VIEW_TYPE_HEADER=0;
-    final int VIEW_TYPE_ITEM=1;
+    public boolean addedAll=false;
+    private boolean inAdding=false;
+
+    private Context context;
+    private List<MyStamp_item> items;
+    private View header;
+
+    private final int VIEW_TYPE_HEADER=0;
+    private final int VIEW_TYPE_ITEM=1;
+
     public MyStampAdapter(Context context,View header){
         this.context = context;
         this.items = new ArrayList<>();
         this.header = header;
     }
+
     public MyStampAdapter(Context context, View header, List<MyStamp_item> items) {
         this.context = context;
         this.items = items;
@@ -56,6 +72,7 @@ public class MyStampAdapter extends RecyclerView.Adapter<MyStampAdapter.ViewHold
         View v= LayoutInflater.from(parent.getContext()).inflate(R.layout.my_stamp_card,parent,false);
         return new ViewHolder(v,viewType);
     }
+
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         if(!isHeader(position)) {
@@ -82,9 +99,11 @@ public class MyStampAdapter extends RecyclerView.Adapter<MyStampAdapter.ViewHold
             holder.ms_card.setLayoutParams(params);
         }
     }
+
     public void setItems(List<MyStamp_item> items) {
         this.items = items;
     }
+
     private ArrayList<String> getStampObjectIdArrayList() {
         ArrayList<String> stampIdList = new ArrayList<>();
         for (MyStamp_item stamp : items) {
@@ -92,17 +111,58 @@ public class MyStampAdapter extends RecyclerView.Adapter<MyStampAdapter.ViewHold
         }
         return stampIdList;
     }
+
     @Override
     public int getItemCount() {
         return this.items.size() + 1;
     }
+
     public boolean isHeader(int position) {
         return position == 0;
     }
+
     @Override
     public int getItemViewType(int position) {
         return isHeader(position) ? VIEW_TYPE_HEADER : VIEW_TYPE_ITEM;
     }
+
+    public boolean isAdding() {
+        return inAdding;
+    }
+
+    public void setIsAdding(boolean inAdding){this.inAdding = inAdding;}
+
+    public void add(){
+        inAdding = true;
+        ParseUser user = ParseUser.getCurrentUser();
+        ParseQuery<Stamp> query = Stamp.getQuery();
+        query.whereEqualTo(Stamp.USER, user);
+        query.orderByDescending("updatedAt");
+        if (items.size() == 0) {
+        } else {
+            MyStamp_item oldestItem = items.get(items.size() - 1);
+            query.whereLessThan("updatedAt", oldestItem.getUpdateTime());
+        }
+        query.setLimit(8);
+        query.findInBackground(new FindCallback<Stamp>() {
+            @Override
+            public void done(List<Stamp> stamps, ParseException e) {
+                if (e == null) {
+                    int pos = items.size();
+                    for (Stamp stamp : stamps) {
+                        items.add(new MyStamp_item(stamp));
+                    }
+                    if (items.size() == pos) { // 더 이상 받아올게 없음
+                        addedAll = true;
+                        notifyItemChanged(pos);
+                    } else
+                        notifyItemRangeInserted(pos, items.size() - pos);
+                    inAdding = false;
+                }
+            }
+        });
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         ParseImageView header_profile_image;
         ParseImageView header_cover_image;
