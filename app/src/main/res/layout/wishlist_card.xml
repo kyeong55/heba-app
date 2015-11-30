@@ -31,10 +31,16 @@
             android:textStyle="bold" android:textSize="@dimen/wishlist_title_text_size"
             android:textColor="@color/colorBlack"
             android:text="테스트"/>
+        <TextView
+            android:id="@+id/wl_stamp_view"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/pg_image_size"/>
+        <!--
         <android.support.v7.widget.RecyclerView
             android:id="@+id/wl_stamp_view"
             android:layout_width="match_parent"
             android:layout_height="@dimen/pg_image_size"/>
+            -->
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"

@@ -18,6 +18,12 @@
     <dimen name="pg_image_size">220dp</dimen>
     <dimen name="pg_progressbar_size">24dp</dimen>
     <dimen name="pg_progess_margin">8dp</dimen>
+
+    <dimen name="pg_margin_side">24dp</dimen>
+    <dimen name="pg_margin_in">8dp</dimen>
+    <dimen name="pg_margin_out">16dp</dimen>
+    <dimen name="pg_title_text_size">26sp</dimen>
+
     <!-- Friends -->
     <dimen name="friends_card_margin">16dp</dimen>
     <dimen name="friends_image_width">80dp</dimen>
@@ -27,8 +33,8 @@
     <!-- Stamp Info -->
     <dimen name="stamp_info_text_padding">32dp</dimen>
     <!-- Wishlist -->
-    <dimen name="wishlist_title_margin_left">32dp</dimen>
-    <dimen name="wishlist_title_margin_top">16dp</dimen>
-    <dimen name="wishlist_title_margin_bottom">16dp</dimen>
+    <dimen name="wishlist_title_margin_left">24dp</dimen>
+    <dimen name="wishlist_title_margin_top">8dp</dimen>
+    <dimen name="wishlist_title_margin_bottom">8dp</dimen>
     <dimen name="wishlist_title_text_size">26sp</dimen>
 </resources>

@@ -685,11 +685,12 @@ public class MainActivity extends AppCompatActivity
             wlView = (RecyclerView) rootView.findViewById(R.id.wishlist_view);
             wlView.setHasFixedSize(true);
             wlView.setLayoutManager(layoutManager);
-            wlView.addOnChildAttachStateChangeListener(new ChildAttachListener(layoutManager));
+//            wlView.addOnChildAttachStateChangeListener(new ChildAttachListener(layoutManager));
 
             wlAdapter = new WishlistAdapter(container);
             wlView.setAdapter(wlAdapter);
-
+            wlAdapter.add();
+            wlAdapter.add();
             refresh();
             return rootView;
         }
@@ -697,27 +698,27 @@ public class MainActivity extends AppCompatActivity
         public void refresh() {
             // TODO refresh wishlist
         }
-        private class ChildAttachListener implements RecyclerView.OnChildAttachStateChangeListener {
-            LinearLayoutManager llm;
-
-            public ChildAttachListener(LinearLayoutManager llm){
-                super();
-                this.llm = llm;
-            }
-
-            @Override
-            public void onChildViewAttachedToWindow(View view) {
-                if (items.size() - 2 <= llm.findLastVisibleItemPosition()) {
-                    if(!wlAdapter.isAdding() && (items.size()>=5)&&(!wlAdapter.addedAll))
-                        wlAdapter.add();
-                }
-            }
-
-            @Override
-            public void onChildViewDetachedFromWindow(View view) {
-
-            }
-        }
+//        private class ChildAttachListener implements RecyclerView.OnChildAttachStateChangeListener {
+//            LinearLayoutManager llm;
+//
+//            public ChildAttachListener(LinearLayoutManager llm){
+//                super();
+//                this.llm = llm;
+//            }
+//
+//            @Override
+//            public void onChildViewAttachedToWindow(View view) {
+//                if (items.size() - 2 <= llm.findLastVisibleItemPosition()) {
+//                    if(!wlAdapter.isAdding() && (items.size()>=5)&&(!wlAdapter.addedAll))
+//                        wlAdapter.add();
+//                }
+//            }
+//
+//            @Override
+//            public void onChildViewDetachedFromWindow(View view) {
+//
+//            }
+//        }
     }
     /**
      * A placeholder fragment containing a simple view.

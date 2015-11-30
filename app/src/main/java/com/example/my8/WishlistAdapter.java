@@ -94,9 +94,11 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.ViewHo
     public boolean isAdding() { return inAdding; }
     public void setIsAdding(boolean inAdding){this.inAdding = inAdding;}
     public void add(){
-        inAdding = true;
+//        inAdding = true;
+        Wishlist_item newitem = new Wishlist_item();
+        items.add(newitem);
         //TODO: add. (done 함수에서 마지막에 inAdding = false 넣고 새로 받아온거 길이비교해서 다받았으면 addedAll = true)
-        inAdding = false;
+//        inAdding = false;
     }
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView title;
@@ -111,7 +113,7 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.ViewHo
             if(viewType == VIEW_TYPE_ITEM) {
                 title = (TextView) itemView.findViewById(R.id.wl_title);
                 participate = (TextView) itemView.findViewById(R.id.wl_participate);
-                stamps = (RecyclerView) itemView.findViewById(R.id.wl_stamp_view);
+//                stamps = (RecyclerView) itemView.findViewById(R.id.wl_stamp_view);
             }
             else if(viewType == VIEW_TYPE_FOOTER) {
                 footer_progress_in = itemView.findViewById(R.id.progress_in);
