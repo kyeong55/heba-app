@@ -19,30 +19,40 @@ import com.parse.ParseException;
 import com.parse.ParseImageView;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by 이태경 on 2015-11-30.
+ * Adapter for wishlist
  */
 class Wishlist_item{
-    public Wishlist_item(){}
+    private Event event;
+
+    public Wishlist_item(Event event){
+        this.event = event;
+    }
+
+    public String getTitle() {
+        return event.getTitle();
+    }
 }
 public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.ViewHolder>{
-    private ViewGroup container;
-    Context context;
-    List<Wishlist_item> items;
-    final int VIEW_TYPE_FOOTER=0;
-    final int VIEW_TYPE_ITEM=1;
+    private Context context;
+    private List<Wishlist_item> items;
+
+    private final int VIEW_TYPE_FOOTER=0;
+    private final int VIEW_TYPE_ITEM=1;
+
     public boolean addedAll=false;
     private boolean inAdding=false;
-    /* Constructors */
-    public WishlistAdapter(ViewGroup container){
-        this.container = container;
-        this.context = container.getContext();
+
+    public WishlistAdapter(Context context){
+        this.context = context;
         this.items = new ArrayList<>();
     }
+
     public void setItems(List<Wishlist_item> items) {
         this.items = items;
     }
@@ -56,56 +66,113 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.ViewHo
             v= LayoutInflater.from(parent.getContext()).inflate(R.layout.wishlist_card, parent, false);
         return new ViewHolder(v,viewType);
     }
+
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-//        final MyStamp_item item = items.get(position-1);
-//        holder.stamp.setParseFile(item.getImageFile());
-//        holder.stamp.loadInBackground();
-//        holder.stamp.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(context, MyStampInfoActivity.class);
-//                String stampId = item.getID();
-//                ArrayList<String> stampIdList = getStampObjectIdArrayList();
-//                int pos = stampIdList.indexOf(stampId);
-//                intent.putExtra("clicked_stamp_pos", pos);
-//                intent.putExtra("stamp_id_list", stampIdList);
-//                context.startActivity(intent);
-//            }
-//        });
-//        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) holder.ms_card.getLayoutParams();
-//        DisplayMetrics metrics = new DisplayMetrics();
-//        WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-//        windowManager.getDefaultDisplay().getMetrics(metrics);
-//        params.height = metrics.widthPixels*3/7;
-//        holder.ms_card.setLayoutParams(params);
+        if(isFooter(position)) {
+            if(addedAll) {
+                holder.footer_progress_in.setVisibility(View.GONE);
+                holder.footer_progress_end.setVisibility(View.VISIBLE);
+            } else {
+                holder.footer_progress_end.setVisibility(View.GONE);
+                holder.footer_progress_in.setVisibility(View.VISIBLE);
+            }
+        } else {
+            final Wishlist_item item = items.get(position);
+
+            holder.title.setText(item.getTitle());
+            holder.thumbnail1.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //TODO: Magnify the stamp
+                    //Intent intent = new Intent(context, ???.class);
+                    //context.startActivity(intent);
+                }
+            });
+            holder.thumbnail2.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //TODO: Magnify the stamp
+                    //Intent intent = new Intent(context, ???.class);
+                    //context.startActivity(intent);
+                }
+            });
+            holder.thumbnail3.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //TODO: Magnify the stamp
+                    //Intent intent = new Intent(context, ???.class);
+                    //context.startActivity(intent);
+                }
+            });
+
+            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) holder.wishCard.getLayoutParams();
+            DisplayMetrics metrics = new DisplayMetrics();
+            WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+            windowManager.getDefaultDisplay().getMetrics(metrics);
+            params.height = metrics.widthPixels*1/3;
+            holder.wishCard.setLayoutParams(params);
+        }
     }
+
     @Override
     public int getItemCount() {
         return this.items.size() + 1;
     }
+
     public boolean isFooter(int position) {
         return position == getItemCount()-1;
     }
+
     @Override
     public int getItemViewType(int position) {
         return isFooter(position) ? VIEW_TYPE_FOOTER : VIEW_TYPE_ITEM;
     }
+
     public boolean isAdding() { return inAdding; }
+
     public void setIsAdding(boolean inAdding){this.inAdding = inAdding;}
+
     public void add(){
-//        inAdding = true;
-        Wishlist_item newitem = new Wishlist_item();
-        items.add(newitem);
-        //TODO: add. (done 함수에서 마지막에 inAdding = false 넣고 새로 받아온거 길이비교해서 다받았으면 addedAll = true)
-//        inAdding = false;
+        inAdding = true;
+        List<String> wishlist = ParseUser.getCurrentUser().getList("wishlist");
+        if (wishlist != null) {
+            ParseQuery<Event> query = Event.getQuery();
+            query.whereContainedIn("objectId", wishlist);
+            query.orderByDescending("title");
+            if (items.size() == 0) {
+            } else {
+                Wishlist_item oldestItem = items.get(items.size() - 1);
+                query.whereLessThan("title", oldestItem.getTitle());
+            }
+            query.setLimit(5);
+            query.findInBackground(new FindCallback<Event>() {
+                @Override
+                public void done(List<Event> events, ParseException e) {
+                    if (e == null) {
+                        int pos = items.size();
+                        for (Event event : events) {
+                            items.add(new Wishlist_item(event));
+                        }
+                        if (items.size() == pos) {
+                            addedAll = true;
+                            notifyItemChanged(pos);
+                        } else {
+                            notifyItemRangeInserted(pos, items.size() - pos);
+                        }
+                        inAdding = false;
+                    }
+                }
+            });
+        }
     }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView title;
-        TextView participate;
-        ParseImageView stamp_image1;
-        ParseImageView stamp_image2;
-        ParseImageView stamp_image3;
+        ParseImageView thumbnail1;
+        ParseImageView thumbnail2;
+        ParseImageView thumbnail3;
+        View wishCard;
 
         View footer_progress_in;
         TextView footer_progress_end;
@@ -114,10 +181,10 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.ViewHo
             super(itemView);
             if(viewType == VIEW_TYPE_ITEM) {
                 title = (TextView) itemView.findViewById(R.id.wl_title);
-                participate = (TextView) itemView.findViewById(R.id.wl_participate);
-                stamp_image1 = (ParseImageView) itemView.findViewById(R.id.wl_image_1);
-                stamp_image2 = (ParseImageView) itemView.findViewById(R.id.wl_image_2);
-                stamp_image3 = (ParseImageView) itemView.findViewById(R.id.wl_image_3);
+                thumbnail1 = (ParseImageView) itemView.findViewById(R.id.wl_image_1);
+                thumbnail2 = (ParseImageView) itemView.findViewById(R.id.wl_image_2);
+                thumbnail3 = (ParseImageView) itemView.findViewById(R.id.wl_image_3);
+                wishCard = (View) itemView.findViewById(R.id.wl_image_layout);
             }
             else if(viewType == VIEW_TYPE_FOOTER) {
                 footer_progress_in = itemView.findViewById(R.id.progress_in);

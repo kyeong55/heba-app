@@ -73,6 +73,7 @@ import static com.parse.ParseUser.logOut;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    public static Activity mainActivity;
     /**
      * The {@link PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -81,7 +82,7 @@ public class MainActivity extends AppCompatActivity
      * may be best to switch to a
      * {@link FragmentStatePagerAdapter}.
      */
-    private SectionsPagerAdapter mSectionsPagerAdapter;
+    public static SectionsPagerAdapter mSectionsPagerAdapter;
     final int REQ_CODE_SELECT_IMAGE = 100;
 
     /**
@@ -100,6 +101,8 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mainActivity = MainActivity.this;
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -429,7 +432,7 @@ public class MainActivity extends AppCompatActivity
         private RecyclerView pgView;
         private PgAdapter pgadapter;
         private SwipeRefreshLayout mySwipeRefreshLayout;
-        private List<Playground_item> items = new ArrayList<>();
+        private ViewGroup container;
 
         public PlaygroundFragment() {
         }
@@ -437,6 +440,7 @@ public class MainActivity extends AppCompatActivity
         @Override
         public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                                  Bundle savedInstanceState) {
+            this.container = container;
             LinearLayoutManager layoutManager = new LinearLayoutManager(container.getContext());
 
             View rootView = inflater.inflate(R.layout.playground, container, false);
@@ -447,7 +451,6 @@ public class MainActivity extends AppCompatActivity
 
             pgadapter = new PgAdapter(container);
             pgView.setAdapter(pgadapter);
-            refresh(container, false);
 
             mySwipeRefreshLayout = (SwipeRefreshLayout)rootView.findViewById(R.id.pg_swipe_layout);
             mySwipeRefreshLayout.setOnRefreshListener(
@@ -455,15 +458,16 @@ public class MainActivity extends AppCompatActivity
                         @Override
                         public void onRefresh() {
                             // This method performs the actual data-refresh operation.
-                            refresh(container, true);
+                            refresh();
                         }
                     }
             );
             mySwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorPrimaryDark);
+            refresh();
             return rootView;
         }
 
-        public void refresh(final ViewGroup container, final boolean onRefresh) {
+        public void refresh() {
             pgadapter.setIsAdding(true);
             ParseQuery<Event> query = Event.getQuery();
             query.orderByDescending("updatedAt");
@@ -472,16 +476,14 @@ public class MainActivity extends AppCompatActivity
                 @Override
                 public void done(List<Event> events, ParseException e) {
                     if (e == null) {
-                        List<Playground_item> newItems = new ArrayList<>();
+                        List<Playground_item> items = new ArrayList<>();
                         for (Event event : events) {
-                            newItems.add(new Playground_item(container, event));
+                            items.add(new Playground_item(container, event));
                         }
-                        items = newItems;
                         pgadapter.setItems(items);
                         pgadapter.notifyDataSetChanged();
-                        if (onRefresh) {
-                            mySwipeRefreshLayout.setRefreshing(false);
-                        }
+                        mySwipeRefreshLayout.setRefreshing(false);
+
                         pgadapter.addedAll = false;
                         pgadapter.setIsAdding(false);
                     }
@@ -499,8 +501,8 @@ public class MainActivity extends AppCompatActivity
 
             @Override
             public void onChildViewAttachedToWindow(View view) {
-                if (items.size() - 2 <= llm.findLastVisibleItemPosition()) {
-                    if(!pgadapter.isAdding() && (items.size()>=5)&&(!pgadapter.addedAll))
+                if (pgadapter.getItemCount() - 3 <= llm.findLastVisibleItemPosition()) {
+                    if(!pgadapter.isAdding() && (pgadapter.getItemCount()>=6)&&(!pgadapter.addedAll))
                         pgadapter.add();
                 }
             }
@@ -693,7 +695,6 @@ public class MainActivity extends AppCompatActivity
     public static class WishlistFragment extends Fragment {
         private RecyclerView wlView;
         private WishlistAdapter wlAdapter;
-        private List<Wishlist_item> items = new ArrayList<>();
 
         public WishlistFragment() {
         }
@@ -710,11 +711,9 @@ public class MainActivity extends AppCompatActivity
             wlView.setLayoutManager(layoutManager);
 //            wlView.addOnChildAttachStateChangeListener(new ChildAttachListener(layoutManager));
 
-            wlAdapter = new WishlistAdapter(container);
+            wlAdapter = new WishlistAdapter(container.getContext());
             wlView.setAdapter(wlAdapter);
             wlAdapter.add();
-            wlAdapter.add();
-            refresh();
             return rootView;
         }
 
@@ -743,4 +742,22 @@ public class MainActivity extends AppCompatActivity
 //            }
 //        }
     }
+
+    /*
+    public static void refresh(int position) {
+        switch (position) {
+            case 0: //playground
+                ((PlaygroundFragment) mSectionsPagerAdapter.getItem(position)).refresh();
+                break;
+            case 1: //friend
+                //((FriendsFragment) mSectionsPagerAdapter.getItem(position)).refresh();
+                break;
+            case 2: //my stamp
+                ((MyStampFragment) mSectionsPagerAdapter.getItem(position)).refresh();
+                break;
+            case 3: //wishlist
+                ((WishlistFragment) mSectionsPagerAdapter.getItem(position)).refresh();
+                break;
+        }
+    }*/
 }

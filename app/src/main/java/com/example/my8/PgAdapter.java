@@ -168,6 +168,8 @@ public class PgAdapter extends RecyclerView.Adapter<PgAdapter.ViewHolder> {
                         Toast.makeText(context, "위시리스트에 추가되었습니다", Toast.LENGTH_SHORT).show();
                         ParseUser.getCurrentUser().addUnique("wishlist", eventId);
                         ParseUser.getCurrentUser().saveInBackground();
+                        MainActivity mainActivity = (MainActivity) MainActivity.mainActivity;
+                        mainActivity.refr
                     }
                 }
             });
