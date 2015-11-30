@@ -6,12 +6,18 @@ import android.graphics.drawable.Drawable;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,9 +94,9 @@ class Playground_item {
 
 
 public class PgAdapter extends RecyclerView.Adapter<PgAdapter.ViewHolder> {
-    ViewGroup container;
-    Context context;
-    List<Playground_item> items;
+    private ViewGroup container;
+    private Context context;
+    private List<Playground_item> items;
 
     /* Constructors */
     public PgAdapter(ViewGroup container){
@@ -129,13 +135,34 @@ public class PgAdapter extends RecyclerView.Adapter<PgAdapter.ViewHolder> {
         holder.stamps.setLayoutManager(layoutManager);
         holder.stamps.setAdapter(item.getPlaygroundStampAdapter());
     }
+
     @Override
     public int getItemCount() {
         return this.items.size();
     }
-    public void add(Playground_item item){
-        items.add(0,item);
+
+    public void add(){
+        ParseQuery<Event> query = Event.getQuery();
+        query.orderByDescending("updatedAt");
+        query.setLimit(items.size() + 5);
+        query.findInBackground(new FindCallback<Event>() {
+            @Override
+            public void done(List<Event> events, ParseException e) {
+                if (e == null) {
+                    int pos = items.size();
+                    List<Playground_item> newItems = new ArrayList<>();
+                    for (ParseObject event : events) {
+                        newItems.add(new Playground_item(container, (Event) event));
+                    }
+                    items = newItems;
+                    notifyItemRangeInserted(pos, items.size() - pos);
+                }
+            }
+        });
     }
+
+
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView title;
         ImageView writer_photo;

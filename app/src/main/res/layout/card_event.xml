@@ -24,7 +24,7 @@
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-                <ImageView android:id="@+id/pg_writer_photo"
+                <com.parse.ParseImageView android:id="@+id/pg_writer_photo"
                     android:layout_margin="4dp"
                     android:layout_width="24dp" android:layout_height="24dp"
                     android:src="@mipmap/ic_user"

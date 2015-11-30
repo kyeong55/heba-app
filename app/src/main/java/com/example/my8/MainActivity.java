@@ -414,9 +414,10 @@ public class MainActivity extends AppCompatActivity
      * Playground fragment
      */
     public static class PlaygroundFragment extends Fragment {
-        RecyclerView pgView;
-        PgAdapter pgadapter;
-        SwipeRefreshLayout mySwipeRefreshLayout;
+        private RecyclerView pgView;
+        private PgAdapter pgadapter;
+        private SwipeRefreshLayout mySwipeRefreshLayout;
+        private List<Playground_item> items = new ArrayList<>();
 
         public PlaygroundFragment() {
         }
@@ -430,6 +431,7 @@ public class MainActivity extends AppCompatActivity
             pgView = (RecyclerView) rootView.findViewById(R.id.pg_view);
             pgView.setHasFixedSize(true);
             pgView.setLayoutManager(layoutManager);
+            pgView.addOnChildAttachStateChangeListener(new ChildAttachListener(layoutManager));
 
             pgadapter = new PgAdapter(container);
             pgView.setAdapter(pgadapter);
@@ -450,20 +452,21 @@ public class MainActivity extends AppCompatActivity
         }
 
         public void refresh(final ViewGroup container, final boolean onRefresh) {
-            ParseQuery<ParseObject> query = ParseQuery.getQuery("Event");
+            ParseQuery<Event> query = Event.getQuery();
             query.orderByDescending("updatedAt");
-            query.setLimit(10);
-            query.findInBackground(new FindCallback<ParseObject>() {
+            query.setLimit(5);
+            query.findInBackground(new FindCallback<Event>() {
                 @Override
-                public void done(List<ParseObject> objects, ParseException e) {
+                public void done(List<Event> events, ParseException e) {
                     if (e == null) {
-                        List<Playground_item> items = new ArrayList<>();
-                        for (ParseObject event : objects) {
+                        List<Playground_item> newItems = new ArrayList<>();
+                        for (ParseObject event : events) {
                             Event test = (Event) event;
                             String test_msg = test.getTitle();
                             Log.w("debugging", test_msg);
-                            items.add(new Playground_item(container, (Event) event));
+                            newItems.add(new Playground_item(container, (Event) event));
                         }
+                        items = newItems;
                         Log.w("debugging", "done");
                         pgadapter.setItems(items);
                         pgadapter.notifyDataSetChanged();
@@ -475,9 +478,30 @@ public class MainActivity extends AppCompatActivity
             });
         }
 
+        private class ChildAttachListener implements RecyclerView.OnChildAttachStateChangeListener {
+            LinearLayoutManager llm;
+
+            public ChildAttachListener(LinearLayoutManager llm){
+                super();
+                this.llm = llm;
+            }
+
+            @Override
+            public void onChildViewAttachedToWindow(View view) {
+                if (items.size() - 1 == llm.findLastVisibleItemPosition()) {
+                    pgadapter.add();
+                }
+            }
+
+            @Override
+            public void onChildViewDetachedFromWindow(View view) {
+
+            }
+        }
+
         public void addEventToPG(ViewGroup container) {
             Playground_item newItem = new Playground_item(88, "새로 추가된거", "이태경", 2015, container.getContext());
-            pgadapter.add(newItem);
+            pgadapter.add();
             pgadapter.notifyDataSetChanged();
         }
 
