@@ -532,7 +532,7 @@ public class MainActivity extends AppCompatActivity
             // profile.loadInBackground();
             // cover.setParseFile(user.getCover());
             // cover.loadInBackground();
-            ParseQuery<ParseObject> query = ParseQuery.getQuery("Stamp");
+            ParseQuery<Stamp> query = Stamp.getQuery();
             query.whereEqualTo(Stamp.USER, user);
             query.orderByDescending("updatedAt");
 //            query.countInBackground(new CountCallback() {
@@ -544,15 +544,13 @@ public class MainActivity extends AppCompatActivity
 //                }
 //            });
             query.setLimit(10);
-            query.findInBackground(new FindCallback<ParseObject>() {
+            query.findInBackground(new FindCallback<Stamp>() {
                 @Override
-                public void done(List<ParseObject> objects, ParseException e) {
+                public void done(List<Stamp> stamps, ParseException e) {
                     if (e == null) {
                         List<MyStamp_item> items = new ArrayList<>();
-                        for (ParseObject stampObj : objects) {
-                            Stamp stamp = (Stamp) stampObj;
+                        for (Stamp stamp : stamps)
                             items.add(new MyStamp_item(stamp));
-                        }
                         msAdapter.setItems(items);
                         msAdapter.notifyDataSetChanged();
                     } else {

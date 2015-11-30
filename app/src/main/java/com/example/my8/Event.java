@@ -20,13 +20,12 @@ public class Event extends ParseObject {
         // A default constructor is required.
     }
 
-    public String getTitle() {
-        return getString("title");
-    }
+    public static final String CLASSNAME = "Event";
+    public static final String TITLE = "title";
 
-    public void setTitle(String title) {
-        put("title", title);
-    }
+    public String getTitle() { return getString(TITLE); }
+
+    public void setTitle(String title) { put(TITLE, title); }
 
     public static ParseQuery<Event> getQuery() {
         return ParseQuery.getQuery(Event.class);
