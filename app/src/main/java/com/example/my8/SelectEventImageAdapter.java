@@ -11,51 +11,47 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.parse.GetDataCallback;
+import com.parse.ParseException;
+import com.parse.ParseFile;
+import com.parse.ParseImageView;
+
 import java.util.ArrayList;
 import java.util.List;
 /**
  * Created by Hy
  */
 class Select_Event_Image_item {
-    Bitmap image;
-    String image_title;
-    int event_id;
+    Event event;
+    Stamp stamp;
 
-    Bitmap getImage(){
-        return this.image;
+    public Select_Event_Image_item(Event event, Stamp stamp) {
+        this.event = event;
+        this.stamp = stamp;
     }
-    int getID(){
-        return this.event_id;
+
+    public String getTitle() {
+        return event.getTitle();
     }
-    String getImageTitle(){
-        return this.image_title;
+
+    public ParseFile getImage() {
+        return stamp.getPhotoFile();
     }
-    Select_Event_Image_item(Bitmap image, String title, int id){
-        this.image=image;
-        this.image_title = title;
-        this.event_id =id;
+
+    public String getEventId() {
+        return event.getObjectId();
     }
 }
 public class SelectEventImageAdapter extends RecyclerView.Adapter<SelectEventImageAdapter.ViewHolder> {
-    Context context;
-    String Stamp_Image_path;
-    String latitude;
-    String longitude;
-    String datetime;
-    List<Select_Event_Image_item> items;
+    private Context context;
+    private String imagePath;
 
-    public SelectEventImageAdapter(Context context, String[] stampInfo){
-        this.context=context;
-        this.latitude = stampInfo[0];
-        this.longitude = stampInfo[1];
-        this.datetime = stampInfo[2];
-        this.Stamp_Image_path = stampInfo[3];
-        items=new ArrayList<>();
-    }
-    public SelectEventImageAdapter(Context context, List<Select_Event_Image_item> items, String path) {
-        this.context=context;
-        this.items=items;
-        this.Stamp_Image_path = path;
+    private List<Select_Event_Image_item> items;
+
+    public SelectEventImageAdapter(Context context, String imagePath) {
+        this.context = context;
+        this.imagePath = imagePath;
+        items = new ArrayList<>();
     }
 
     @Override
@@ -66,43 +62,48 @@ public class SelectEventImageAdapter extends RecyclerView.Adapter<SelectEventIma
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
         final Select_Event_Image_item item = items.get(position);
-        //holder.image.setImageBitmap(item.getImage());
-        holder.cardview.setOnClickListener(new View.OnClickListener() {
+        ParseImageView stampImage = (ParseImageView)holder.image;
+        stampImage.setParseFile(item.getImage());
+        stampImage.loadInBackground(new GetDataCallback() {
+            @Override
+            public void done(byte[] data, ParseException e) {
+                //nothing to do
+            }
+        });
+        holder.text.setText(item.getTitle());
+        holder.card.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent toCreateEventActivity = new Intent(context, Create_Event.class);
-                toCreateEventActivity.putExtra("longitude", longitude);
-                toCreateEventActivity.putExtra("latitude", latitude);
-                toCreateEventActivity.putExtra("eventId", items.get(position).getID());
-                toCreateEventActivity.putExtra("datetime", datetime);
-                toCreateEventActivity.putExtra("image_path", Stamp_Image_path);
+                toCreateEventActivity.putExtra("imagePath", imagePath);
+                toCreateEventActivity.putExtra("eventId", items.get(position).getEventId());
                 toCreateEventActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(toCreateEventActivity);
-                //Toast.makeText(context, "Stamp ID: "+item.getID(), Toast.LENGTH_SHORT).show();
             }
         });
     }
+
+    public void setItems(List<Select_Event_Image_item> items) {
+        this.items = items;
+    }
+
     @Override
     public int getItemCount() {
         return this.items.size();
     }
 
-    public void add(int stampID, String title, Bitmap image){
-        Select_Event_Image_item new_item = new Select_Event_Image_item(image, title, stampID);
-        items.add(new_item);
-        this.notifyDataSetChanged();
-    }
-
     public class ViewHolder extends RecyclerView.ViewHolder {
+        public View cardView;
         ImageView image;
         TextView text;
-        CardView cardview;
+        CardView card;
 
-        public ViewHolder(View itemView) {
-            super(itemView);
-            image=(ImageView)itemView.findViewById(R.id.image_with_title_view);
-            text=(TextView)itemView.findViewById(R.id.image_with_title_text);
-            cardview=(CardView)itemView.findViewById(R.id.image_with_title_card);
+        public ViewHolder(View v) {
+            super(v);
+            cardView = v;
+            image=(ParseImageView)v.findViewById(R.id.image_with_title_view);
+            text=(TextView)v.findViewById(R.id.image_with_title_text);
+            card=(CardView)v.findViewById(R.id.image_with_title_card);
         }
     }
 }

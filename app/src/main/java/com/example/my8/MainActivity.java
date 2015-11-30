@@ -283,6 +283,13 @@ public class MainActivity extends AppCompatActivity
 
         if (requestCode == REQ_CODE_SELECT_IMAGE) {
             if (resultCode == Activity.RESULT_OK) {
+                String imagePath = getImageNameToUri(data.getData());
+
+                Intent toSelectEventActivity = new Intent(this, SelectEvent.class);
+                toSelectEventActivity.putExtra("imagePath", imagePath);
+                startActivity(toSelectEventActivity);
+
+                /*
                 try {
                     // Get image path from uri
                     String img_path = getImageNameToUri(data.getData());
@@ -303,6 +310,7 @@ public class MainActivity extends AppCompatActivity
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+                */
             }
         }
     }
@@ -439,6 +447,7 @@ public class MainActivity extends AppCompatActivity
 
             pgadapter = new PgAdapter(container);
             pgView.setAdapter(pgadapter);
+            refresh(container, false);
 
             mySwipeRefreshLayout = (SwipeRefreshLayout)rootView.findViewById(R.id.pg_swipe_layout);
             mySwipeRefreshLayout.setOnRefreshListener(
@@ -451,7 +460,6 @@ public class MainActivity extends AppCompatActivity
                     }
             );
             mySwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary,R.color.colorPrimaryDark);
-            refresh(container, false);
             return rootView;
         }
 

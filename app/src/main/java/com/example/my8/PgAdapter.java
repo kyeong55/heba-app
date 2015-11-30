@@ -20,6 +20,7 @@ import com.parse.ParseException;
 import com.parse.ParseImageView;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +45,10 @@ class Playground_item {
         for(int i=0;i<10;i++){
             addStamp(null,i);
         }
+    }
+
+    public String getEventId() {
+        return event.getObjectId();
     }
 
     public String getTitle() {
@@ -150,6 +155,8 @@ public class PgAdapter extends RecyclerView.Adapter<PgAdapter.ViewHolder> {
                 public void onClick(View v) {
                     Toast.makeText(context, "위시리스트에 추가되었습니다", Toast.LENGTH_SHORT).show();
                     // TODO Add event to user's wishlist
+                    ParseUser.getCurrentUser().addUnique("wishlist", item.getEventId());
+                    ParseUser.getCurrentUser().saveInBackground();
                 }
             });
             // Attach image carousel to the view

@@ -24,6 +24,7 @@ import com.parse.ParseACL;
 import com.parse.ParseFile;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.ParseRelation;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
@@ -41,6 +42,8 @@ public class Create_Event extends AppCompatActivity {
     private Bitmap rotatedScaledStampPhoto;
     private Bitmap stampPhotoScaled;
     private ExifInterface exif;
+    private String eventId;
+    private Event event;
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -56,14 +59,16 @@ public class Create_Event extends AppCompatActivity {
         final EditText commentEditText = (EditText) findViewById(R.id.stamp_comment);
 
         //view stamp photo
-        String imgPath = getIntent().getStringExtra("image_path");
-        ImageView stampImageView = (ImageView) findViewById(R.id.stamp_photo);
-        stampPhoto = BitmapFactory.decodeFile(imgPath);
+        String imagePath = getIntent().getStringExtra("imagePath");
+        exif = null;
         try {
-            exif = new ExifInterface(imgPath);
+            exif = new ExifInterface(imagePath);
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        ImageView stampImageView = (ImageView) findViewById(R.id.stamp_photo);
+        stampPhoto = BitmapFactory.decodeFile(imagePath);
         String orientString = exif.getAttribute(ExifInterface.TAG_ORIENTATION);
         int orientation = orientString != null ? Integer.parseInt(orientString) :  ExifInterface.ORIENTATION_NORMAL;
 
@@ -81,22 +86,39 @@ public class Create_Event extends AppCompatActivity {
                 matrix, true);
         stampImageView.setImageBitmap(rotatedScaledStampPhoto);
 
-        titleEditText.setHint("이벤트 제목을 입력해주세요.");
+        event = null;
+        eventId = getIntent().getStringExtra("eventId");
+        if (eventId == null) {
+            titleEditText.setHint("이벤트 제목을 입력해주세요.");
+        } else {
+            ParseQuery<Event> query = Event.getQuery();
+            try {
+                event = query.get(eventId);
+                titleEditText.setText(event.getTitle());
+            } catch (com.parse.ParseException e) {
+                e.printStackTrace();
+            }
+        }
 
         //button for upload
         Button uploadButton = (Button) findViewById(R.id.upload_button);
         uploadButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent intent = getIntent();
+                float geopoint[] = new float[2];
+                exif.getLatLong(geopoint);
+
+                String latitude = geopoint[0] + "";
+                String longitude = geopoint[1] + "";
+                String datetime = exif.getAttribute(ExifInterface.TAG_DATETIME);
 
                 //stamp location
-                ParseGeoPoint stampLocation = new ParseGeoPoint(Double.parseDouble(intent.getStringExtra("latitude")), Double.parseDouble(intent.getStringExtra("longitude")));
+                ParseGeoPoint stampLocation = new ParseGeoPoint(Double.parseDouble(latitude), Double.parseDouble(longitude));
 
                 //stamp datetime
                 SimpleDateFormat format = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss");
                 Date stampDatetime = null;
                 try {
-                    stampDatetime = format.parse(intent.getStringExtra("datetime"));
+                    stampDatetime = format.parse(datetime);
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
@@ -128,10 +150,14 @@ public class Create_Event extends AppCompatActivity {
                 stamp.setUser(ParseUser.getCurrentUser());
 
                 //event
-                Event event = new Event();
-                eventTitle = titleEditText.getText().toString();
-                event.setTitle(eventTitle);
-                event.setNParticipant(1);
+                if (event == null) {
+                    Event event = new Event();
+                    eventTitle = titleEditText.getText().toString();
+                    event.setTitle(eventTitle);
+                    event.setNParticipant(1);
+                } else {
+                    event.increment("nParticipant");
+                }
 
                 //event.setACL(postACL);
 
@@ -150,7 +176,7 @@ public class Create_Event extends AppCompatActivity {
 
                 event.saveInBackground();
 
-                SelectEvent selectEventActivity = (SelectEvent) SelectEvent.select_event_Activity;
+                SelectEvent selectEventActivity = (SelectEvent) SelectEvent.selectEventActivity;
                 finish();
                 selectEventActivity.finish();
 

@@ -13,7 +13,7 @@
             android:orientation="vertical"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
-            <ImageView android:id="@+id/image_with_title_view"
+            <com.parse.ParseImageView android:id="@+id/image_with_title_view"
                 android:layout_width="@dimen/pg_image_size"
                 android:layout_height="@dimen/pg_image_size"
                 android:src="@mipmap/ic_user"
