@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.parse.FindCallback;
 import com.parse.ParseException;
+import com.parse.ParseImageView;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
@@ -157,7 +158,7 @@ public class PgAdapter extends RecyclerView.Adapter<PgAdapter.ViewHolder> {
 
     @Override
     public int getItemCount() {
-        return this.items.size()+1;
+        return this.items.size() + 1;
     }
     public boolean isFooter(int position) {
         return position == getItemCount()-1;
@@ -185,8 +186,7 @@ public class PgAdapter extends RecyclerView.Adapter<PgAdapter.ViewHolder> {
                         newItems.add(new Playground_item(container, (Event) event));
                     }
                     items = newItems;
-                    Log.w("debugging", "====================pos: "+pos+", new: "+items.size());
-                    if(items.size()==pos){
+                    if(items.size()==pos){ // 더 이상 받아올게 없음
                         addedAll=true;
                         notifyItemChanged(pos);
                     }
@@ -202,7 +202,7 @@ public class PgAdapter extends RecyclerView.Adapter<PgAdapter.ViewHolder> {
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView title;
-        ImageView writer_photo;
+        ParseImageView writer_photo;
         TextView writer;
         TextView participate;
         TextView addWL;
@@ -216,14 +216,16 @@ public class PgAdapter extends RecyclerView.Adapter<PgAdapter.ViewHolder> {
             if(viewType == VIEW_TYPE_ITEM) {
                 title = (TextView) itemView.findViewById(R.id.pg_title);
                 writer = (TextView) itemView.findViewById(R.id.pg_writer);
-                writer_photo = (ImageView) itemView.findViewById(R.id.pg_writer_photo);
+                writer_photo = (ParseImageView) itemView.findViewById(R.id.pg_writer_photo);
                 participate = (TextView) itemView.findViewById(R.id.pg_participate);
                 addWL = (TextView) itemView.findViewById(R.id.pg_addWL);
                 stamps = (RecyclerView) itemView.findViewById(R.id.pg_stamp_view);
             }
             else if(viewType == VIEW_TYPE_FOOTER) {
-                footer_progress_in = itemView.findViewById(R.id.pg_progress_in);
-                footer_progress_end = (TextView) itemView.findViewById(R.id.pg_progress_end);
+                footer_progress_in = itemView.findViewById(R.id.progress_in);
+                footer_progress_end = (TextView) itemView.findViewById(R.id.progress_end);
+                ((TextView)itemView.findViewById(R.id.progress_text)).setText(R.string.pg_progress);
+                footer_progress_end.setText(R.string.pg_end_progress);
             }
         }
     }

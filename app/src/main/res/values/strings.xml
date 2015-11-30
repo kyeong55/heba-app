@@ -32,9 +32,15 @@
 
     <!-- String related to profile -->
     <string name="number_of_stamp">총 스탬프 개수:  </string>
-    <!-- String related to Friends Activity -->
-    <string name="friends_add">친구추가</string>
     <!-- String related to Playground -->
     <string name="pg_progress">이벤트를 불러오는 중</string>
     <string name="pg_end_progress">더 이상 불러올 이벤트가 없습니다</string>
+    <!-- String related to Friends Activity -->
+    <string name="friends_add">친구추가</string>
+    <!-- String related to My Stamp -->
+    <string name="ms_progress">내 스탬프를 불러오는 중</string>
+    <string name="ms_end_progress">더 이상 불러올 내 스탬프가 없습니다</string>
+    <!-- String related to Wishlist -->
+    <string name="wl_progress">위시리스트를 불러오는 중</string>
+    <string name="wl_end_progress">더 이상 불러올 위시리스트가 없습니다</string>
 </resources>

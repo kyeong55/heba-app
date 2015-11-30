@@ -3,7 +3,7 @@
     android:layout_width="match_parent" android:layout_height="wrap_content"
     android:gravity="center_horizontal">
     <LinearLayout
-        android:id="@+id/pg_progress_in"
+        android:id="@+id/progress_in"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
@@ -13,17 +13,16 @@
             android:layout_height="@dimen/pg_progressbar_size"
             android:layout_margin="@dimen/pg_progess_margin"/>
         <TextView
+            android:id="@+id/progress_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:text="@string/pg_progress"/>
+            android:layout_gravity="center_vertical"/>
     </LinearLayout>
     <TextView
-        android:id="@+id/pg_progress_end"
+        android:id="@+id/progress_end"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/pg_progess_margin"
-        android:text="@string/pg_end_progress"
         android:layout_gravity="center_horizontal"/>
 
 </FrameLayout>

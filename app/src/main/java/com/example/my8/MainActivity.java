@@ -121,7 +121,7 @@ public class MainActivity extends AppCompatActivity
                     invis();
                 if (position == 2) {
                     // TODO only refresh when new stamp added or profile updated
-                    ((MyStampFragment)mSectionsPagerAdapter.getItem(position)).refresh();
+                    ((MyStampFragment) mSectionsPagerAdapter.getItem(position)).refresh();
                 }
             }
 
@@ -366,11 +366,13 @@ public class MainActivity extends AppCompatActivity
         PlaygroundFragment pgFragment;
         FriendsFragment fFragment;
         MyStampFragment msFragment;
+        WishlistFragment wlFragment;
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
             pgFragment = new PlaygroundFragment();
             fFragment = new FriendsFragment();
             msFragment = new MyStampFragment();
+            wlFragment = new WishlistFragment();
         }
 
         @Override
@@ -384,6 +386,8 @@ public class MainActivity extends AppCompatActivity
                     return fFragment;
                 case 2:
                     return msFragment;
+                case 3:
+                    return wlFragment;
             }
             return PlaceholderFragment.newInstance(position + 1);
         }
@@ -658,6 +662,62 @@ public class MainActivity extends AppCompatActivity
 //                }
 //            });
 //        }
+    }
+
+    /**
+     * Wishlist fragment
+     */
+    public static class WishlistFragment extends Fragment {
+        private RecyclerView wlView;
+        private WishlistAdapter wlAdapter;
+        private List<Wishlist_item> items = new ArrayList<>();
+
+        public WishlistFragment() {
+        }
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            View rootView = inflater.inflate(R.layout.wishlist, container, false);
+
+            final LinearLayoutManager layoutManager = new LinearLayoutManager(container.getContext());
+
+            wlView = (RecyclerView) rootView.findViewById(R.id.wishlist_view);
+            wlView.setHasFixedSize(true);
+            wlView.setLayoutManager(layoutManager);
+            wlView.addOnChildAttachStateChangeListener(new ChildAttachListener(layoutManager));
+
+            wlAdapter = new WishlistAdapter(container);
+            wlView.setAdapter(wlAdapter);
+
+            refresh();
+            return rootView;
+        }
+
+        public void refresh() {
+            // TODO refresh wishlist
+        }
+        private class ChildAttachListener implements RecyclerView.OnChildAttachStateChangeListener {
+            LinearLayoutManager llm;
+
+            public ChildAttachListener(LinearLayoutManager llm){
+                super();
+                this.llm = llm;
+            }
+
+            @Override
+            public void onChildViewAttachedToWindow(View view) {
+                if (items.size() - 2 <= llm.findLastVisibleItemPosition()) {
+                    if(!wlAdapter.isAdding() && (items.size()>=5)&&(!wlAdapter.addedAll))
+                        wlAdapter.add();
+                }
+            }
+
+            @Override
+            public void onChildViewDetachedFromWindow(View view) {
+
+            }
+        }
     }
     /**
      * A placeholder fragment containing a simple view.
