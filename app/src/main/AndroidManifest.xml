@@ -72,7 +72,8 @@
 
         <activity
             android:name=".SearchActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".PgStampInfoActivity"></activity>
     </application>
 
 </manifest>

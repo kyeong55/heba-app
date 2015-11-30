@@ -18,6 +18,7 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,6 +26,7 @@ import java.util.List;
  */
 class StampQueryAdapter extends ParseQueryAdapter<Stamp> {
 
+    Context cont;
     public StampQueryAdapter(Context context, final Event event) {
         super(context, new ParseQueryAdapter.QueryFactory<Stamp>() {
             public ParseQuery<Stamp> create() {
@@ -38,10 +40,11 @@ class StampQueryAdapter extends ParseQueryAdapter<Stamp> {
                 return query;
             }
         });
+        this.cont = context;
     }
 
     @Override
-    public View getItemView(Stamp stamp, View v, ViewGroup parent) {
+    public View getItemView(final Stamp stamp, View v, ViewGroup parent) {
 
         if (v == null) {
             v = View.inflate(getContext(), R.layout.image, null);
@@ -60,6 +63,23 @@ class StampQueryAdapter extends ParseQueryAdapter<Stamp> {
                 }
             });
         }
+
+        CardView card = (CardView) v.findViewById(R.id.image_card);
+        card.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(cont, PgStampInfoActivity.class);
+                /*
+                event.getObjectId();
+                stamp.getObjectId();
+                String stampId = item.getID();
+                ArrayList<String> stampIdList = getStampObjectIdArrayList();
+                int pos = stampIdList.indexOf(stampId);
+                intent.putExtra("clicked_stamp_pos", pos);
+                intent.putExtra("stamp_id_list", stampIdList);*/
+                cont.startActivity(intent);
+            }
+        });
         return v;
     }
 }
@@ -91,20 +111,7 @@ public class PlaygroundStampAdapter extends RecyclerView.Adapter<PlaygroundStamp
 
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
-        stampQueryAdapter.getView(position, holder.image, parseParent);
-        holder.cardView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //todo pass image_id
-                /*
-                Intent i = new Intent(context, Stamp_info.class);
-                i.putExtra("currentstamppos", position);
-                i.putExtra("stamplistid", getEventStampList(5));
-                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                context.startActivity(i);
-                */
-            }
-        });
+        stampQueryAdapter.getView(position, holder.cardView, parseParent);
     }
 
     public int[] getEventStampList (int num){
@@ -121,13 +128,15 @@ public class PlaygroundStampAdapter extends RecyclerView.Adapter<PlaygroundStamp
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
+        public View cardView;
         ParseImageView image;
-        CardView cardView;
+        CardView card;
 
         public ViewHolder(View v) {
             super(v);
+            cardView = v;
             image = (ParseImageView)v.findViewById(R.id.image_view);
-            cardView = (CardView)v.findViewById(R.id.image_card);
+            card = (CardView)v.findViewById(R.id.image_card);
         }
     }
 

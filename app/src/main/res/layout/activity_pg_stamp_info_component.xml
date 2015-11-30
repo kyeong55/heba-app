@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorBlack">
+
+    <com.parse.ParseImageView
+        android:id="@+id/pg_stamp_info_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+    <LinearLayout
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:background="@drawable/info_text_background"
+        android:layout_gravity="bottom">
+        <TextView
+            android:id="@+id/pg_stamp_info_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorWhite"
+            android:padding="@dimen/stamp_info_text_padding"/>
+    </LinearLayout>
+
+</FrameLayout>
