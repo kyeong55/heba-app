@@ -103,7 +103,9 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.ViewHo
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView title;
         TextView participate;
-        RecyclerView stamps;
+        ParseImageView stamp_image1;
+        ParseImageView stamp_image2;
+        ParseImageView stamp_image3;
 
         View footer_progress_in;
         TextView footer_progress_end;
@@ -113,7 +115,9 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.ViewHo
             if(viewType == VIEW_TYPE_ITEM) {
                 title = (TextView) itemView.findViewById(R.id.wl_title);
                 participate = (TextView) itemView.findViewById(R.id.wl_participate);
-//                stamps = (RecyclerView) itemView.findViewById(R.id.wl_stamp_view);
+                stamp_image1 = (ParseImageView) itemView.findViewById(R.id.wl_image_1);
+                stamp_image2 = (ParseImageView) itemView.findViewById(R.id.wl_image_2);
+                stamp_image3 = (ParseImageView) itemView.findViewById(R.id.wl_image_3);
             }
             else if(viewType == VIEW_TYPE_FOOTER) {
                 footer_progress_in = itemView.findViewById(R.id.progress_in);

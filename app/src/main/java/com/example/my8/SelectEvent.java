@@ -36,10 +36,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 //public class SelectEvent extends FragmentActivity implements OnMapReadyCallback {
-public class SelectEvent extends FragmentActivity {
+public class SelectEvent extends FragmentActivity implements OnMapReadyCallback {
     private SelectEventImageAdapter selectEventImageAdapter;
 
-    //private GoogleMap mMap;
+    private GoogleMap mMap;
     public static Activity selectEventActivity;
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -142,7 +142,7 @@ public class SelectEvent extends FragmentActivity {
         AppIndex.AppIndexApi.end(client, viewAction);
         client.disconnect();
     }
-/*
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
@@ -150,9 +150,10 @@ public class SelectEvent extends FragmentActivity {
         Intent intent = getIntent();
 
         // Add a marker in Sydney and move the camera
-        LatLng loc = new LatLng(Double.parseDouble(intent.getStringExtra("latitude")), Double.parseDouble(intent.getStringExtra("longitude")));
+        //LatLng loc = new LatLng(Double.parseDouble(intent.getStringExtra("latitude")), Double.parseDouble(intent.getStringExtra("longitude")));
+        LatLng loc = new LatLng(30,30);
         mMap.addMarker(new MarkerOptions().position(loc).title("Marker in picture"));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(loc, 14));
     }
-    */
+
 }

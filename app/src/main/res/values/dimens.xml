@@ -21,7 +21,7 @@
 
     <dimen name="pg_margin_side">24dp</dimen>
     <dimen name="pg_margin_in">8dp</dimen>
-    <dimen name="pg_margin_out">16dp</dimen>
+    <dimen name="pg_margin_out">12dp</dimen>
     <dimen name="pg_title_text_size">26sp</dimen>
 
     <!-- Friends -->
@@ -33,9 +33,9 @@
     <!-- Stamp Info -->
     <dimen name="stamp_info_text_padding">32dp</dimen>
     <!-- Wishlist -->
-    <dimen name="wishlist_title_margin_left">24dp</dimen>
-    <dimen name="wishlist_title_margin_top">8dp</dimen>
-    <dimen name="wishlist_title_margin_bottom">8dp</dimen>
+    <dimen name="wishlist_margin_side">24dp</dimen>
+    <dimen name="wishlist_margin_in">8dp</dimen>
+    <dimen name="wishlist_margin_out">12dp</dimen>
     <dimen name="wishlist_title_text_size">26sp</dimen>
     <!-- Create Event -->
     <dimen name="create_title_height">50dp</dimen>
