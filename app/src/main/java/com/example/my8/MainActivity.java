@@ -607,8 +607,8 @@ public class MainActivity extends AppCompatActivity
 
             @Override
             public void onChildViewAttachedToWindow(View view) {
-                if (items.size() - 2 <= llm.findLastVisibleItemPosition()) {
-                    if(!msAdapter.isAdding() && (items.size()>=5)&&(!msAdapter.addedAll))
+                if (msAdapter.getItemCount() - 4 <= llm.findLastVisibleItemPosition()) {
+                    if(!msAdapter.isAdding() && (msAdapter.getItemCount()>=5)&&(!msAdapter.addedAll))
                         msAdapter.add();
                 }
             }
