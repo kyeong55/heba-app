@@ -24,4 +24,9 @@
     <dimen name="stamp_image_height">160dp</dimen>
     <!-- Stamp Info -->
     <dimen name="stamp_info_text_padding">32dp</dimen>
+    <!-- Wishlist -->
+    <dimen name="wishlist_title_margin_left">32dp</dimen>
+    <dimen name="wishlist_title_margin_top">16dp</dimen>
+    <dimen name="wishlist_title_margin_bottom">16dp</dimen>
+    <dimen name="title_text_size">26sp</dimen>
 </resources>
