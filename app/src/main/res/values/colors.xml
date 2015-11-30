@@ -13,4 +13,7 @@
     <!-- Common colors -->
     <color name="colorWhite">#FFFFFF</color>
     <color name="colorBlack">#000000</color>
+
+    <!-- Edit Text -->
+    <color name="colorEditTitle">#EEEEEE</color>
 </resources>

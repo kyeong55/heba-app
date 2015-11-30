@@ -10,7 +10,10 @@ import android.net.Uri;
 import android.graphics.Matrix;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -44,6 +47,9 @@ public class Create_Event extends AppCompatActivity {
     private ExifInterface exif;
     private String eventId;
     private Event event;
+
+    EditText titleEditText;
+    EditText commentEditText;
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -55,8 +61,13 @@ public class Create_Event extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create__event);
 
-        final EditText titleEditText = (EditText) findViewById(R.id.event_title);
-        final EditText commentEditText = (EditText) findViewById(R.id.stamp_comment);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.create_toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("스탬프 찍기");
+
+        titleEditText = (EditText) findViewById(R.id.event_title);
+        commentEditText = (EditText) findViewById(R.id.stamp_comment);
 
         //view stamp photo
         String imagePath = getIntent().getStringExtra("imagePath");
@@ -95,96 +106,21 @@ public class Create_Event extends AppCompatActivity {
             try {
                 event = query.get(eventId);
                 titleEditText.setText(event.getTitle());
+                titleEditText.setKeyListener(null);
+                commentEditText.requestFocus();
             } catch (com.parse.ParseException e) {
                 e.printStackTrace();
             }
         }
 
-        //button for upload
-        Button uploadButton = (Button) findViewById(R.id.upload_button);
-        uploadButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                float geopoint[] = new float[2];
-                exif.getLatLong(geopoint);
-
-                String latitude = geopoint[0] + "";
-                String longitude = geopoint[1] + "";
-                String datetime = exif.getAttribute(ExifInterface.TAG_DATETIME);
-
-                //stamp location
-                ParseGeoPoint stampLocation = new ParseGeoPoint(Double.parseDouble(latitude), Double.parseDouble(longitude));
-
-                //stamp datetime
-                SimpleDateFormat format = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss");
-                Date stampDatetime = null;
-                try {
-                    stampDatetime = format.parse(datetime);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-
-                //stamp comment
-                stampComment = commentEditText.getText().toString();
-                Log.w("debug!!!!!", "stampComment: " + stampComment);
-
-                //stamp photo
-                ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                rotatedScaledStampPhoto.compress(Bitmap.CompressFormat.JPEG, 100, bos);
-                byte[] scaledPhoto = bos.toByteArray();
-                ParseFile stampPhotoFile = new ParseFile("stamp.jpg", scaledPhoto);
-                stampPhotoFile.saveInBackground(new SaveCallback() {
-                    @Override
-                    public void done(com.parse.ParseException e) {
-                        if (e != null) {
-                            Log.w("debug:File", e + "");
-                        }
-                    }
-                });
-
-                //stamp
-                Stamp stamp = new Stamp();
-                stamp.setLocation(stampLocation);
-                stamp.setDatetime(stampDatetime);
-                stamp.setPhotoFile(stampPhotoFile);
-                stamp.setComment(stampComment);
-                stamp.setUser(ParseUser.getCurrentUser());
-
-                //event
-                if (event == null) {
-                    Event event = new Event();
-                    eventTitle = titleEditText.getText().toString();
-                    event.setTitle(eventTitle);
-                    event.setNParticipant(1);
-                } else {
-                    event.increment("nParticipant");
-                }
-
-                //event.setACL(postACL);
-
-                //stamp-event relation
-                stamp.setEvent(event);
-
-                //save
-                stamp.saveInBackground(new SaveCallback() {
-                    @Override
-                    public void done(com.parse.ParseException e) {
-                        if (e != null) {
-                            Log.w("debug:stamp", e + "");
-                        }
-                    }
-                });
-
-                event.saveInBackground();
-
-                SelectEvent selectEventActivity = (SelectEvent) SelectEvent.selectEventActivity;
-                finish();
-                selectEventActivity.finish();
-
-            }
-        });
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+    }
+    @Override
+    public boolean onSupportNavigateUp(){
+        finish();
+        return true;
     }
 
     @Override
@@ -225,5 +161,98 @@ public class Create_Event extends AppCompatActivity {
         );
         AppIndex.AppIndexApi.end(client, viewAction);
         client.disconnect();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.create_event_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+        if(id == R.id.action_commit) {
+            float geopoint[] = new float[2];
+            exif.getLatLong(geopoint);
+
+            String latitude = geopoint[0] + "";
+            String longitude = geopoint[1] + "";
+            String datetime = exif.getAttribute(ExifInterface.TAG_DATETIME);
+
+            //stamp location
+            ParseGeoPoint stampLocation = new ParseGeoPoint(Double.parseDouble(latitude), Double.parseDouble(longitude));
+
+            //stamp datetime
+            SimpleDateFormat format = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss");
+            Date stampDatetime = null;
+            try {
+                stampDatetime = format.parse(datetime);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            //stamp comment
+            stampComment = commentEditText.getText().toString();
+            Log.w("debug!!!!!", "stampComment: " + stampComment);
+
+            //stamp photo
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            rotatedScaledStampPhoto.compress(Bitmap.CompressFormat.JPEG, 100, bos);
+            byte[] scaledPhoto = bos.toByteArray();
+            ParseFile stampPhotoFile = new ParseFile("stamp.jpg", scaledPhoto);
+            stampPhotoFile.saveInBackground(new SaveCallback() {
+                @Override
+                public void done(com.parse.ParseException e) {
+                    if (e != null) {
+                        Log.w("debug:File", e + "");
+                    }
+                }
+            });
+
+            //stamp
+            Stamp stamp = new Stamp();
+            stamp.setLocation(stampLocation);
+            stamp.setDatetime(stampDatetime);
+            stamp.setPhotoFile(stampPhotoFile);
+            stamp.setComment(stampComment);
+            stamp.setUser(ParseUser.getCurrentUser());
+
+            //event
+            if (event == null) {
+                Event event = new Event();
+                eventTitle = titleEditText.getText().toString();
+                event.setTitle(eventTitle);
+                event.setNParticipant(1);
+            } else {
+                event.increment("nParticipant");
+            }
+
+            //event.setACL(postACL);
+
+            //stamp-event relation
+            stamp.setEvent(event);
+
+            //save
+            stamp.saveInBackground(new SaveCallback() {
+                @Override
+                public void done(com.parse.ParseException e) {
+                    if (e != null) {
+                        Log.w("debug:stamp", e + "");
+                    }
+                }
+            });
+
+            event.saveInBackground();
+
+            SelectEvent selectEventActivity = (SelectEvent) SelectEvent.selectEventActivity;
+            finish();
+            selectEventActivity.finish();
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
