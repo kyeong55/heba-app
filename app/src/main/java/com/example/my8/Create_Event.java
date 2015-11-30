@@ -131,6 +131,7 @@ public class Create_Event extends AppCompatActivity {
                 Event event = new Event();
                 eventTitle = titleEditText.getText().toString();
                 event.setTitle(eventTitle);
+                event.setNParticipant(1);
 
                 //event.setACL(postACL);
 

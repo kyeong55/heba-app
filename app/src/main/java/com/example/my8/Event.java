@@ -27,6 +27,14 @@ public class Event extends ParseObject {
 
     public void setTitle(String title) { put(TITLE, title); }
 
+    public int getNParticipant() {
+        return getInt("nParticipant");
+    }
+
+    public void setNParticipant(int nParticipant) {
+        put("nParticipant", nParticipant);
+    }
+
     public static ParseQuery<Event> getQuery() {
         return ParseQuery.getQuery(Event.class);
     }

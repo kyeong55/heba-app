@@ -49,6 +49,10 @@ class Playground_item {
         return event.getTitle();
     }
 
+    public String getNParticipant() {
+        return event.getNParticipant() + "";
+    }
+
     public PlaygroundStampAdapter getPlaygroundStampAdapter() {
         return this.playgroundStampAdapter;
     }
@@ -139,7 +143,7 @@ public class PgAdapter extends RecyclerView.Adapter<PgAdapter.ViewHolder> {
             // Bind item with view
             holder.title.setText(item.getTitle());
             holder.writer.setText(item.getWriter());
-            holder.participate.setText(item.getParticipate());
+            holder.participate.setText(item.getNParticipant());
             holder.addWL.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
