@@ -86,11 +86,8 @@ class StampQueryAdapter extends ParseQueryAdapter<Stamp> {
 
 public class PlaygroundStampAdapter extends RecyclerView.Adapter<PlaygroundStampAdapter.ViewHolder> {
     private Context context;
-
     private StampQueryAdapter stampQueryAdapter;
-
     private ViewGroup parseParent;
-
     private PlaygroundStampAdapter playgroundStampAdapter = this;
 
     public PlaygroundStampAdapter(Context context, ViewGroup parentIn, final Event event) {

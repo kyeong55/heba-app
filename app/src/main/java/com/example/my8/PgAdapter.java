@@ -23,28 +23,23 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
  * Created by 이태경 on 2015-11-14.
  */
 class Playground_item {
-    PlaygroundStampAdapter playgroundStampAdapter;
-    ImageAdapter Iadapter;
+    List<Playground_Stamp_item> playgroundStampItems;
+    PgStampAdapter pgStampAdapter;
     Event event;
 
     public Playground_item(ViewGroup container, Event event) {
-        this.playgroundStampAdapter = new PlaygroundStampAdapter(container.getContext(), container, event);
-        this.Iadapter = new ImageAdapter(container.getContext());
-        this.event = event;
+        this.pgStampAdapter = new PgStampAdapter(event);
+        this.playgroundStampItems = new ArrayList<>();
 
-        this.eventID=1;
+        this.event = event;
         this.writer="누구야";
-        this.participate=0;
-        List<Playground_item> items=new ArrayList<>();
-        for(int i=0;i<10;i++){
-            addStamp(null,i);
-        }
     }
 
     public String getEventId() {
@@ -59,48 +54,53 @@ class Playground_item {
         return event.getNParticipant() + "";
     }
 
-    public PlaygroundStampAdapter getPlaygroundStampAdapter() {
-        return this.playgroundStampAdapter;
+    public List<Playground_Stamp_item> getPlaygroundStampItems() {
+        return this.playgroundStampItems;
     }
 
-    int eventID;
-    String title;
+    public void setPlaygroundStampItems(List<Playground_Stamp_item> playgroundStampItems) {
+        this.playgroundStampItems = playgroundStampItems;
+        this.pgStampAdapter.setItems(playgroundStampItems);
+    }
+
+    public PgStampAdapter getPgStampAdapter() {
+        return this.pgStampAdapter;
+    }
+
+    public Date getUpdateTime() {
+        return event.getUpdatedAt();
+    }
+
+    public void setIsAdding(boolean inAdding) {
+        pgStampAdapter.setIsAdding(inAdding);
+    }
+
+    public boolean getIsAdding() {
+        return pgStampAdapter.isAdding();
+    }
+
+    public void notifyDataSetChanged() {
+        pgStampAdapter.notifyDataSetChanged();
+    }
+
+    public void setAddedAll(boolean addedAll) {
+        pgStampAdapter.addedAll = addedAll;
+    }
+
+    public boolean getAddedAll() {
+        return pgStampAdapter.addedAll;
+    }
+
+    public void add() {
+        pgStampAdapter.add();
+    }
+
+    public Event getEvent() {
+        return event;
+    }
+
     String writer;
-    int participate;
-
-    static final int maxStamp=10;
-
-    /* Constructors */
-    // For debugging
-    public Playground_item(Context cont) {
-        this.eventID=1;
-        this.title="테스트 이벤트";
-        this.writer="누구야";
-        this.participate=0;
-        this.Iadapter = new ImageAdapter(cont);
-        List<Playground_item> items=new ArrayList<>();
-        for(int i=0;i<10;i++){
-            addStamp(null,i);
-        }
-    }
-    public Playground_item(int eventID, String title, String writer, int participate, Context cont) {
-        this.eventID=eventID;
-        this.title=title;
-        this.writer=writer;
-        this.participate=participate;
-        this.Iadapter = new ImageAdapter(cont);
-    }
-
-    /* Member functions */
-    int getID() { return eventID; }
     String getWriter() { return writer; }
-    String getParticipate() { return ""+participate; }
-    ImageAdapter getIadapter() { return Iadapter; }
-    public void addStamp(Bitmap image, int stampID) {
-        // Iadapter에 stamp 추가
-        Iadapter.add(stampID, image);
-        participate++;
-    }
 }
 
 
@@ -108,10 +108,13 @@ public class PgAdapter extends RecyclerView.Adapter<PgAdapter.ViewHolder> {
     private ViewGroup container;
     private Context context;
     private List<Playground_item> items;
-    final int VIEW_TYPE_FOOTER=0;
-    final int VIEW_TYPE_ITEM=1;
+
+    final private int VIEW_TYPE_FOOTER=0;
+    final private int VIEW_TYPE_ITEM=1;
+
     public boolean addedAll=false;
     private boolean inAdding=false;
+
     /* Constructors */
     public PgAdapter(ViewGroup container){
         this.container = container;
@@ -146,6 +149,7 @@ public class PgAdapter extends RecyclerView.Adapter<PgAdapter.ViewHolder> {
         else {
             // Fetch item from the ArrayList
             final Playground_item item = items.get(position);
+
             // Bind item with view
             holder.title.setText(item.getTitle());
             holder.writer.setText(item.getWriter());
@@ -154,17 +158,19 @@ public class PgAdapter extends RecyclerView.Adapter<PgAdapter.ViewHolder> {
                 @Override
                 public void onClick(View v) {
                     Toast.makeText(context, "위시리스트에 추가되었습니다", Toast.LENGTH_SHORT).show();
-                    // TODO Add event to user's wishlist
                     ParseUser.getCurrentUser().addUnique("wishlist", item.getEventId());
                     ParseUser.getCurrentUser().saveInBackground();
                 }
             });
+
             // Attach image carousel to the view
             LinearLayoutManager layoutManager = new LinearLayoutManager(context);
             layoutManager.setOrientation(layoutManager.HORIZONTAL);
             holder.stamps.setHasFixedSize(true);
             holder.stamps.setLayoutManager(layoutManager);
-            holder.stamps.setAdapter(item.getPlaygroundStampAdapter());
+            holder.stamps.setAdapter(item.getPgStampAdapter());
+            holder.stamps.addOnChildAttachStateChangeListener(new ChildAttachListener(layoutManager, item));
+            refresh(item);
         }
     }
 
@@ -172,32 +178,40 @@ public class PgAdapter extends RecyclerView.Adapter<PgAdapter.ViewHolder> {
     public int getItemCount() {
         return this.items.size() + 1;
     }
+
     public boolean isFooter(int position) {
         return position == getItemCount()-1;
     }
+
     @Override
     public int getItemViewType(int position) {
         return isFooter(position) ? VIEW_TYPE_FOOTER : VIEW_TYPE_ITEM;
     }
+
     public boolean isAdding() {
         return inAdding;
     }
+
     public void setIsAdding(boolean inAdding){this.inAdding = inAdding;}
+
     public void add(){
         inAdding = true;
         ParseQuery<Event> query = Event.getQuery();
         query.orderByDescending("updatedAt");
-        query.setLimit(items.size() + 5);
+        if (items.size() == 0) {
+        } else {
+            Playground_item oldestItem = items.get(items.size() - 1);
+            query.whereLessThan("updatedAt", oldestItem.getUpdateTime());
+        }
+        query.setLimit(5);
         query.findInBackground(new FindCallback<Event>() {
             @Override
             public void done(List<Event> events, ParseException e) {
                 if (e == null) {
                     int pos = items.size();
-                    List<Playground_item> newItems = new ArrayList<>();
-                    for (ParseObject event : events) {
-                        newItems.add(new Playground_item(container, (Event) event));
+                    for (Event event : events) {
+                        items.add(new Playground_item(container, event));
                     }
-                    items = newItems;
                     if(items.size()==pos){ // 더 이상 받아올게 없음
                         addedAll=true;
                         notifyItemChanged(pos);
@@ -210,7 +224,51 @@ public class PgAdapter extends RecyclerView.Adapter<PgAdapter.ViewHolder> {
         });
     }
 
+    private class ChildAttachListener implements RecyclerView.OnChildAttachStateChangeListener {
+        LinearLayoutManager llm;
+        Playground_item item;
 
+        public ChildAttachListener(LinearLayoutManager llm, Playground_item item){
+            super();
+            this.llm = llm;
+            this.item = item;
+        }
+
+        @Override
+        public void onChildViewAttachedToWindow(View view) {
+            List<Playground_Stamp_item> items = item.getPlaygroundStampItems();
+            if (items.size() - 2 <= llm.findLastVisibleItemPosition()) {
+                if(!item.getIsAdding() && (items.size()>=5)&&(!item.getAddedAll()))
+                    item.add();
+            }
+        }
+
+        @Override
+        public void onChildViewDetachedFromWindow(View view) {}
+    }
+
+    public void refresh(final Playground_item item) {
+        item.setIsAdding(true);
+        ParseQuery<Stamp> query = Stamp.getQuery();
+        query.whereEqualTo("event", item.getEvent());
+        query.orderByDescending("updatedAt");
+        query.setLimit(6);
+        query.findInBackground(new FindCallback<Stamp>() {
+            @Override
+            public void done(List<Stamp> stamps, ParseException e) {
+                if (e == null) {
+                    List<Playground_Stamp_item> newItems = new ArrayList<>();
+                    for (Stamp stamp : stamps) {
+                        newItems.add(new Playground_Stamp_item(stamp));
+                    }
+                    item.setPlaygroundStampItems(newItems);
+                    item.notifyDataSetChanged();
+                    item.setAddedAll(false);
+                    item.setIsAdding(false);
+                }
+            }
+        });
+    }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView title;

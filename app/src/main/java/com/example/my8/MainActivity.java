@@ -514,13 +514,6 @@ public class MainActivity extends AppCompatActivity
 
             }
         }
-
-        public void addEventToPG(ViewGroup container) {
-            Playground_item newItem = new Playground_item(88, "새로 추가된거", "이태경", 2015, container.getContext());
-            pgadapter.add();
-            pgadapter.notifyDataSetChanged();
-        }
-
     }
 
     /**
