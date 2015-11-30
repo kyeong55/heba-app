@@ -97,7 +97,10 @@ public class PgAdapter extends RecyclerView.Adapter<PgAdapter.ViewHolder> {
     private ViewGroup container;
     private Context context;
     private List<Playground_item> items;
-
+    final int VIEW_TYPE_FOOTER=0;
+    final int VIEW_TYPE_ITEM=1;
+    public boolean addedAll=false;
+    private boolean inAdding=false;
     /* Constructors */
     public PgAdapter(ViewGroup container){
         this.container = container;
@@ -110,38 +113,65 @@ public class PgAdapter extends RecyclerView.Adapter<PgAdapter.ViewHolder> {
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v= LayoutInflater.from(parent.getContext()).inflate(R.layout.card_event, parent, false);
-        return new ViewHolder(v);
+        View v;
+        if(viewType == VIEW_TYPE_FOOTER)
+            v= LayoutInflater.from(parent.getContext()).inflate(R.layout.playground_card_footer, parent, false);
+        else
+            v= LayoutInflater.from(parent.getContext()).inflate(R.layout.card_event, parent, false);
+        return new ViewHolder(v,viewType);
     }
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        // Fetch item from the ArrayList
-        final Playground_item item = items.get(position);
-        // Bind item with view
-        holder.title.setText(item.getTitle());
-        holder.writer.setText(item.getWriter());
-        holder.participate.setText(item.getParticipate());
-        holder.addWL.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(context, "위시리스트에 추가되었습니다", Toast.LENGTH_SHORT).show();
-                // TODO Add event to user's wishlist
+        if(isFooter(position)){
+            if(addedAll) {
+                holder.footer_progress_end.setVisibility(View.VISIBLE);
+                holder.footer_progress_in.setVisibility(View.GONE);
             }
-        });
-        // Attach image carousel to the view
-        LinearLayoutManager layoutManager=new LinearLayoutManager(context);
-        layoutManager.setOrientation(layoutManager.HORIZONTAL);
-        holder.stamps.setHasFixedSize(true);
-        holder.stamps.setLayoutManager(layoutManager);
-        holder.stamps.setAdapter(item.getPlaygroundStampAdapter());
+            else {
+                holder.footer_progress_end.setVisibility(View.GONE);
+                holder.footer_progress_in.setVisibility(View.VISIBLE);
+            }
+        }
+        else {
+            // Fetch item from the ArrayList
+            final Playground_item item = items.get(position);
+            // Bind item with view
+            holder.title.setText(item.getTitle());
+            holder.writer.setText(item.getWriter());
+            holder.participate.setText(item.getParticipate());
+            holder.addWL.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(context, "위시리스트에 추가되었습니다", Toast.LENGTH_SHORT).show();
+                    // TODO Add event to user's wishlist
+                }
+            });
+            // Attach image carousel to the view
+            LinearLayoutManager layoutManager = new LinearLayoutManager(context);
+            layoutManager.setOrientation(layoutManager.HORIZONTAL);
+            holder.stamps.setHasFixedSize(true);
+            holder.stamps.setLayoutManager(layoutManager);
+            holder.stamps.setAdapter(item.getPlaygroundStampAdapter());
+        }
     }
 
     @Override
     public int getItemCount() {
-        return this.items.size();
+        return this.items.size()+1;
     }
-
+    public boolean isFooter(int position) {
+        return position == getItemCount()-1;
+    }
+    @Override
+    public int getItemViewType(int position) {
+        return isFooter(position) ? VIEW_TYPE_FOOTER : VIEW_TYPE_ITEM;
+    }
+    public boolean isAdding() {
+        return inAdding;
+    }
+    public void setIsAdding(boolean inAdding){this.inAdding = inAdding;}
     public void add(){
+        inAdding = true;
         ParseQuery<Event> query = Event.getQuery();
         query.orderByDescending("updatedAt");
         query.setLimit(items.size() + 5);
@@ -155,7 +185,14 @@ public class PgAdapter extends RecyclerView.Adapter<PgAdapter.ViewHolder> {
                         newItems.add(new Playground_item(container, (Event) event));
                     }
                     items = newItems;
-                    notifyItemRangeInserted(pos, items.size() - pos);
+                    Log.w("debugging", "====================pos: "+pos+", new: "+items.size());
+                    if(items.size()==pos){
+                        addedAll=true;
+                        notifyItemChanged(pos);
+                    }
+                    else
+                        notifyItemRangeInserted(pos, items.size() - pos);
+                    inAdding=false;
                 }
             }
         });
@@ -171,14 +208,23 @@ public class PgAdapter extends RecyclerView.Adapter<PgAdapter.ViewHolder> {
         TextView addWL;
         RecyclerView stamps;
 
-        public ViewHolder(View itemView) {
+        View footer_progress_in;
+        TextView footer_progress_end;
+
+        public ViewHolder(View itemView, int viewType) {
             super(itemView);
-            title=(TextView)itemView.findViewById(R.id.pg_title);
-            writer=(TextView)itemView.findViewById(R.id.pg_writer);
-            writer_photo=(ImageView)itemView.findViewById(R.id.pg_writer_photo);
-            participate=(TextView)itemView.findViewById(R.id.pg_participate);
-            addWL=(TextView)itemView.findViewById(R.id.pg_addWL);
-            stamps=(RecyclerView)itemView.findViewById(R.id.pg_stamp_view);
+            if(viewType == VIEW_TYPE_ITEM) {
+                title = (TextView) itemView.findViewById(R.id.pg_title);
+                writer = (TextView) itemView.findViewById(R.id.pg_writer);
+                writer_photo = (ImageView) itemView.findViewById(R.id.pg_writer_photo);
+                participate = (TextView) itemView.findViewById(R.id.pg_participate);
+                addWL = (TextView) itemView.findViewById(R.id.pg_addWL);
+                stamps = (RecyclerView) itemView.findViewById(R.id.pg_stamp_view);
+            }
+            else if(viewType == VIEW_TYPE_FOOTER) {
+                footer_progress_in = itemView.findViewById(R.id.pg_progress_in);
+                footer_progress_end = (TextView) itemView.findViewById(R.id.pg_progress_end);
+            }
         }
     }
 }

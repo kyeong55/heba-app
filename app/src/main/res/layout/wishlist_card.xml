@@ -28,7 +28,7 @@
             android:layout_marginTop="@dimen/wishlist_title_margin_top"
             android:layout_marginBottom="@dimen/wishlist_title_margin_bottom"
             android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:textStyle="bold" android:textSize="@dimen/title_text_size"
+            android:textStyle="bold" android:textSize="@dimen/wishlist_title_text_size"
             android:textColor="@color/colorBlack"
             android:text="테스트"/>
         <android.support.v7.widget.RecyclerView

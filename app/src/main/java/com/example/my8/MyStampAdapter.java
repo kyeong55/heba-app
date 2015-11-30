@@ -111,15 +111,15 @@ public class MyStampAdapter extends RecyclerView.Adapter<MyStampAdapter.ViewHold
         ParseImageView stamp;
         CardView ms_card;
 
-        public ViewHolder(View itemView, int viewtype) {
+        public ViewHolder(View itemView, int viewType) {
             super(itemView);
-            if(viewtype == VIEW_TYPE_HEADER){
+            if(viewType == VIEW_TYPE_HEADER){
                 header_profile_image = (ParseImageView)itemView.findViewById(R.id.ms_profile_image);
                 header_cover_image = (ParseImageView)itemView.findViewById(R.id.ms_cover_image);
                 header_user_name = (TextView)itemView.findViewById(R.id.ms_user_name);
                 header_stamp_count = (TextView)itemView.findViewById(R.id.ms_stamp_count);
             }
-            else if(viewtype == VIEW_TYPE_ITEM){
+            else if(viewType == VIEW_TYPE_ITEM){
                 stamp = (ParseImageView)itemView.findViewById(R.id.ms_stamp);
                 ms_card = (CardView)itemView.findViewById(R.id.ms_card_view);
             }

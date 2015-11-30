@@ -452,6 +452,7 @@ public class MainActivity extends AppCompatActivity
         }
 
         public void refresh(final ViewGroup container, final boolean onRefresh) {
+            pgadapter.setIsAdding(true);
             ParseQuery<Event> query = Event.getQuery();
             query.orderByDescending("updatedAt");
             query.setLimit(5);
@@ -473,6 +474,8 @@ public class MainActivity extends AppCompatActivity
                         if (onRefresh) {
                             mySwipeRefreshLayout.setRefreshing(false);
                         }
+                        pgadapter.addedAll=false;
+                        pgadapter.setIsAdding(false);
                     }
                 }
             });
@@ -488,8 +491,9 @@ public class MainActivity extends AppCompatActivity
 
             @Override
             public void onChildViewAttachedToWindow(View view) {
-                if (items.size() - 1 == llm.findLastVisibleItemPosition()) {
-                    pgadapter.add();
+                if (items.size() - 2 <= llm.findLastVisibleItemPosition()) {
+                    if(!pgadapter.isAdding() && (items.size()>=5)&&(!pgadapter.addedAll))
+                        pgadapter.add();
                 }
             }
 

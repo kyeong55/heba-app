@@ -16,6 +16,8 @@
     <dimen name="user_info_padding_bottom">20dp</dimen>
     <!-- Playground -->
     <dimen name="pg_image_size">220dp</dimen>
+    <dimen name="pg_progressbar_size">24dp</dimen>
+    <dimen name="pg_progess_margin">8dp</dimen>
     <!-- Friends -->
     <dimen name="friends_card_margin">16dp</dimen>
     <dimen name="friends_image_width">80dp</dimen>
@@ -28,5 +30,5 @@
     <dimen name="wishlist_title_margin_left">32dp</dimen>
     <dimen name="wishlist_title_margin_top">16dp</dimen>
     <dimen name="wishlist_title_margin_bottom">16dp</dimen>
-    <dimen name="title_text_size">26sp</dimen>
+    <dimen name="wishlist_title_text_size">26sp</dimen>
 </resources>

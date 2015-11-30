@@ -21,5 +21,11 @@
             android:textColor="@color/colorWhite"
             android:padding="@dimen/stamp_info_text_padding"/>
     </LinearLayout>
+    <ProgressBar
+        android:id="@+id/stamp_info_progressbar"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center"
+        android:progressDrawable="@color/colorWhite"/>
 
 </FrameLayout>

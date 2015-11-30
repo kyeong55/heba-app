@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -98,6 +99,7 @@ public class MyStampInfoActivity extends AppCompatActivity {
             View rootView = inflater.inflate(R.layout.my_stamp_info_component, container, false);
             final ParseImageView imageView = (ParseImageView) rootView.findViewById(R.id.stamp_info_image);
             final TextView textView = (TextView) rootView.findViewById(R.id.stamp_info_text);
+            final ProgressBar progressBar = (ProgressBar) rootView.findViewById(R.id.stamp_info_progressbar);
 
             // recall stamp from the server
             ParseQuery query = new ParseQuery(Stamp.CLASSNAME);
@@ -107,6 +109,7 @@ public class MyStampInfoActivity extends AppCompatActivity {
                     imageView.setParseFile(stamp.getPhotoFile());
                     imageView.loadInBackground();
                     textView.setText(stamp.getComment());
+                    progressBar.setVisibility(View.GONE);
                 }
             });
 

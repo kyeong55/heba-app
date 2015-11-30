@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="wrap_content"
+    android:gravity="center_horizontal">
+    <LinearLayout
+        android:id="@+id/pg_progress_in"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal">
+        <ProgressBar
+            android:layout_width="@dimen/pg_progressbar_size"
+            android:layout_height="@dimen/pg_progressbar_size"
+            android:layout_margin="@dimen/pg_progess_margin"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="@string/pg_progress"/>
+    </LinearLayout>
+    <TextView
+        android:id="@+id/pg_progress_end"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/pg_progess_margin"
+        android:text="@string/pg_end_progress"
+        android:layout_gravity="center_horizontal"/>
+
+</FrameLayout>
