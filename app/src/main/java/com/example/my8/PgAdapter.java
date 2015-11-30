@@ -157,9 +157,18 @@ public class PgAdapter extends RecyclerView.Adapter<PgAdapter.ViewHolder> {
             holder.addWL.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(context, "위시리스트에 추가되었습니다", Toast.LENGTH_SHORT).show();
-                    ParseUser.getCurrentUser().addUnique("wishlist", item.getEventId());
-                    ParseUser.getCurrentUser().saveInBackground();
+                    List<String> wishlist = ParseUser.getCurrentUser().getList("wishlist");
+                    List<String> donelist = ParseUser.getCurrentUser().getList("donelist");
+                    String eventId = item.getEventId();
+                    if (donelist != null && donelist.contains(eventId)) {
+                        Toast.makeText(context, "이미 활동을 완료하였습니다", Toast.LENGTH_SHORT).show();
+                    } else if (wishlist != null && wishlist.contains(eventId)) {
+                        Toast.makeText(context, "이미 위시리스트에 추가되었습니다", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(context, "위시리스트에 추가되었습니다", Toast.LENGTH_SHORT).show();
+                        ParseUser.getCurrentUser().addUnique("wishlist", eventId);
+                        ParseUser.getCurrentUser().saveInBackground();
+                    }
                 }
             });
 

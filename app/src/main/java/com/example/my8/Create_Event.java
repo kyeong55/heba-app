@@ -250,6 +250,9 @@ public class Create_Event extends AppCompatActivity {
 
             event.saveInBackground();
 
+            ParseUser.getCurrentUser().addUnique("donelist", event.getObjectId());
+            ParseUser.getCurrentUser().saveInBackground();
+
             SelectEvent selectEventActivity = (SelectEvent) SelectEvent.selectEventActivity;
             finish();
             selectEventActivity.finish();
