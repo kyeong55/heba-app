@@ -24,6 +24,7 @@
 
     <string name="logout">로그아웃</string>
     <string name="progress_logout">로그아웃중&#8230;</string>
+    <string name="progress_edit_password">비밀번호 변경중</string>
 
     <!-- String for Navigation View -->
     <string name="navigation_drawer_open">Open navigation drawer</string>

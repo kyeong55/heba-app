@@ -55,8 +55,8 @@
                 android:layout_margin="@dimen/friends_card_margin"
                 android:text="@string/friends_add"
                 android:textStyle="bold"
-                android:backgroundTint="@color/colorWhite"
-                android:textColor="@color/colorPrimary"/>
+                android:backgroundTint="@color/colorPrimary"
+                android:textColor="@color/colorWhite"/>
         </LinearLayout>
     </android.support.v7.widget.CardView>
 </LinearLayout>

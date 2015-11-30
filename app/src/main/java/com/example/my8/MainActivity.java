@@ -61,6 +61,7 @@ import com.parse.ParseImageView;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -219,6 +220,18 @@ public class MainActivity extends AppCompatActivity
             navigationViewRefresh();
         } else if (id == R.id.nav_passward) {
             // TODO: Edit passward
+            final ProgressDialog dialog = new ProgressDialog(MainActivity.this);
+            dialog.setMessage(getString(R.string.progress_edit_password));
+            dialog.show();
+            ParseUser currentUser = ParseUser.getCurrentUser();
+            currentUser.getCurrentUser().setPassword("test");
+            currentUser.saveInBackground(new SaveCallback() {
+                @Override
+                public void done(ParseException e) {
+                    dialog.dismiss();
+                    Toast.makeText(getApplicationContext(),"비밀번호가 변경되었습니다.",Toast.LENGTH_SHORT).show();
+                }
+            });
         } else if (id == R.id.nav_logout) {
             // Call the Parse log out method
             final ProgressDialog dialog = new ProgressDialog(MainActivity.this);
@@ -420,8 +433,6 @@ public class MainActivity extends AppCompatActivity
 
             pgadapter = new PgAdapter(container);
             pgView.setAdapter(pgadapter);
-
-
 
             mySwipeRefreshLayout = (SwipeRefreshLayout)rootView.findViewById(R.id.pg_swipe_layout);
             mySwipeRefreshLayout.setOnRefreshListener(

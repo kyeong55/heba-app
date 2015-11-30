@@ -1,11 +1,16 @@
 package com.example.my8;
 
+import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.parse.ParseFile;
@@ -69,6 +74,12 @@ public class MyStampAdapter extends RecyclerView.Adapter<MyStampAdapter.ViewHold
                     context.startActivity(intent);
                 }
             });
+            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) holder.ms_card.getLayoutParams();
+            DisplayMetrics metrics = new DisplayMetrics();
+            WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+            windowManager.getDefaultDisplay().getMetrics(metrics);
+            params.height = metrics.widthPixels*3/7;
+            holder.ms_card.setLayoutParams(params);
         }
     }
     public void setItems(List<MyStamp_item> items) {
@@ -98,6 +109,7 @@ public class MyStampAdapter extends RecyclerView.Adapter<MyStampAdapter.ViewHold
         TextView header_user_name;
         TextView header_stamp_count;
         ParseImageView stamp;
+        CardView ms_card;
 
         public ViewHolder(View itemView, int viewtype) {
             super(itemView);
@@ -109,6 +121,7 @@ public class MyStampAdapter extends RecyclerView.Adapter<MyStampAdapter.ViewHold
             }
             else if(viewtype == VIEW_TYPE_ITEM){
                 stamp = (ParseImageView)itemView.findViewById(R.id.ms_stamp);
+                ms_card = (CardView)itemView.findViewById(R.id.ms_card_view);
             }
         }
     }

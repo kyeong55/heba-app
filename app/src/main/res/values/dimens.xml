@@ -22,6 +22,6 @@
     <dimen name="friends_name_text_size">16sp</dimen>
     <!-- My Stamp -->
     <dimen name="stamp_image_height">160dp</dimen>
-    <!-- Search -->
-
+    <!-- Stamp Info -->
+    <dimen name="stamp_info_text_padding">32dp</dimen>
 </resources>
