@@ -37,6 +37,15 @@
     <string name="pg_end_progress">더 이상 불러올 이벤트가 없습니다</string>
     <!-- String related to Friends Activity -->
     <string name="friends_add">친구추가</string>
+    <string name="friends_request_accept">확인</string>
+    <string name="friends_request_reject">무시</string>
+    <string name="friends_subtitle_request">친구 요청</string>
+    <string name="friends_subtitle_suggest">알 수도 있는 사람</string>
+    <string name="friends_progress">친구 목록을 불러오는 중</string>
+    <string name="friends_end_progress">더 이상 불러올 친구가 없습니다</string>
+    <string name="friends_done_accept">친구로 추가하였습니다</string>
+    <string name="friends_done_reject">친구 추가를 거절하였습니다</string>
+    <string name="friends_done_added">친구 요청 전송됨</string>
     <!-- String related to My Stamp -->
     <string name="ms_progress">내 스탬프를 불러오는 중</string>
     <string name="ms_end_progress">더 이상 불러올 내 스탬프가 없습니다</string>

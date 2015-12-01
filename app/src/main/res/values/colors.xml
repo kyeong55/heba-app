@@ -16,4 +16,7 @@
 
     <!-- Edit Text -->
     <color name="colorEditTitle">#EEEEEE</color>
+
+    <!-- Friends page -->
+    <color name="colorDone">#DDDDDD</color>
 </resources>
