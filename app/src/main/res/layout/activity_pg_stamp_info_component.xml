@@ -10,6 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
     <LinearLayout
+        android:id="@+id/pg_stamp_info_linear_layout"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:background="@drawable/info_text_background"

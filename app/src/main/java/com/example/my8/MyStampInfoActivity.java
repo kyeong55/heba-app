@@ -1,6 +1,8 @@
 package com.example.my8;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -11,6 +13,9 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -78,6 +83,7 @@ public class MyStampInfoActivity extends AppCompatActivity {
          * The fragment argument representing the section number for this
          * fragment.
          */
+        private boolean is_text_visible = true;
         private static final String ARG_STAMP_ID = "stamp_ID";
         /**
          * Returns a new instance of this fragment for the given section
@@ -100,7 +106,23 @@ public class MyStampInfoActivity extends AppCompatActivity {
             final ParseImageView imageView = (ParseImageView) rootView.findViewById(R.id.stamp_info_image);
             final TextView textView = (TextView) rootView.findViewById(R.id.stamp_info_text);
             final ProgressBar progressBar = (ProgressBar) rootView.findViewById(R.id.stamp_info_progressbar);
+            final LinearLayout llayout = (LinearLayout) rootView.findViewById(R.id.stamp_info_linear_layout);
 
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (is_text_visible) {
+                        Animation alphaAni = AnimationUtils.loadAnimation(getContext(), R.anim.text_invisible);
+                        llayout.startAnimation(alphaAni);
+                        llayout.setVisibility(View.INVISIBLE);
+                    } else {
+                        Animation alphaAni = AnimationUtils.loadAnimation(getContext(), R.anim.text_visible);
+                        llayout.startAnimation(alphaAni);
+                        llayout.setVisibility(View.VISIBLE);
+                    }
+                    is_text_visible = !is_text_visible;
+                }
+            });
             // recall stamp from the server
             ParseQuery query = new ParseQuery(Stamp.CLASSNAME);
             query.getInBackground(getArguments().getString(ARG_STAMP_ID), new GetCallback<Stamp>() {
