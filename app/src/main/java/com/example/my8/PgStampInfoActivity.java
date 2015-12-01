@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,12 +18,14 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseImageView;
 import com.parse.ParseQuery;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class PgStampInfoActivity extends AppCompatActivity {
 
@@ -36,11 +39,30 @@ public class PgStampInfoActivity extends AppCompatActivity {
         ArrayList<String> stampIdList = intent.getStringArrayListExtra("stamp_id_list");
 
         // Create the adapter that will return a fragment for each activity.
-        pgStampInfoPagerAdapter mStampInfoPagerAdapter = new pgStampInfoPagerAdapter(getSupportFragmentManager(), stampIdList);
+        final pgStampInfoPagerAdapter mStampInfoPagerAdapter = new pgStampInfoPagerAdapter(getSupportFragmentManager(), stampIdList);
 
         // Set up the ViewPager with the sections adapter.
         ViewPager mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mStampInfoPagerAdapter);
+        /*mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageSelected(int position) {
+                Log.w("debug", "Select");
+                if (position >= mStampInfoPagerAdapter.getCount() - 3) {
+                    Log.w("debug", "Select");
+                    // TODO only refresh when new stamp added or profile updated
+                    mStampInfoPagerAdapter.add();
+                }
+            }
+
+            @Override
+            public void onPageScrolled(int position, float positionOffest, int positionOffsetPixels) {
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+            }
+        });*/
         // Set up the number of holding pages
         mViewPager.setOffscreenPageLimit(2);
         mViewPager.setCurrentItem(pos);
@@ -52,7 +74,10 @@ public class PgStampInfoActivity extends AppCompatActivity {
      */
     public class pgStampInfoPagerAdapter extends FragmentStatePagerAdapter {
 
+        public boolean addedAll=false;
+        private boolean inAdding=false;
         ArrayList<String> stampIdList;
+
         public pgStampInfoPagerAdapter(FragmentManager fm, ArrayList<String> stampIdList) {
             super(fm);
             this.stampIdList = stampIdList;
@@ -70,6 +95,38 @@ public class PgStampInfoActivity extends AppCompatActivity {
             // Show 3 total pages.
             return stampIdList.size();
         }
+/*
+        public void add() {
+            if(!inAdding) {
+                inAdding = true;
+                stampIdList.add(stampIdList.get(0));
+                Log.w("debug", "asdf");
+                notifyAll();
+                notify();
+                notifyDataSetChanged();
+                inAdding = false;
+                addedAll = true;
+            }
+            /*ParseQuery<Stamp> query = Stamp.getQuery();
+            query.whereEqualTo("event", item.getEvent());
+            query.orderByDescending("updatedAt");
+            query.setLimit(6);
+            query.findInBackground(new FindCallback<Stamp>() {
+                @Override
+                public void done(List<Stamp> stamps, ParseException e) {
+                    if (e == null) {
+                        List<Playground_Stamp_item> newItems = new ArrayList<>();
+                        for (Stamp stamp : stamps) {
+                            newItems.add(new Playground_Stamp_item(stamp));
+                        }
+                        item.setPlaygroundStampItems(newItems);
+                        item.notifyDataSetChanged();
+                        item.setAddedAll(false);
+                        item.setIsAdding(false);
+                    }
+                }
+            });
+        }*/
     }
     /**
      * A placeholder fragment containing a simple view.
