@@ -32,10 +32,12 @@ import java.util.List;
 class Playground_item {
     List<Playground_Stamp_item> playgroundStampItems;
     PgStampAdapter pgStampAdapter;
+    Context context;
     Event event;
 
-    public Playground_item(ViewGroup container, Event event) {
-        this.pgStampAdapter = new PgStampAdapter(event);
+    public Playground_item(ViewGroup container, Event event, Context context) {
+        this.context = context;
+        this.pgStampAdapter = new PgStampAdapter(context, event);
         this.playgroundStampItems = new ArrayList<>();
 
         this.event = event;
@@ -219,7 +221,7 @@ public class PgAdapter extends RecyclerView.Adapter<PgAdapter.ViewHolder> {
                 if (e == null) {
                     int pos = items.size();
                     for (Event event : events) {
-                        items.add(new Playground_item(container, event));
+                        items.add(new Playground_item(container, event, context));
                     }
                     if(items.size()==pos){ // 더 이상 받아올게 없음
                         addedAll=true;

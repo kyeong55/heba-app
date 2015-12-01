@@ -49,17 +49,23 @@ class Playground_Stamp_item {
     public Date getUpdateTime() {
         return stamp.getUpdatedAt();
     }
+
+    public String getID () {
+        return stamp.getObjectId();
+    }
 }
 
 public class PgStampAdapter extends RecyclerView.Adapter<PgStampAdapter.ViewHolder> {
     private List<Playground_Stamp_item> items;
     private Event event;
+    private Context context;
 
     public boolean addedAll=false;
     private boolean inAdding=false;
 
     /* Constructors */
-    public PgStampAdapter(Event event){
+    public PgStampAdapter(Context context, Event event){
+        this.context = context;
         this.event = event;
         items = new ArrayList<>();
     }
@@ -92,8 +98,23 @@ public class PgStampAdapter extends RecyclerView.Adapter<PgStampAdapter.ViewHold
         holder.card.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent intent = new Intent(context, MyStampInfoActivity.class);
+                String stampId = item.getID();
+                ArrayList<String> stampIdList = getStampObjectIdArrayList();
+                int pos = stampIdList.indexOf(stampId);
+                intent.putExtra("clicked_stamp_pos", pos);
+                intent.putExtra("stamp_id_list", stampIdList);
+                context.startActivity(intent);
             }
         });
+    }
+
+    private ArrayList<String> getStampObjectIdArrayList() {
+        ArrayList<String> stampIdList = new ArrayList<>();
+        for (Playground_Stamp_item stamp : items) {
+            stampIdList.add(stamp.getID());
+        }
+        return stampIdList;
     }
 
     @Override

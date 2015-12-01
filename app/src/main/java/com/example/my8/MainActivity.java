@@ -478,7 +478,7 @@ public class MainActivity extends AppCompatActivity
                     if (e == null) {
                         List<Playground_item> items = new ArrayList<>();
                         for (Event event : events) {
-                            items.add(new Playground_item(container, event));
+                            items.add(new Playground_item(container, event, container.getContext()));
                         }
                         pgadapter.setItems(items);
                         pgadapter.notifyDataSetChanged();
