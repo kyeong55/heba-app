@@ -98,9 +98,9 @@ public class PgStampAdapter extends RecyclerView.Adapter<PgStampAdapter.ViewHold
         holder.card.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, MyStampInfoActivity.class);
+                ArrayList<String> stampIdList = getallStampObjectIdArrayList();
+                Intent intent = new Intent(context, PgStampInfoActivity.class);
                 String stampId = item.getID();
-                ArrayList<String> stampIdList = getStampObjectIdArrayList();
                 int pos = stampIdList.indexOf(stampId);
                 intent.putExtra("clicked_stamp_pos", pos);
                 intent.putExtra("stamp_id_list", stampIdList);
@@ -109,7 +109,7 @@ public class PgStampAdapter extends RecyclerView.Adapter<PgStampAdapter.ViewHold
         });
     }
 
-    private ArrayList<String> getStampObjectIdArrayList() {
+    private ArrayList<String> getallStampObjectIdArrayList() {
         ArrayList<String> stampIdList = new ArrayList<>();
         for (Playground_Stamp_item stamp : items) {
             stampIdList.add(stamp.getID());

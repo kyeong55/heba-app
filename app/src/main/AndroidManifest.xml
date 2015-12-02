@@ -63,6 +63,7 @@
         <activity
             android:name=".MyStampInfoActivity"
             android:theme="@style/AppTheme.InfoPage" />
+
         <!--
              ATTENTION: This was auto-generated to add Google Play services to your project for
              App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -74,7 +75,9 @@
         <activity
             android:name=".SearchActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".PgStampInfoActivity"></activity>
+        <activity
+            android:name=".PgStampInfoActivity"
+            android:theme="@style/AppTheme.InfoPage" />
     </application>
 
 </manifest>

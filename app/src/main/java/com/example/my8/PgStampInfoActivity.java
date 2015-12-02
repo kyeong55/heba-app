@@ -44,25 +44,6 @@ public class PgStampInfoActivity extends AppCompatActivity {
         // Set up the ViewPager with the sections adapter.
         ViewPager mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mStampInfoPagerAdapter);
-        /*mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageSelected(int position) {
-                Log.w("debug", "Select");
-                if (position >= mStampInfoPagerAdapter.getCount() - 3) {
-                    Log.w("debug", "Select");
-                    // TODO only refresh when new stamp added or profile updated
-                    mStampInfoPagerAdapter.add();
-                }
-            }
-
-            @Override
-            public void onPageScrolled(int position, float positionOffest, int positionOffsetPixels) {
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-            }
-        });*/
         // Set up the number of holding pages
         mViewPager.setOffscreenPageLimit(2);
         mViewPager.setCurrentItem(pos);
@@ -95,38 +76,6 @@ public class PgStampInfoActivity extends AppCompatActivity {
             // Show 3 total pages.
             return stampIdList.size();
         }
-/*
-        public void add() {
-            if(!inAdding) {
-                inAdding = true;
-                stampIdList.add(stampIdList.get(0));
-                Log.w("debug", "asdf");
-                notifyAll();
-                notify();
-                notifyDataSetChanged();
-                inAdding = false;
-                addedAll = true;
-            }
-            /*ParseQuery<Stamp> query = Stamp.getQuery();
-            query.whereEqualTo("event", item.getEvent());
-            query.orderByDescending("updatedAt");
-            query.setLimit(6);
-            query.findInBackground(new FindCallback<Stamp>() {
-                @Override
-                public void done(List<Stamp> stamps, ParseException e) {
-                    if (e == null) {
-                        List<Playground_Stamp_item> newItems = new ArrayList<>();
-                        for (Stamp stamp : stamps) {
-                            newItems.add(new Playground_Stamp_item(stamp));
-                        }
-                        item.setPlaygroundStampItems(newItems);
-                        item.notifyDataSetChanged();
-                        item.setAddedAll(false);
-                        item.setIsAdding(false);
-                    }
-                }
-            });
-        }*/
     }
     /**
      * A placeholder fragment containing a simple view.
@@ -155,10 +104,10 @@ public class PgStampInfoActivity extends AppCompatActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.my_stamp_info_component, container, false);
-            final ParseImageView imageView = (ParseImageView) rootView.findViewById(R.id.stamp_info_image);
-            final TextView textView = (TextView) rootView.findViewById(R.id.stamp_info_text);
-            final ProgressBar progressBar = (ProgressBar) rootView.findViewById(R.id.stamp_info_progressbar);
+            View rootView = inflater.inflate(R.layout.activity_pg_stamp_info_component, container, false);
+            final ParseImageView imageView = (ParseImageView) rootView.findViewById(R.id.pg_stamp_info_image);
+            final TextView textView = (TextView) rootView.findViewById(R.id.pg_stamp_info_text);
+            final ProgressBar progressBar = (ProgressBar) rootView.findViewById(R.id.pg_stamp_info_progressbar);
             final LinearLayout llayout = (LinearLayout) rootView.findViewById(R.id.pg_stamp_info_linear_layout);
 
             imageView.setOnClickListener(new View.OnClickListener() {
