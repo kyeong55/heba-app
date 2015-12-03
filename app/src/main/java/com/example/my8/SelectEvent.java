@@ -224,13 +224,15 @@ public class SelectEvent extends AppCompatActivity implements OnMapReadyCallback
             SelectEventFragment.events = events;
             SelectEventFragment.stamps = stamps;
             SelectEventFragment.imagePath = imagePath;
-            size = events.size();
+            size = events.size() + 1;
         }
 
         @Override
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
+            if(position == size - 1)
+                return SelectEventFragment.newInstance(-1);
             return SelectEventFragment.newInstance(position);
         }
 
@@ -278,24 +280,41 @@ public class SelectEvent extends AppCompatActivity implements OnMapReadyCallback
             TextView select_event_title = (TextView) rootView.findViewById(R.id.image_with_title_text);
             ParseImageView select_event_image = (ParseImageView) rootView.findViewById(R.id.image_with_title_view);
             CardView select_event_card = (CardView) rootView.findViewById(R.id.image_with_title_card);
-            select_event_title.setText(events.get(position).getTitle());
-            select_event_image.setParseFile(stamps.get(position).getPhotoFile());
-            select_event_image.loadInBackground(new GetDataCallback() {
-                @Override
-                public void done(byte[] data, ParseException e) {
-                    //nothing to do
-                }
-            });
-            select_event_card.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent toCreateEventActivity = new Intent(container.getContext(), Create_Event.class);
-                    toCreateEventActivity.putExtra("imagePath", imagePath);
-                    toCreateEventActivity.putExtra("eventId", events.get(position).getObjectId());
-                    toCreateEventActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    container.getContext().startActivity(toCreateEventActivity);
-                }
-            });
+            if(position >= 0) {
+                select_event_title.setText(events.get(position).getTitle());
+                select_event_image.setParseFile(stamps.get(position).getPhotoFile());
+                select_event_image.loadInBackground(new GetDataCallback() {
+                    @Override
+                    public void done(byte[] data, ParseException e) {
+                        //nothing to do
+                    }
+                });
+                select_event_card.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent toCreateEventActivity = new Intent(container.getContext(), Create_Event.class);
+                        toCreateEventActivity.putExtra("imagePath", imagePath);
+                        toCreateEventActivity.putExtra("eventId", events.get(position).getObjectId());
+                        toCreateEventActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        container.getContext().startActivity(toCreateEventActivity);
+                    }
+                });
+            }
+            else {
+                TextView select_event_add_text = (TextView) rootView.findViewById(R.id.image_with_title_add);
+                select_event_add_text.setVisibility(View.VISIBLE);
+                select_event_title.setVisibility(View.GONE);
+                select_event_card.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent toCreateEventActivity = new Intent(container.getContext(), Create_Event.class);
+                        toCreateEventActivity.putExtra("imagePath", imagePath);
+                        toCreateEventActivity.putExtra("eventId", (String)null);
+                        toCreateEventActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        container.getContext().startActivity(toCreateEventActivity);
+                    }
+                });
+            }
             return rootView;
         }
     }

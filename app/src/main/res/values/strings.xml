@@ -52,6 +52,8 @@
     <!-- String related to Wishlist -->
     <string name="wl_progress">위시리스트를 불러오는 중</string>
     <string name="wl_end_progress">더 이상 불러올 위시리스트가 없습니다</string>
+    <!-- String related to SelectEventActivity -->
+    <string name="select_add">새로운 이벤트 추가</string>
     <!-- String related to CreateEventActivity -->
     <string name="create_commit">확인</string>
     <string name="create_title_hint">제목을 입력해주세요.</string>

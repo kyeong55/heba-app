@@ -3,9 +3,7 @@
     <item android:title="친구">
         <menu>
             <item android:id="@+id/nav_friends_list"
-                android:title="친구 목록"/>
-            <item android:id="@+id/nav_friends_request"
-                android:title="친구 요청"/>
+                android:title="내 친구 목록"/>
         </menu>
     </item>
     <item android:title="프로필">
