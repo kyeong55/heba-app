@@ -17,12 +17,11 @@
             <EditText
                 android:id="@+id/event_title"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/create_title_height"
+                android:layout_height="wrap_content"
                 android:background="@color/colorEditTitle"
                 android:elevation="2dp"
                 android:textStyle="bold"
-                android:paddingStart="@dimen/create_text_margin"
-                android:paddingEnd="@dimen/create_text_margin"
+                android:padding="@dimen/create_text_margin"
                 android:gravity="center_vertical"
                 android:hint="@string/create_title_hint"/>
             <EditText

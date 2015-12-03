@@ -14,7 +14,9 @@
     <color name="colorWhite">#FFFFFF</color>
     <color name="colorBlack">#000000</color>
 
-    <!-- Edit Text -->
+    <!-- Select Event -->
+    <color name="colorSelectTitle">#A0000000</color>
+    <!-- Create Event Edit Text -->
     <color name="colorEditTitle">#EEEEEE</color>
 
     <!-- Friends page -->
