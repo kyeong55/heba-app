@@ -43,6 +43,8 @@ public class Create_Event extends AppCompatActivity {
     private String stampComment;
     private Bitmap stampPhoto;
     private String eventTitle;
+    private Bitmap scaledRotatedStampPhoto;
+    private Bitmap rotatedStampPhoto;
     private Bitmap rotatedScaledStampPhoto;
     private Bitmap stampPhotoScaled;
     private ExifInterface exif;
@@ -89,14 +91,14 @@ public class Create_Event extends AppCompatActivity {
         if (orientation == ExifInterface.ORIENTATION_ROTATE_180) rotationAngle = 180;
         if (orientation == ExifInterface.ORIENTATION_ROTATE_270) rotationAngle = 270;
 
-        stampPhotoScaled = Bitmap.createScaledBitmap(stampPhoto, 500, 500
-                * stampPhoto.getHeight() / stampPhoto.getWidth(), false);
         Matrix matrix = new Matrix();
         matrix.postRotate(rotationAngle);
-        rotatedScaledStampPhoto = Bitmap.createBitmap(stampPhotoScaled, 0,
-                0, stampPhotoScaled.getWidth(), stampPhotoScaled.getHeight(),
+        rotatedStampPhoto = Bitmap.createBitmap(stampPhoto, 0,
+                0, stampPhoto.getWidth(), stampPhoto.getHeight(),
                 matrix, true);
-        stampImageView.setImageBitmap(rotatedScaledStampPhoto);
+        scaledRotatedStampPhoto = Bitmap.createScaledBitmap(rotatedStampPhoto, 300, 300
+                * rotatedStampPhoto.getHeight() / rotatedStampPhoto.getWidth(), false);
+        stampImageView.setImageBitmap(rotatedStampPhoto);
 
         event = null;
         eventId = getIntent().getStringExtra("eventId");
@@ -203,7 +205,7 @@ public class Create_Event extends AppCompatActivity {
 
             //stamp photo
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            rotatedScaledStampPhoto.compress(Bitmap.CompressFormat.JPEG, 100, bos);
+            scaledRotatedStampPhoto.compress(Bitmap.CompressFormat.JPEG, 100, bos);
             byte[] scaledPhoto = bos.toByteArray();
             ParseFile stampPhotoFile = new ParseFile("stamp.jpg", scaledPhoto);
             stampPhotoFile.saveInBackground(new SaveCallback() {
@@ -225,15 +227,13 @@ public class Create_Event extends AppCompatActivity {
 
             //event
             if (event == null) {
-                Event event = new Event();
+                event = new Event();
                 eventTitle = titleEditText.getText().toString();
                 event.setTitle(eventTitle);
                 event.setNParticipant(1);
             } else {
                 event.increment("nParticipant");
             }
-
-            //event.setACL(postACL);
 
             //stamp-event relation
             stamp.setEvent(event);
