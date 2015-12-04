@@ -1,19 +1,16 @@
 package com.example.my8;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.location.Location;
-import android.media.ExifInterface;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.PagerAdapter;
@@ -24,7 +21,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 
 import android.support.v4.app.Fragment;
@@ -32,43 +28,32 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.parse.CountCallback;
 import com.parse.FindCallback;
-import com.parse.LogInCallback;
 import com.parse.LogOutCallback;
-import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseImageView;
-import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.parse.ParseUser.logOut;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -83,7 +68,9 @@ public class MainActivity extends AppCompatActivity
      * {@link FragmentStatePagerAdapter}.
      */
     public static SectionsPagerAdapter mSectionsPagerAdapter;
-    final int REQ_CODE_SELECT_IMAGE = 100;
+    final int REQ_CODE_SELECT_STAMP_IMAGE = 100;
+    final int REQ_CODE_SELECT_PROFILE_IMAGE = 101;
+    final int REQ_CODE_SELECT_COVER_IMAGE = 102;
 
     /**
      * The {@link ViewPager} that will host the section contents.
@@ -147,7 +134,7 @@ public class MainActivity extends AppCompatActivity
                 Intent intent = new Intent(Intent.ACTION_PICK);
                 intent.setType(MediaStore.Images.Media.CONTENT_TYPE);
                 intent.setData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(intent, REQ_CODE_SELECT_IMAGE);
+                startActivityForResult(intent, REQ_CODE_SELECT_STAMP_IMAGE);
             }
         });
 
@@ -216,25 +203,59 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_profile_image) {
-            // TODO: Edit profile image
-            navigationViewRefresh();
+            Intent intent = new Intent(Intent.ACTION_PICK);
+            intent.setType(MediaStore.Images.Media.CONTENT_TYPE);
+            intent.setData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            startActivityForResult(intent, REQ_CODE_SELECT_PROFILE_IMAGE);
         } else if (id == R.id.nav_cover_image) {
-            // TODO: Edit cover image
-            navigationViewRefresh();
+            Intent intent = new Intent(Intent.ACTION_PICK);
+            intent.setType(MediaStore.Images.Media.CONTENT_TYPE);
+            intent.setData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            startActivityForResult(intent, REQ_CODE_SELECT_COVER_IMAGE);
         } else if (id == R.id.nav_passward) {
             // TODO: Edit passward
-            final ProgressDialog dialog = new ProgressDialog(MainActivity.this);
-            dialog.setMessage(getString(R.string.progress_edit_password));
-            dialog.show();
-            ParseUser currentUser = ParseUser.getCurrentUser();
-            currentUser.getCurrentUser().setPassword("test");
-            currentUser.saveInBackground(new SaveCallback() {
+            LayoutInflater inflater = (LayoutInflater) getApplicationContext().getSystemService(LAYOUT_INFLATER_SERVICE);
+            final View dialog_layout = inflater.inflate(R.layout.activity_main_dialog_edit_password,(ViewGroup)findViewById(R.id.dialog_edit_password_root));
+            final AlertDialog.Builder editPWDialogBuild = new AlertDialog.Builder(MainActivity.this);
+            editPWDialogBuild.setTitle("비밀번호 변경");
+            editPWDialogBuild.setView(dialog_layout);
+            editPWDialogBuild.setPositiveButton("확인", new DialogInterface.OnClickListener() {
                 @Override
-                public void done(ParseException e) {
-                    dialog.dismiss();
-                    Toast.makeText(getApplicationContext(),"비밀번호가 변경되었습니다.",Toast.LENGTH_SHORT).show();
+                public void onClick(DialogInterface dialog, int which) {
+                    String new_pw = ((TextView)dialog_layout.findViewById(R.id.dialog_new_password)).getText().toString().trim();
+                    String new_pw_again = ((TextView)dialog_layout.findViewById(R.id.dialog_new_password_again)).getText().toString().trim();
+                    if(new_pw.length()>0) {
+                        if(new_pw.equals(new_pw_again)) {
+                            final ProgressDialog editPWProgressDialog = new ProgressDialog(MainActivity.this);
+                            editPWProgressDialog.setMessage(getString(R.string.progress_edit_password));
+                            editPWProgressDialog.show();
+                            ParseUser currentUser = ParseUser.getCurrentUser();
+                            currentUser.getCurrentUser().setPassword(new_pw);
+                            currentUser.saveInBackground(new SaveCallback() {
+                                @Override
+                                public void done(ParseException e) {
+                                    editPWProgressDialog.dismiss();
+                                    Toast.makeText(getApplicationContext(), "비밀번호가 변경되었습니다.", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+                        else {
+                            Toast.makeText(getApplicationContext(), "비밀번호를 확인해 주세요.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    else {
+                        Toast.makeText(getApplicationContext(), "비밀번호를 입력해 주세요.", Toast.LENGTH_SHORT).show();
+                    }
                 }
             });
+            editPWDialogBuild.setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                }
+            });
+            AlertDialog editPWDialog = editPWDialogBuild.create();
+            editPWDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+            editPWDialogBuild.create().show();
         } else if (id == R.id.nav_logout) {
             // Call the Parse log out method
             final ProgressDialog dialog = new ProgressDialog(MainActivity.this);
@@ -284,7 +305,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        if (requestCode == REQ_CODE_SELECT_IMAGE) {
+        if (requestCode == REQ_CODE_SELECT_STAMP_IMAGE) {
             if (resultCode == Activity.RESULT_OK) {
                 String imagePath = getImageNameToUri(data.getData());
 
@@ -315,6 +336,16 @@ public class MainActivity extends AppCompatActivity
                 }
                 */
             }
+        }
+        else if(requestCode == REQ_CODE_SELECT_PROFILE_IMAGE) {
+            // TODO: Edit profile image
+            String imagePath = getImageNameToUri(data.getData());
+            navigationViewRefresh();
+        }
+        else if(requestCode == REQ_CODE_SELECT_COVER_IMAGE) {
+            // TODO: Edit cover image
+            String imagePath = getImageNameToUri(data.getData());
+            navigationViewRefresh();
         }
     }
 

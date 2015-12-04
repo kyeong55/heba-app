@@ -58,4 +58,8 @@
     <string name="create_commit">확인</string>
     <string name="create_title_hint">제목을 입력해주세요.</string>
     <string name="create_comment_hint">글쓰기...</string>
+    <!-- String related to Dialog -->
+    <string name="dialog_current_password">현재 비밀번호</string>
+    <string name="dialog_new_password">새 비밀번호</string>
+    <string name="dialog_new_password_again">새 비밀번호 확인</string>
 </resources>

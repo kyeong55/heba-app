@@ -13,6 +13,7 @@
     <!-- Common colors -->
     <color name="colorWhite">#FFFFFF</color>
     <color name="colorBlack">#000000</color>
+    <color name="colorHintText">#707070</color>
 
     <!-- Select Event -->
     <color name="colorSelectTitle">#A0000000</color>

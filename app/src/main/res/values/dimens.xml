@@ -45,4 +45,8 @@
     <dimen name="select_title_margin">16dp</dimen>
     <!-- Create Event -->
     <dimen name="create_text_margin">16dp</dimen>
+    <!-- Dialog Edit PW -->
+    <dimen name="dialog_editpw_text_margin_side">36dp</dimen>
+    <dimen name="dialog_editpw_text_margin_in">16dp</dimen>
+    <dimen name="dialog_editpw_text_height">40dp</dimen>
 </resources>
