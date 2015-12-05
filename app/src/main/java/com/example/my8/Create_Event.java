@@ -95,16 +95,16 @@ public class Create_Event extends AppCompatActivity {
                 0, stampPhoto.getWidth(), stampPhoto.getHeight(),
                 matrix, true);
         if (rotatedStampPhoto.getWidth() > rotatedStampPhoto.getHeight()) {
-            if (rotatedStampPhoto.getWidth() > 300) {
-                scaledRotatedStampPhoto = Bitmap.createScaledBitmap(rotatedStampPhoto, 300, 300
-                        * rotatedStampPhoto.getHeight() / rotatedStampPhoto.getWidth(), false);
+            if (rotatedStampPhoto.getHeight() > 500) {
+                scaledRotatedStampPhoto = Bitmap.createScaledBitmap(rotatedStampPhoto,
+                        500 * rotatedStampPhoto.getWidth() / rotatedStampPhoto.getHeight(), 500, false);
             } else {
                 scaledRotatedStampPhoto = rotatedStampPhoto;
             }
         } else {
-            if (rotatedStampPhoto.getHeight() > 300) {
-                scaledRotatedStampPhoto = Bitmap.createScaledBitmap(rotatedStampPhoto,
-                        300 * rotatedStampPhoto.getWidth() / rotatedStampPhoto.getHeight(), 300, false);
+            if (rotatedStampPhoto.getWidth() > 500) {
+                scaledRotatedStampPhoto = Bitmap.createScaledBitmap(rotatedStampPhoto, 500, 500
+                        * rotatedStampPhoto.getHeight() / rotatedStampPhoto.getWidth(), false);
             } else {
                 scaledRotatedStampPhoto = rotatedStampPhoto;
             }

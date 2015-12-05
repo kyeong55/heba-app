@@ -43,7 +43,7 @@ class Playground_Stamp_item {
     }
 
     public ParseFile getImage() {
-        return stamp.getPhotoFile();
+        return stamp.getThumbnail();
     }
 
     public Date getUpdateTime() {
