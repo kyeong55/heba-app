@@ -216,7 +216,7 @@ public class Create_Event extends AppCompatActivity {
 
             //stamp photo
             ByteArrayOutputStream scaledBos = new ByteArrayOutputStream();
-            scaledRotatedStampPhoto.compress(Bitmap.CompressFormat.JPEG, 100, scaledBos);
+            scaledRotatedStampPhoto.compress(Bitmap.CompressFormat.JPEG, 25, scaledBos);
             byte[] scaledPhoto = scaledBos.toByteArray();
             ParseFile scaledStampPhotoFile = new ParseFile("thumbnail.jpg", scaledPhoto);
             scaledStampPhotoFile.saveInBackground();
