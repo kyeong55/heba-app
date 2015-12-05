@@ -7,7 +7,8 @@
         android:id="@+id/ms_card_view"
         android:layout_width="match_parent"
         android:layout_height="@dimen/stamp_image_height"
-        card_view:cardUseCompatPadding="true">
+        android:layout_margin="2dp"
+        card_view:cardCornerRadius="0dp">
         <com.parse.ParseImageView
             android:id="@+id/ms_stamp"
             android:layout_width="match_parent"

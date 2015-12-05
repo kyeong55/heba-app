@@ -3,6 +3,7 @@ package com.example.my8;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -28,6 +29,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -563,9 +566,19 @@ public class MainActivity extends AppCompatActivity
             View rootView = inflater.inflate(R.layout.my_stamp, container, false);
             header = inflater.inflate(R.layout.my_stamp_header, container, false);
 
-            msAdapter = new MyStampAdapter(container.getContext(),header);
+            DisplayMetrics metrics = new DisplayMetrics();
+            WindowManager windowManager = (WindowManager) container.getContext().getSystemService(Context.WINDOW_SERVICE);
+            windowManager.getDefaultDisplay().getMetrics(metrics);
+            float displayWidth = (float)metrics.widthPixels/metrics.xdpi;
+            int columnNum = (int) (displayWidth/2.3);
+            if (columnNum < 2)
+                columnNum = 2;
+            else if (columnNum > 5)
+                columnNum = 5;
 
-            final GridLayoutManager layoutManager = new GridLayoutManager(container.getContext(),2);
+            msAdapter = new MyStampAdapter(container.getContext(),header, columnNum);
+
+            final GridLayoutManager layoutManager = new GridLayoutManager(container.getContext(),columnNum);
             layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
                 @Override
                 public int getSpanSize(int position) {

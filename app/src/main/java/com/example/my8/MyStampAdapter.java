@@ -54,10 +54,13 @@ public class MyStampAdapter extends RecyclerView.Adapter<MyStampAdapter.ViewHold
     public final int VIEW_TYPE_ITEM=1;
     public final int VIEW_TYPE_FOOTER=2;
 
-    public MyStampAdapter(Context context,View header){
+    private int columnNum;
+
+    public MyStampAdapter(Context context,View header, int columnNum){
         this.context = context;
         this.items = new ArrayList<>();
         this.header = header;
+        this.columnNum = columnNum;
     }
 
     public MyStampAdapter(Context context, View header, List<MyStamp_item> items) {
@@ -111,7 +114,7 @@ public class MyStampAdapter extends RecyclerView.Adapter<MyStampAdapter.ViewHold
             DisplayMetrics metrics = new DisplayMetrics();
             WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
             windowManager.getDefaultDisplay().getMetrics(metrics);
-            params.height = metrics.widthPixels*3/7;
+            params.height = metrics.widthPixels*6/7/columnNum;
             holder.ms_card.setLayoutParams(params);
         }
     }
