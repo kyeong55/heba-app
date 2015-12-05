@@ -45,8 +45,6 @@ public class Create_Event extends AppCompatActivity {
     private String eventTitle;
     private Bitmap scaledRotatedStampPhoto;
     private Bitmap rotatedStampPhoto;
-    private Bitmap rotatedScaledStampPhoto;
-    private Bitmap stampPhotoScaled;
     private ExifInterface exif;
     private String eventId;
     private Event event;
@@ -96,8 +94,21 @@ public class Create_Event extends AppCompatActivity {
         rotatedStampPhoto = Bitmap.createBitmap(stampPhoto, 0,
                 0, stampPhoto.getWidth(), stampPhoto.getHeight(),
                 matrix, true);
-        scaledRotatedStampPhoto = Bitmap.createScaledBitmap(rotatedStampPhoto, 300, 300
-                * rotatedStampPhoto.getHeight() / rotatedStampPhoto.getWidth(), false);
+        if (rotatedStampPhoto.getWidth() > rotatedStampPhoto.getHeight()) {
+            if (rotatedStampPhoto.getWidth() > 300) {
+                scaledRotatedStampPhoto = Bitmap.createScaledBitmap(rotatedStampPhoto, 300, 300
+                        * rotatedStampPhoto.getHeight() / rotatedStampPhoto.getWidth(), false);
+            } else {
+                scaledRotatedStampPhoto = rotatedStampPhoto;
+            }
+        } else {
+            if (rotatedStampPhoto.getHeight() > 300) {
+                scaledRotatedStampPhoto = Bitmap.createScaledBitmap(rotatedStampPhoto,
+                        300 * rotatedStampPhoto.getWidth() / rotatedStampPhoto.getHeight(), 300, false);
+            } else {
+                scaledRotatedStampPhoto = rotatedStampPhoto;
+            }
+        }
         stampImageView.setImageBitmap(rotatedStampPhoto);
 
         event = null;
@@ -204,10 +215,16 @@ public class Create_Event extends AppCompatActivity {
             Log.w("debug!!!!!", "stampComment: " + stampComment);
 
             //stamp photo
+            ByteArrayOutputStream scaledBos = new ByteArrayOutputStream();
+            scaledRotatedStampPhoto.compress(Bitmap.CompressFormat.JPEG, 100, scaledBos);
+            byte[] scaledPhoto = scaledBos.toByteArray();
+            ParseFile scaledStampPhotoFile = new ParseFile("thumbnail.jpg", scaledPhoto);
+            scaledStampPhotoFile.saveInBackground();
+
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            scaledRotatedStampPhoto.compress(Bitmap.CompressFormat.JPEG, 100, bos);
-            byte[] scaledPhoto = bos.toByteArray();
-            ParseFile stampPhotoFile = new ParseFile("stamp.jpg", scaledPhoto);
+            rotatedStampPhoto.compress(Bitmap.CompressFormat.JPEG, 25, bos);
+            byte[] Photo = bos.toByteArray();
+            ParseFile stampPhotoFile = new ParseFile("original.jpg", Photo);
             stampPhotoFile.saveInBackground(new SaveCallback() {
                 @Override
                 public void done(com.parse.ParseException e) {
@@ -222,6 +239,7 @@ public class Create_Event extends AppCompatActivity {
             stamp.setLocation(stampLocation);
             stamp.setDatetime(stampDatetime);
             stamp.setPhotoFile(stampPhotoFile);
+            stamp.setThumbnail(scaledStampPhotoFile);
             stamp.setComment(stampComment);
             stamp.setUser(ParseUser.getCurrentUser());
             stamp.setEventId(eventId);

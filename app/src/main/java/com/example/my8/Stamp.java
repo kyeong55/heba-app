@@ -77,6 +77,14 @@ public class Stamp extends ParseObject {
         put(PHOTO, file);
     }
 
+    public ParseFile getThumbnail() {
+        return getParseFile("thumbnail");
+    }
+
+    public void setThumbnail(ParseFile file) {
+        put("thumbnail", file);
+    }
+
     public String getEventId() {
         return getString("eventId");
     }
