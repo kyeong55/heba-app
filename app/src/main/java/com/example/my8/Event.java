@@ -35,6 +35,19 @@ public class Event extends ParseObject {
         put("nParticipant", nParticipant);
     }
 
+    public ParseFile getThumbnail(int idx) {
+        switch (idx) {
+            case 1:
+                return getParseFile("thumbnail1");
+            case 2:
+                return getParseFile("thumbnail2");
+            case 3:
+                return getParseFile("thumbnail3");
+            default:
+                return null;
+        }
+    }
+
     public static ParseQuery<Event> getQuery() {
         return ParseQuery.getQuery(Event.class);
     }

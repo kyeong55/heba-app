@@ -25,7 +25,8 @@
         android:icon="@mipmap/ic_heba"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:largeHeap="true">
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"

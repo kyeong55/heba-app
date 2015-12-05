@@ -15,7 +15,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.parse.FindCallback;
+import com.parse.GetDataCallback;
 import com.parse.ParseException;
+import com.parse.ParseFile;
 import com.parse.ParseImageView;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -36,6 +38,10 @@ class Wishlist_item{
 
     public String getTitle() {
         return event.getTitle();
+    }
+
+    public ParseFile getThumbnail(int idx) {
+        return event.getThumbnail(idx);
     }
 }
 public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.ViewHolder>{
@@ -81,6 +87,18 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.ViewHo
             final Wishlist_item item = items.get(position);
 
             holder.title.setText(item.getTitle());
+
+            ParseFile thumbnail1 = item.getThumbnail(1);
+            if (thumbnail1 != null) {
+                ParseImageView stampImage = (ParseImageView)holder.thumbnail1;
+                stampImage.setParseFile(thumbnail1);
+                stampImage.loadInBackground(new GetDataCallback() {
+                    @Override
+                    public void done(byte[] data, ParseException e) {
+                        //nothing to do
+                    }
+                });
+            }
             holder.thumbnail1.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -89,6 +107,18 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.ViewHo
                     //context.startActivity(intent);
                 }
             });
+
+            ParseFile thumbnail2 = item.getThumbnail(2);
+            if (thumbnail2 != null) {
+                ParseImageView stampImage = (ParseImageView)holder.thumbnail2;
+                stampImage.setParseFile(thumbnail2);
+                stampImage.loadInBackground(new GetDataCallback() {
+                    @Override
+                    public void done(byte[] data, ParseException e) {
+                        //nothing to do
+                    }
+                });
+            }
             holder.thumbnail2.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -97,6 +127,18 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.ViewHo
                     //context.startActivity(intent);
                 }
             });
+
+            ParseFile thumbnail3 = item.getThumbnail(3);
+            if (thumbnail3 != null) {
+                ParseImageView stampImage = (ParseImageView)holder.thumbnail3;
+                stampImage.setParseFile(thumbnail3);
+                stampImage.loadInBackground(new GetDataCallback() {
+                    @Override
+                    public void done(byte[] data, ParseException e) {
+                        //nothing to do
+                    }
+                });
+            }
             holder.thumbnail3.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
