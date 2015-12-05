@@ -50,8 +50,9 @@ public class MyStampAdapter extends RecyclerView.Adapter<MyStampAdapter.ViewHold
     private List<MyStamp_item> items;
     private View header;
 
-    private final int VIEW_TYPE_HEADER=0;
-    private final int VIEW_TYPE_ITEM=1;
+    public final int VIEW_TYPE_HEADER=0;
+    public final int VIEW_TYPE_ITEM=1;
+    public final int VIEW_TYPE_FOOTER=2;
 
     public MyStampAdapter(Context context,View header){
         this.context = context;
@@ -67,15 +68,30 @@ public class MyStampAdapter extends RecyclerView.Adapter<MyStampAdapter.ViewHold
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View v = null;
         if(viewType == VIEW_TYPE_HEADER)
-            return new ViewHolder(header,viewType);
-        View v= LayoutInflater.from(parent.getContext()).inflate(R.layout.my_stamp_card,parent,false);
+            v = header;
+        else if (viewType == VIEW_TYPE_ITEM)
+            v = LayoutInflater.from(parent.getContext()).inflate(R.layout.my_stamp_card,parent,false);
+        else if (viewType == VIEW_TYPE_FOOTER)
+            v= LayoutInflater.from(parent.getContext()).inflate(R.layout.playground_card_footer, parent, false);
         return new ViewHolder(v,viewType);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        if(!isHeader(position)) {
+        int viewType = getItemViewType(position);
+        if (viewType == VIEW_TYPE_FOOTER){
+            if(addedAll) {
+                holder.footer_progress_end.setVisibility(View.VISIBLE);
+                holder.footer_progress_in.setVisibility(View.GONE);
+            }
+            else {
+                holder.footer_progress_end.setVisibility(View.GONE);
+                holder.footer_progress_in.setVisibility(View.VISIBLE);
+            }
+        }
+        else if (viewType == VIEW_TYPE_ITEM) {
             final MyStamp_item item = items.get(position-1);
             holder.stamp.setParseFile(item.getImageFile());
             holder.stamp.loadInBackground();
@@ -114,23 +130,22 @@ public class MyStampAdapter extends RecyclerView.Adapter<MyStampAdapter.ViewHold
 
     @Override
     public int getItemCount() {
-        return this.items.size() + 1;
-    }
-
-    public boolean isHeader(int position) {
-        return position == 0;
+        return this.items.size() + 2;
     }
 
     @Override
     public int getItemViewType(int position) {
-        return isHeader(position) ? VIEW_TYPE_HEADER : VIEW_TYPE_ITEM;
+        if (position == 0)
+            return VIEW_TYPE_HEADER;
+        else if (position == getItemCount()-1)
+            return VIEW_TYPE_FOOTER;
+        else
+            return VIEW_TYPE_ITEM;
     }
 
     public boolean isAdding() {
         return inAdding;
     }
-
-    public void setIsAdding(boolean inAdding){this.inAdding = inAdding;}
 
     public void add(){
         inAdding = true;
@@ -154,11 +169,11 @@ public class MyStampAdapter extends RecyclerView.Adapter<MyStampAdapter.ViewHold
                     }
                     if (items.size() == pos) { // 더 이상 받아올게 없음
                         addedAll = true;
-                        notifyItemChanged(pos);
+                        notifyItemChanged(pos + 1);
                     } else
-                        notifyItemRangeInserted(pos, items.size() - pos);
-                    inAdding = false;
+                        notifyItemRangeInserted(pos + 1, items.size() - pos);
                 }
+                inAdding = false;
             }
         });
     }
@@ -171,6 +186,9 @@ public class MyStampAdapter extends RecyclerView.Adapter<MyStampAdapter.ViewHold
         ParseImageView stamp;
         CardView ms_card;
 
+        View footer_progress_in;
+        TextView footer_progress_end;
+
         public ViewHolder(View itemView, int viewType) {
             super(itemView);
             if(viewType == VIEW_TYPE_HEADER){
@@ -182,6 +200,12 @@ public class MyStampAdapter extends RecyclerView.Adapter<MyStampAdapter.ViewHold
             else if(viewType == VIEW_TYPE_ITEM){
                 stamp = (ParseImageView)itemView.findViewById(R.id.ms_stamp);
                 ms_card = (CardView)itemView.findViewById(R.id.ms_card_view);
+            }
+            else if (viewType == VIEW_TYPE_FOOTER){
+                footer_progress_in = itemView.findViewById(R.id.progress_in);
+                footer_progress_end = (TextView) itemView.findViewById(R.id.progress_end);
+                ((TextView)itemView.findViewById(R.id.progress_text)).setText(R.string.ms_progress);
+                footer_progress_end.setText(R.string.ms_end_progress);
             }
         }
     }

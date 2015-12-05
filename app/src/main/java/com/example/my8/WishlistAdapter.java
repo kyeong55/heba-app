@@ -160,8 +160,8 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.ViewHo
                         } else {
                             notifyItemRangeInserted(pos, items.size() - pos);
                         }
-                        inAdding = false;
                     }
+                    inAdding = false;
                 }
             });
         }

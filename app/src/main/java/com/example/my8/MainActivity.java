@@ -563,19 +563,23 @@ public class MainActivity extends AppCompatActivity
             View rootView = inflater.inflate(R.layout.my_stamp, container, false);
             header = inflater.inflate(R.layout.my_stamp_header, container, false);
 
+            msAdapter = new MyStampAdapter(container.getContext(),header);
+
             final GridLayoutManager layoutManager = new GridLayoutManager(container.getContext(),2);
             layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
                 @Override
                 public int getSpanSize(int position) {
-                    return (position == 0) ? layoutManager.getSpanCount() : 1;
+                    int viewType = msAdapter.getItemViewType(position);
+                    if ((viewType == msAdapter.VIEW_TYPE_HEADER)||(viewType == msAdapter.VIEW_TYPE_FOOTER))
+                        return layoutManager.getSpanCount();
+                    else
+                        return 1;
                 }
             });
             RecyclerView events = (RecyclerView) rootView.findViewById(R.id.ms_view);
             events.setHasFixedSize(true);
             events.setLayoutManager(layoutManager);
             events.addOnChildAttachStateChangeListener(new ChildAttachListener(layoutManager));
-
-            msAdapter = new MyStampAdapter(container.getContext(),header);
             events.setAdapter(msAdapter);
 
             refresh();

@@ -227,7 +227,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
                 done_init = itemView.findViewById(R.id.friends_done_init);
                 done_add = itemView.findViewById(R.id.friends_done_add);
             }
-            else if(viewType == VIEW_TYPE_FOOTER){
+            else if(viewType == VIEW_TYPE_FOOTER) {
                 footer_progress_in = itemView.findViewById(R.id.progress_in);
                 footer_progress_end = (TextView) itemView.findViewById(R.id.progress_end);
                 ((TextView)itemView.findViewById(R.id.progress_text)).setText(R.string.friends_progress);
