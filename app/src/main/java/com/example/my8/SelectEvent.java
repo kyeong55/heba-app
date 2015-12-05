@@ -129,18 +129,7 @@ public class SelectEvent extends AppCompatActivity implements OnMapReadyCallback
 //                            e1.printStackTrace();
 //                        }
 //                    }
-                    List<Stamp> stamps = new ArrayList<>();
-                    for (Event event : events) {
-                        ParseQuery<Stamp> subQuery = Stamp.getQuery();
-                        subQuery.whereEqualTo("event", event);
-                        try {
-                            Stamp stamp = subQuery.getFirst();
-                            stamps.add(stamp);
-                        } catch (ParseException e1) {
-                            e1.printStackTrace();
-                        }
-                    }
-                    selectViewPager.setAdapter(new SelectEventPagerAdapter(getSupportFragmentManager(), events, stamps, imagePath));
+                    selectViewPager.setAdapter(new SelectEventPagerAdapter(getSupportFragmentManager(), events, imagePath));
                     dialog.dismiss();
 //                    selectEventImageAdapter.setItems(items);
 //                    selectEventImageAdapter.notifyDataSetChanged();
@@ -217,12 +206,11 @@ public class SelectEvent extends AppCompatActivity implements OnMapReadyCallback
 //            this.stamps = new ArrayList<>();
             size = 0;
         }
-        public SelectEventPagerAdapter(FragmentManager fm, List<Event> events, List<Stamp> stamps, String imagePath) {
+        public SelectEventPagerAdapter(FragmentManager fm, List<Event> events, String imagePath) {
             super(fm);
 //            this.events = events;
 //            this.stamps = stamps;
             SelectEventFragment.events = events;
-            SelectEventFragment.stamps = stamps;
             SelectEventFragment.imagePath = imagePath;
             size = events.size() + 1;
         }
@@ -254,7 +242,6 @@ public class SelectEvent extends AppCompatActivity implements OnMapReadyCallback
          */
         private static final String ARG_SECTION_NUMBER = "section_number";
         public static List<Event> events;
-        public static List<Stamp> stamps;
         public static String imagePath;
 
         /**
@@ -282,7 +269,7 @@ public class SelectEvent extends AppCompatActivity implements OnMapReadyCallback
             CardView select_event_card = (CardView) rootView.findViewById(R.id.image_with_title_card);
             if(position >= 0) {
                 select_event_title.setText(events.get(position).getTitle());
-                select_event_image.setParseFile(stamps.get(position).getPhotoFile());
+                select_event_image.setParseFile(events.get(position).getThumbnail(1));
                 select_event_image.loadInBackground(new GetDataCallback() {
                     @Override
                     public void done(byte[] data, ParseException e) {
