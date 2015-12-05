@@ -42,7 +42,9 @@
     <dimen name="wishlist_margin_out">12dp</dimen>
     <dimen name="wishlist_title_text_size">26sp</dimen>
     <!-- Select Event -->
-    <dimen name="select_title_margin">16dp</dimen>
+    <dimen name="select_text_margin">16dp</dimen>
+    <dimen name="select_title_size">16sp</dimen>
+    <dimen name="select_event_image_size">260dp</dimen>
     <!-- Create Event -->
     <dimen name="create_text_margin">16dp</dimen>
     <!-- Dialog Edit PW -->

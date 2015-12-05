@@ -9,8 +9,9 @@
     android:paddingTop="?attr/actionBarSize">
     <fragment
         android:id="@+id/map"
-        android:layout_height="@dimen/pg_image_size"
+        android:layout_height="0dp"
         android:layout_width="match_parent"
+        android:layout_weight="1"
         class="com.google.android.gms.maps.SupportMapFragment"
         xmlns:android="http://schemas.android.com/apk/res/android">
     </fragment>
@@ -20,8 +21,19 @@
         android:layout_width="match_parent"
         android:layout_height="match_content"/>
         -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorEditTitle"
+        android:elevation="2dp"
+        android:textStyle="bold"
+        android:padding="@dimen/create_text_margin"
+        android:gravity="center_vertical"
+        android:text="@string/select_title"
+        android:textSize="@dimen/select_title_size"
+        android:textColor="@color/colorBlack"/>
     <android.support.v4.view.ViewPager android:id="@+id/select_event_list"
-        android:layout_width="match_parent" android:layout_height="match_parent"
+        android:layout_width="match_parent" android:layout_height="@dimen/select_event_image_size"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:clipToPadding="false"
         android:paddingLeft="60dp"
