@@ -589,6 +589,7 @@ public class MainActivity extends AppCompatActivity
 
         public void refresh() {
             if (header == null) return;
+            msAdapter.setisAdding(true);
             ParseImageView profile = (ParseImageView) header.findViewById(R.id.ms_profile_image); // profile 사진
             ParseImageView cover = (ParseImageView) header.findViewById(R.id.ms_cover_image); // cover 사진
             TextView user_name = (TextView) header.findViewById(R.id.ms_user_name); // user 이름
@@ -628,6 +629,8 @@ public class MainActivity extends AppCompatActivity
                                 "Error on retrieving MyStamp: " + e.getMessage(),
                                 Toast.LENGTH_SHORT).show();
                     }
+                    msAdapter.addedAll = false;
+                    msAdapter.setisAdding(false);
                 }
             });
         }

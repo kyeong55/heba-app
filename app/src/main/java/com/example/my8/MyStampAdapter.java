@@ -143,6 +143,9 @@ public class MyStampAdapter extends RecyclerView.Adapter<MyStampAdapter.ViewHold
             return VIEW_TYPE_ITEM;
     }
 
+    public void setisAdding(boolean inAdding) {
+        this.inAdding = inAdding;
+    }
     public boolean isAdding() {
         return inAdding;
     }
