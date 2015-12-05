@@ -77,6 +77,14 @@ public class Stamp extends ParseObject {
         put(PHOTO, file);
     }
 
+    public String getEventId() {
+        return getString("eventId");
+    }
+
+    public void setEventId(String eventId) {
+        put("eventId", eventId);
+    }
+
     public ParseObject getEvent() {
         return getParseObject(EVENT);
     }

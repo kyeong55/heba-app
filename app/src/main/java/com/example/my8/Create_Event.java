@@ -224,6 +224,7 @@ public class Create_Event extends AppCompatActivity {
             stamp.setPhotoFile(stampPhotoFile);
             stamp.setComment(stampComment);
             stamp.setUser(ParseUser.getCurrentUser());
+            stamp.setEventId(eventId);
 
             //event
             if (event == null) {
@@ -232,7 +233,7 @@ public class Create_Event extends AppCompatActivity {
                 event.setTitle(eventTitle);
                 event.setNParticipant(1);
             } else {
-                event.increment("nParticipant");
+                //event.increment("nParticipant");
             }
 
             //stamp-event relation
@@ -248,7 +249,7 @@ public class Create_Event extends AppCompatActivity {
                 }
             });
 
-            event.saveInBackground();
+            //event.saveInBackground();
 
             ParseUser.getCurrentUser().addUnique("donelist", event.getObjectId());
             ParseUser.getCurrentUser().saveInBackground();
