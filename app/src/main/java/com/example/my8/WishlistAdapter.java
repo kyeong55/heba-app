@@ -87,7 +87,6 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.ViewHo
             final Wishlist_item item = items.get(position);
 
             holder.title.setText(item.getTitle());
-
             ParseFile thumbnail1 = item.getThumbnail(1);
             if (thumbnail1 != null) {
                 ParseImageView stampImage = (ParseImageView)holder.thumbnail1;

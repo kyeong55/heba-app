@@ -126,7 +126,7 @@ public class PgStampInfoActivity extends AppCompatActivity {
                 }
             });
             // recall stamp from the server
-            ParseQuery query = new ParseQuery(Stamp.CLASSNAME);
+            ParseQuery<Stamp> query = Stamp.getQuery();
             query.getInBackground(getArguments().getString(ARG_STAMP_ID), new GetCallback<Stamp>() {
                 @Override
                 public void done(Stamp stamp, ParseException e) {

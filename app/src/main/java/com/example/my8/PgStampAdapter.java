@@ -133,7 +133,7 @@ public class PgStampAdapter extends RecyclerView.Adapter<PgStampAdapter.ViewHold
     public void add(){
         inAdding = true;
         ParseQuery<Stamp> query = Stamp.getQuery();
-        query.whereEqualTo("event", event);
+        query.whereEqualTo("eventId", event.getObjectId());
         query.orderByDescending("updatedAt");
         if (items.size() == 0) {
         } else {

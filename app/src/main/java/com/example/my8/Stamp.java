@@ -21,76 +21,56 @@ public class Stamp extends ParseObject {
         // A default constructor is required.
     }
 
-    public static final String CLASSNAME = "Stamp";
+    public static final String LOCATION = "location";
     public static final String DATETIME = "datetime";
     public static final String COMMENT = "comment";
-    public static final String USER = "user";
-    public static final String LOCATION = "location";
+    public static final String THUMBNAIL = "thumbnail";
     public static final String PHOTO = "photo";
+    public static final String USER = "user";
+    public static final String TITLE = "eventTitle";
+    public static final String ID = "eventId";
     public static final String EVENT = "event";
+
+    public Stamp(ParseGeoPoint location, Date datetime, String comment, ParseFile thumbnail,
+                 ParseFile photo, ParseUser user, String eventTitle, String eventId) {
+        put(LOCATION, location);
+        put(DATETIME, datetime);
+        put(COMMENT, comment);
+        put(THUMBNAIL, thumbnail);
+        put(PHOTO, photo);
+        put(USER, user);
+        put(TITLE, eventTitle);
+        if (eventId != null) {
+            put(ID, eventId);
+        }
+    }
 
     public Date getDatetime() {
         return getDate(DATETIME);
-    }
-
-    public void setDatetime(Date datetime) {
-        put(DATETIME, datetime);
     }
 
     public String getComment() {
         return getString(COMMENT);
     }
 
-    public void setComment(String comment) {
-        put(COMMENT, comment);
-    }
-
     public ParseUser getUser() {
         return getParseUser(USER);
-    }
-
-    public void setUser(ParseUser user) {
-        put(USER, user);
     }
 
     public ParseGeoPoint getLocation() {
         return getParseGeoPoint(LOCATION);
     }
 
-    public void setLocation(ParseGeoPoint location) {
-        put(LOCATION, location);
-    }
-/*
-    public String getRating() {
-        return getString("rating");
-    }
-
-    public void setRating(String rating) {
-        put("rating", rating);
-    }
-*/
     public ParseFile getPhotoFile() {
         return getParseFile(PHOTO);
     }
 
-    public void setPhotoFile(ParseFile file) {
-        put(PHOTO, file);
-    }
-
     public ParseFile getThumbnail() {
-        return getParseFile("thumbnail");
-    }
-
-    public void setThumbnail(ParseFile file) {
-        put("thumbnail", file);
+        return getParseFile(THUMBNAIL);
     }
 
     public String getEventId() {
-        return getString("eventId");
-    }
-
-    public void setEventId(String eventId) {
-        put("eventId", eventId);
+        return getString(ID);
     }
 
     public ParseObject getEvent() {

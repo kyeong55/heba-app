@@ -289,6 +289,7 @@ public class SelectEvent extends AppCompatActivity implements OnMapReadyCallback
                         Intent toCreateEventActivity = new Intent(container.getContext(), Create_Event.class);
                         toCreateEventActivity.putExtra("imagePath", imagePath);
                         toCreateEventActivity.putExtra("eventId", events.get(position).getObjectId());
+                        toCreateEventActivity.putExtra("eventTitle", events.get(position).getTitle());
                         toCreateEventActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         container.getContext().startActivity(toCreateEventActivity);
                         getActivity().overridePendingTransition(R.anim.trans_activity_slide_left_in, R.anim.trans_activity_slide_left_out);

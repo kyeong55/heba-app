@@ -673,6 +673,20 @@ public class MainActivity extends AppCompatActivity
             return rootView;
         }
 
+        public void refresh() {
+            ParseQuery<ParseUser> query = ParseUser.getQuery();
+            query.whereEqualTo("objectId", ParseUser.getCurrentUser().getList("requestList"));
+            query.findInBackground(new FindCallback<ParseUser>() {
+                public void done(List<ParseUser> users, ParseException e) {
+                    if (e == null) {
+                        //Todo: full the list, add other users.
+                    } else {
+                        // Something went wrong.
+                    }
+                }
+            });
+        }
+
 //        public void refresh(final ViewGroup container, final boolean onRefresh) {
 //            ParseQuery<ParseObject> query = ParseQuery.getQuery("Event");
 //            query.orderByDescending("updatedAt");

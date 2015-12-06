@@ -1,6 +1,7 @@
 package com.example.my8;
 
 import android.app.Application;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -19,13 +20,16 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.parse.GetDataCallback;
 import com.parse.ParseACL;
 import com.parse.ParseFile;
 import com.parse.ParseGeoPoint;
+import com.parse.ParseImageView;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseRelation;
@@ -40,21 +44,24 @@ import java.util.Arrays;
 import java.util.Date;
 
 public class Create_Event extends AppCompatActivity {
-    private String stampComment;
-    private Bitmap stampPhoto;
-    private String eventTitle;
-    private Bitmap scaledRotatedStampPhoto;
     private Bitmap rotatedStampPhoto;
-    private ExifInterface exif;
+    private Bitmap scaledRotatedStampPhoto;
+    private Bitmap stampPhoto;
+
+    private ParseGeoPoint stampLocation;
+    private Date stampDatetime;
+    private String stampComment;
+    private ParseFile scaledStampPhotoFile;
+    private ParseFile stampPhotoFile;
+
     private String eventId;
-    private Event event;
+    private String eventTitle;
+
+    private ExifInterface exif;
 
     EditText titleEditText;
     EditText commentEditText;
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
+
     private GoogleApiClient client;
 
     @Override
@@ -94,6 +101,9 @@ public class Create_Event extends AppCompatActivity {
         rotatedStampPhoto = Bitmap.createBitmap(stampPhoto, 0,
                 0, stampPhoto.getWidth(), stampPhoto.getHeight(),
                 matrix, true);
+
+        stampImageView.setImageBitmap(rotatedStampPhoto);
+
         if (rotatedStampPhoto.getWidth() > rotatedStampPhoto.getHeight()) {
             if (rotatedStampPhoto.getHeight() > 500) {
                 scaledRotatedStampPhoto = Bitmap.createScaledBitmap(rotatedStampPhoto,
@@ -109,27 +119,35 @@ public class Create_Event extends AppCompatActivity {
                 scaledRotatedStampPhoto = rotatedStampPhoto;
             }
         }
-        stampImageView.setImageBitmap(rotatedStampPhoto);
 
-        event = null;
         eventId = getIntent().getStringExtra("eventId");
         if (eventId == null) {
             titleEditText.setHint("이벤트 제목을 입력해주세요.");
         } else {
-            ParseQuery<Event> query = Event.getQuery();
-            try {
-                event = query.get(eventId);
-                titleEditText.setText(event.getTitle());
-                titleEditText.setKeyListener(null);
-                commentEditText.requestFocus();
-            } catch (com.parse.ParseException e) {
-                e.printStackTrace();
-            }
+            eventTitle = getIntent().getStringExtra("eventTitle");
+            titleEditText.setText(eventTitle);
+            titleEditText.setKeyListener(null);
+            commentEditText.requestFocus();
         }
 
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+
+        //stamp location
+        float geopoint[] = new float[2];
+        exif.getLatLong(geopoint);
+        String latitude = geopoint[0] + "";
+        String longitude = geopoint[1] + "";
+        stampLocation = new ParseGeoPoint(Double.parseDouble(latitude), Double.parseDouble(longitude));
+
+        //stamp datetime
+        String datetime = exif.getAttribute(ExifInterface.TAG_DATETIME);
+        SimpleDateFormat format = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss");
+        stampDatetime = null;
+        try {
+            stampDatetime = format.parse(datetime);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
     @Override
     public boolean onSupportNavigateUp(){
@@ -161,8 +179,6 @@ public class Create_Event extends AppCompatActivity {
     public void onStop() {
         super.onStop();
 
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
         Action viewAction = Action.newAction(
                 Action.TYPE_VIEW, // TODO: choose an action type.
                 "Create_Event Page", // TODO: Define a title for the content shown.
@@ -191,90 +207,60 @@ public class Create_Event extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if(id == R.id.action_commit) {
-            float geopoint[] = new float[2];
-            exif.getLatLong(geopoint);
-
-            String latitude = geopoint[0] + "";
-            String longitude = geopoint[1] + "";
-            String datetime = exif.getAttribute(ExifInterface.TAG_DATETIME);
-
-            //stamp location
-            ParseGeoPoint stampLocation = new ParseGeoPoint(Double.parseDouble(latitude), Double.parseDouble(longitude));
-
-            //stamp datetime
-            SimpleDateFormat format = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss");
-            Date stampDatetime = null;
-            try {
-                stampDatetime = format.parse(datetime);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
+            final ProgressDialog dialog = new ProgressDialog(Create_Event.this);
+            dialog.setMessage("업로드 중");
+            dialog.show();
 
             //stamp comment
             stampComment = commentEditText.getText().toString();
-            Log.w("debug!!!!!", "stampComment: " + stampComment);
 
             //stamp photo
             ByteArrayOutputStream scaledBos = new ByteArrayOutputStream();
-            scaledRotatedStampPhoto.compress(Bitmap.CompressFormat.JPEG, 25, scaledBos);
+            scaledRotatedStampPhoto.compress(Bitmap.CompressFormat.JPEG, 50, scaledBos);
             byte[] scaledPhoto = scaledBos.toByteArray();
-            ParseFile scaledStampPhotoFile = new ParseFile("thumbnail.jpg", scaledPhoto);
+            scaledStampPhotoFile = new ParseFile("thumbnail.jpg", scaledPhoto);
             scaledStampPhotoFile.saveInBackground();
 
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             rotatedStampPhoto.compress(Bitmap.CompressFormat.JPEG, 25, bos);
             byte[] Photo = bos.toByteArray();
-            ParseFile stampPhotoFile = new ParseFile("original.jpg", Photo);
-            stampPhotoFile.saveInBackground(new SaveCallback() {
-                @Override
-                public void done(com.parse.ParseException e) {
-                    if (e != null) {
-                        Log.w("debug:File", e + "");
-                    }
-                }
-            });
-
-            //stamp
-            Stamp stamp = new Stamp();
-            stamp.setLocation(stampLocation);
-            stamp.setDatetime(stampDatetime);
-            stamp.setPhotoFile(stampPhotoFile);
-            stamp.setThumbnail(scaledStampPhotoFile);
-            stamp.setComment(stampComment);
-            stamp.setUser(ParseUser.getCurrentUser());
-            stamp.setEventId(eventId);
+            stampPhotoFile = new ParseFile("original.jpg", Photo);
+            stampPhotoFile.saveInBackground();
 
             //event
-            if (event == null) {
-                event = new Event();
+            if (eventId == null) {
                 eventTitle = titleEditText.getText().toString();
-                event.setTitle(eventTitle);
-                event.setNParticipant(1);
-            } else {
-                //event.increment("nParticipant");
+                final Event event = new Event(eventTitle);
+                try {
+                    event.save();
+                    eventId = event.getObjectId();
+                } catch (com.parse.ParseException e) {
+                    e.printStackTrace();
+                }
             }
 
-            //stamp-event relation
-            stamp.setEvent(event);
+            ParseUser.getCurrentUser().addUnique("donelist", eventId);
+            ParseUser.getCurrentUser().saveInBackground();
 
-            //save
+            Stamp stamp = new Stamp(stampLocation, stampDatetime, stampComment, scaledStampPhotoFile,
+                    stampPhotoFile, ParseUser.getCurrentUser(), eventTitle, eventId);
+
             stamp.saveInBackground(new SaveCallback() {
                 @Override
                 public void done(com.parse.ParseException e) {
-                    if (e != null) {
-                        Log.w("debug:stamp", e + "");
+                    if (e == null) {
+                        dialog.dismiss();
+
+                        //Activity change
+                        SelectEvent selectEventActivity = (SelectEvent) SelectEvent.selectEventActivity;
+                        finish();
+                        selectEventActivity.finish();
+                    } else {
+                        dialog.dismiss();
+                        Toast.makeText(Create_Event.this, "업로드에 실패하였습니다.", Toast.LENGTH_SHORT).show();
                     }
                 }
             });
-
-            //event.saveInBackground();
-
-            ParseUser.getCurrentUser().addUnique("donelist", event.getObjectId());
-            ParseUser.getCurrentUser().saveInBackground();
-
-            SelectEvent selectEventActivity = (SelectEvent) SelectEvent.selectEventActivity;
-            finish();
-            selectEventActivity.finish();
         }
         return super.onOptionsItemSelected(item);
     }

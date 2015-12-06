@@ -16,36 +16,34 @@ import java.util.Date;
  */
 @ParseClassName("Event")
 public class Event extends ParseObject {
-    public Event() {
-        // A default constructor is required.
-    }
+    public Event() {}
 
-    public static final String CLASSNAME = "Event";
-    public static final String TITLE = "title";
+    private static final String CLASSNAME = "Event";
+    private static final String TITLE = "title";
+    private static final String PARTICIPANT = "nParticipant";
+    private static final String THUMBNAIL = "thumbnail";
+    private static final String INDEX = "thumbnailIndex";
+    private static final String FIRST = "first";
+
+    public Event(String title) {
+        put(TITLE, title);
+        put(PARTICIPANT, 0);
+        put(INDEX, 0);
+        put(FIRST, true);
+    }
 
     public String getTitle() { return getString(TITLE); }
 
-    public void setTitle(String title) { put(TITLE, title); }
-
     public int getNParticipant() {
-        return getInt("nParticipant");
+        return getInt(PARTICIPANT);
     }
 
-    public void setNParticipant(int nParticipant) {
-        put("nParticipant", nParticipant);
+    private int getIndex() {
+        return getInt(INDEX);
     }
 
     public ParseFile getThumbnail(int idx) {
-        switch (idx) {
-            case 1:
-                return getParseFile("thumbnail1");
-            case 2:
-                return getParseFile("thumbnail2");
-            case 3:
-                return getParseFile("thumbnail3");
-            default:
-                return null;
-        }
+        return getParseFile(THUMBNAIL + ((getIndex() + idx + 4) % 6));
     }
 
     public static ParseQuery<Event> getQuery() {

@@ -27,7 +27,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Created by 이태경 on 2015-11-14.
+ * Adapter for playground
  */
 class Playground_item {
     List<Playground_Stamp_item> playgroundStampItems;
@@ -261,7 +261,7 @@ public class PgAdapter extends RecyclerView.Adapter<PgAdapter.ViewHolder> {
     public void refresh(final Playground_item item) {
         item.setIsAdding(true);
         ParseQuery<Stamp> query = Stamp.getQuery();
-        query.whereEqualTo("event", item.getEvent());
+        query.whereEqualTo("eventId", item.getEventId());
         query.orderByDescending("updatedAt");
         query.setLimit(6);
         query.findInBackground(new FindCallback<Stamp>() {
