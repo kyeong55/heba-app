@@ -1,5 +1,7 @@
 package com.example.my8;
 
+import android.util.Log;
+
 import com.parse.ParseClassName;
 import com.parse.ParseFile;
 import com.parse.ParseGeoPoint;
@@ -29,7 +31,6 @@ public class Event extends ParseObject {
         put(TITLE, title);
         put(PARTICIPANT, 0);
         put(INDEX, 0);
-        put(FIRST, true);
     }
 
     public String getTitle() { return getString(TITLE); }

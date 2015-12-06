@@ -40,9 +40,7 @@ public class Stamp extends ParseObject {
         put(PHOTO, photo);
         put(USER, user);
         put(TITLE, eventTitle);
-        if (eventId != null) {
-            put(ID, eventId);
-        }
+        put(ID, eventId);
     }
 
     public Date getDatetime() {
@@ -71,14 +69,6 @@ public class Stamp extends ParseObject {
 
     public String getEventId() {
         return getString(ID);
-    }
-
-    public ParseObject getEvent() {
-        return getParseObject(EVENT);
-    }
-
-    public void setEvent(Event event) {
-        put(EVENT, event);
     }
 
     public static ParseQuery<Stamp> getQuery() {
