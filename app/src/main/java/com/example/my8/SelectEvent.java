@@ -113,31 +113,36 @@ public class SelectEvent extends AppCompatActivity implements OnMapReadyCallback
         final ProgressDialog dialog = new ProgressDialog(SelectEvent.this);
         dialog.setMessage("로딩 중");
         dialog.show();
-        ParseQuery<Event> query = Event.getQuery();
-        Log.w("debugging", ParseUser.getCurrentUser().getList("wishlist") + "");
-        query.whereContainedIn("objectId", ParseUser.getCurrentUser().getList("wishlist"));
-        query.findInBackground(new FindCallback<Event>() {
-            @Override
-            public void done(List<Event> events, ParseException e) {
-                if (e == null) {
-//                    List<Select_Event_Image_item> items = new ArrayList<>();
-//                    for (Event event : events) {
-//                        ParseQuery<Stamp> subQuery = Stamp.getQuery();
-//                        subQuery.whereEqualTo("event", event);
-//                        try {
-//                            Stamp stamp = subQuery.getFirst();
-//                            items.add(new Select_Event_Image_item(event, stamp));
-//                        } catch (ParseException e1) {
-//                            e1.printStackTrace();
-//                        }
-//                    }
-                    selectViewPager.setAdapter(new SelectEventPagerAdapter(getSupportFragmentManager(), events, imagePath));
-                    dialog.dismiss();
-//                    selectEventImageAdapter.setItems(items);
-//                    selectEventImageAdapter.notifyDataSetChanged();
+        List<String> wishlist = ParseUser.getCurrentUser().getList("wishlist");
+        if (wishlist == null) {
+            selectViewPager.setAdapter(new SelectEventPagerAdapter(getSupportFragmentManager(), new ArrayList<Event>(), imagePath));
+            dialog.dismiss();
+        } else {
+            ParseQuery<Event> query = Event.getQuery();
+            query.whereContainedIn("objectId", wishlist);
+            query.findInBackground(new FindCallback<Event>() {
+                @Override
+                public void done(List<Event> events, ParseException e) {
+                    if (e == null) {
+                        //                    List<Select_Event_Image_item> items = new ArrayList<>();
+                        //                    for (Event event : events) {
+                        //                        ParseQuery<Stamp> subQuery = Stamp.getQuery();
+                        //                        subQuery.whereEqualTo("event", event);
+                        //                        try {
+                        //                            Stamp stamp = subQuery.getFirst();
+                        //                            items.add(new Select_Event_Image_item(event, stamp));
+                        //                        } catch (ParseException e1) {
+                        //                            e1.printStackTrace();
+                        //                        }
+                        //                    }
+                        selectViewPager.setAdapter(new SelectEventPagerAdapter(getSupportFragmentManager(), events, imagePath));
+                        dialog.dismiss();
+                        //                    selectEventImageAdapter.setItems(items);
+                        //                    selectEventImageAdapter.notifyDataSetChanged();
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     @Override
