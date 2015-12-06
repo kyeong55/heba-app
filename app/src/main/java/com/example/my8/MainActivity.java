@@ -570,7 +570,7 @@ public class MainActivity extends AppCompatActivity
             WindowManager windowManager = (WindowManager) container.getContext().getSystemService(Context.WINDOW_SERVICE);
             windowManager.getDefaultDisplay().getMetrics(metrics);
             float displayWidth = (float)metrics.widthPixels/metrics.xdpi;
-            int columnNum = (int) (displayWidth/2.3);
+            int columnNum = (int) (displayWidth/1.5);
             if (columnNum < 2)
                 columnNum = 2;
             else if (columnNum > 5)

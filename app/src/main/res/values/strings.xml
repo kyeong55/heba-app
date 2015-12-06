@@ -52,10 +52,10 @@
     <!-- String related to Wishlist -->
     <string name="wl_progress">위시리스트를 불러오는 중</string>
     <string name="wl_end_progress">더 이상 불러올 위시리스트가 없습니다</string>
-    <!-- String related to SelectEventActivity -->
+    <!-- String related to Select Event Activity -->
     <string name="select_title">참여할 이벤트</string>
     <string name="select_add">새로운 이벤트 추가</string>
-    <!-- String related to CreateEventActivity -->
+    <!-- String related to Create Event Activity -->
     <string name="create_commit">확인</string>
     <string name="create_title_hint">제목을 입력해주세요.</string>
     <string name="create_comment_hint">글쓰기...</string>
@@ -63,4 +63,6 @@
     <string name="dialog_current_password">현재 비밀번호</string>
     <string name="dialog_new_password">새 비밀번호</string>
     <string name="dialog_new_password_again">새 비밀번호 확인</string>
+    <!-- String related to Search Activity -->
+    <string name="search_hint_text">이벤트 검색</string>
 </resources>

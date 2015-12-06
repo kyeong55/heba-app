@@ -12,46 +12,38 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
-public class SearchActivity extends AppCompatActivity {
+public class SearchActivity extends AppCompatActivity
+implements SearchView.OnQueryTextListener{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
-//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.create_toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        SearchView searchView = (SearchView)findViewById(R.id.search_view);
+        searchView.setOnQueryTextListener(this);
     }
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.search_menu, menu);
-////        SearchManager searchManager =
-////                (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-////        searchView.setSearchableInfo(
-////                searchManager.getSearchableInfo(getComponentName()));
-////        searchView.setIconifiedByDefault(false);
-////        searchView.requestFocus();
-//        MenuItemCompat.expandActionView(menu.findItem(R.id.action_search));
-//        SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
-//        searchView.setOnCloseListener(new SearchView.OnCloseListener(){
-//            @Override
-//            public boolean onClose (){
-//                finish();
-//                return false;
-//            }
-//        });
-//        return true;
-//    }
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        // Handle action bar item clicks here. The action bar will
-//        // automatically handle clicks on the Home/Up button, so long
-//        // as you specify a parent activity in AndroidManifest.xml.
-//        int id = item.getItemId();
-//        if(id == R.id.action_search) {
-//            //TODO: search
-//        }
-//        return super.onOptionsItemSelected(item);
-//    }
+    @Override
+    public boolean onSupportNavigateUp(){
+        finish();
+        return true;
+    }
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+//        InputMethodManager imm= (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+//        imm.hideSoftInputFromWindow(searchView.getWindowToken(), 0);
+//        searchView.setQuery("", false);
+//        searchView.setIconified(true);
+        Toast.makeText(this, "Search: "+query, Toast.LENGTH_LONG).show();
+        return false;
+    }
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        // TODO Auto-generated method stub
+        return false;
+    }
 }
