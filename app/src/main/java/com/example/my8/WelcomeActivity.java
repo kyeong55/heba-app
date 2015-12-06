@@ -24,6 +24,7 @@ public class WelcomeActivity extends AppCompatActivity {
             public void onClick(View v) {
                 // Starts an intent of the log in activity
                 startActivity(new Intent(WelcomeActivity.this, LoginActivity.class));
+                overridePendingTransition(0, 0);
             }
         });
 
@@ -34,6 +35,7 @@ public class WelcomeActivity extends AppCompatActivity {
             public void onClick(View v) {
                 // Starts an intent for the sign up activity
                 startActivity(new Intent(WelcomeActivity.this, SignUpActivity.class));
+                overridePendingTransition(0, 0);
             }
         });
     }

@@ -38,12 +38,19 @@ implements SearchView.OnQueryTextListener{
 //        imm.hideSoftInputFromWindow(searchView.getWindowToken(), 0);
 //        searchView.setQuery("", false);
 //        searchView.setIconified(true);
+        // TODO: search after submit
         Toast.makeText(this, "Search: "+query, Toast.LENGTH_LONG).show();
         return false;
     }
     @Override
     public boolean onQueryTextChange(String newText) {
-        // TODO Auto-generated method stub
+        // TODO: auto search
         return false;
+    }
+
+    @Override
+    public void finish(){
+        super.finish();
+        overridePendingTransition(R.anim.trans_activity_slide_right_in, R.anim.trans_activity_slide_right_out);
     }
 }

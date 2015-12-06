@@ -30,7 +30,6 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -301,6 +300,7 @@ public class MainActivity extends AppCompatActivity
             //TODO: search
             Intent searchIntent = new Intent(this,SearchActivity.class);
             startActivity(searchIntent);
+            overridePendingTransition(R.anim.trans_activity_slide_left_in, R.anim.trans_activity_slide_left_out);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -315,6 +315,7 @@ public class MainActivity extends AppCompatActivity
                 Intent toSelectEventActivity = new Intent(this, SelectEvent.class);
                 toSelectEventActivity.putExtra("imagePath", imagePath);
                 startActivity(toSelectEventActivity);
+                overridePendingTransition(R.anim.trans_activity_slide_left_in, R.anim.trans_activity_slide_left_out);
 
                 /*
                 try {

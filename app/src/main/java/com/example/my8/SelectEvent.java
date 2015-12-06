@@ -48,6 +48,7 @@ public class SelectEvent extends AppCompatActivity implements OnMapReadyCallback
      * See https://g.co/AppIndexing/AndroidStudio for more information.
      */
     private GoogleApiClient client;
+    private String imagePath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +68,7 @@ public class SelectEvent extends AppCompatActivity implements OnMapReadyCallback
 //        selectEventView.setLayoutManager(layoutManager);
 
         Intent intent = getIntent();
-        String imagePath = intent.getStringExtra("imagePath");
+        imagePath = intent.getStringExtra("imagePath");
 
 //        selectEventImageAdapter = new SelectEventImageAdapter(getApplicationContext(), imagePath);
 //        selectEventView.setAdapter(selectEventImageAdapter);
@@ -89,7 +90,7 @@ public class SelectEvent extends AppCompatActivity implements OnMapReadyCallback
             }
         });
 
-        refresh(imagePath);
+        refresh();
 
         /*
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -100,6 +101,7 @@ public class SelectEvent extends AppCompatActivity implements OnMapReadyCallback
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
+
     @Override
     public boolean onSupportNavigateUp(){
         finish();
@@ -107,7 +109,7 @@ public class SelectEvent extends AppCompatActivity implements OnMapReadyCallback
     }
 
 
-    public void refresh(final String imagePath) {
+    public void refresh() {
         final ProgressDialog dialog = new ProgressDialog(SelectEvent.this);
         dialog.setMessage("로딩 중");
         dialog.show();
@@ -141,7 +143,6 @@ public class SelectEvent extends AppCompatActivity implements OnMapReadyCallback
     @Override
     public void onStart() {
         super.onStart();
-
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client.connect();
@@ -189,6 +190,12 @@ public class SelectEvent extends AppCompatActivity implements OnMapReadyCallback
         LatLng loc = new LatLng(30,30);
         mMap.addMarker(new MarkerOptions().position(loc).title("Marker in picture"));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(loc, 14));
+    }
+
+    @Override
+    public void finish(){
+        super.finish();
+        overridePendingTransition(R.anim.trans_activity_slide_right_in, R.anim.trans_activity_slide_right_out);
     }
 
 
@@ -260,7 +267,7 @@ public class SelectEvent extends AppCompatActivity implements OnMapReadyCallback
         }
 
         @Override
-        public View onCreateView(LayoutInflater inflater, final ViewGroup container,
+        public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.image_with_title, container, false);
             final int position = getArguments().getInt(ARG_SECTION_NUMBER);
@@ -284,6 +291,7 @@ public class SelectEvent extends AppCompatActivity implements OnMapReadyCallback
                         toCreateEventActivity.putExtra("eventId", events.get(position).getObjectId());
                         toCreateEventActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         container.getContext().startActivity(toCreateEventActivity);
+                        getActivity().overridePendingTransition(R.anim.trans_activity_slide_left_in, R.anim.trans_activity_slide_left_out);
                     }
                 });
             }

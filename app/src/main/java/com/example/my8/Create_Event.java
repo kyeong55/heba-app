@@ -278,4 +278,9 @@ public class Create_Event extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+    @Override
+    public void finish(){
+        super.finish();
+        overridePendingTransition(R.anim.trans_activity_slide_right_in, R.anim.trans_activity_slide_right_out);
+    }
 }
