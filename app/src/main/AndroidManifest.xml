@@ -24,9 +24,9 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_heba"
         android:label="@string/app_name"
+        android:largeHeap="true"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        android:largeHeap="true">
+        android:theme="@style/AppTheme">
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
@@ -47,8 +47,9 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity android:name=".Create_Event"
-            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name=".Create_Event"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".SignUpActivity" />
         <activity android:name=".DispatchActivity">
             <intent-filter>
@@ -79,6 +80,10 @@
         <activity
             android:name=".PgStampInfoActivity"
             android:theme="@style/AppTheme.InfoPage" />
+        <activity
+            android:name=".EventInfoActivity"
+            android:label="@string/title_activity_event_info"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

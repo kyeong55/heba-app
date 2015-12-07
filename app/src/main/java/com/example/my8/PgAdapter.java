@@ -154,6 +154,14 @@ public class PgAdapter extends RecyclerView.Adapter<PgAdapter.ViewHolder> {
 
             // Bind item with view
             holder.title.setText(item.getTitle());
+            holder.title.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, EventInfoActivity.class);
+                    intent.putExtra("event_id", item.getEventId());
+                    context.startActivity(intent);
+                }
+            });
             holder.writer.setText(item.getWriter());
             holder.participate.setText(item.getNParticipant());
             holder.addWL.setOnClickListener(new View.OnClickListener() {

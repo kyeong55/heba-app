@@ -46,8 +46,7 @@
             android:layout_marginBottom="@dimen/pg_margin_in"
             android:layout_width="wrap_content" android:layout_height="wrap_content"
             android:textStyle="bold" android:textSize="@dimen/wishlist_title_text_size"
-            android:textColor="@color/colorBlack"
-            android:text="테스트"/>
+            android:textColor="@color/colorBlack"/>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/pg_stamp_view"

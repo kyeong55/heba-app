@@ -65,4 +65,10 @@
     <string name="dialog_new_password_again">새 비밀번호 확인</string>
     <!-- String related to Search Activity -->
     <string name="search_hint_text">이벤트 검색</string>
+    <!-- String related to Event Info Activity -->
+    <string name="title_activity_event_info">EventInfoActivity</string>
+    <string name="event_info_stamp_count">명이 참여했습니다</string>
+    <string name="event_info_time">에 처음 등록 되었습니다</string>
+    <string name="event_info_subtitle">최근 추가된 스탬프</string>
+    <string name="event_info_see_more">더보기</string>
 </resources>
