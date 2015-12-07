@@ -21,7 +21,9 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.parse.GetCallback;
+import com.parse.GetDataCallback;
 import com.parse.ParseException;
+import com.parse.ParseFile;
 import com.parse.ParseImageView;
 import com.parse.ParseQuery;
 
@@ -45,6 +47,7 @@ public class EventInfoActivity extends AppCompatActivity implements OnMapReadyCa
         final ParseImageView imageView1 = (ParseImageView) findViewById(R.id.event_info_image1);
         final ParseImageView imageView2 = (ParseImageView) findViewById(R.id.event_info_image2);
         final ParseImageView imageView3 = (ParseImageView) findViewById(R.id.event_info_image3);
+        final ParseImageView imageView4 = (ParseImageView) findViewById(R.id.event_info_image4);
         final TextView seeMoreButton = (TextView) findViewById(R.id.event_info_see_more);
 
         View map_layout = findViewById(R.id.event_info_map_layout);
@@ -52,8 +55,18 @@ public class EventInfoActivity extends AppCompatActivity implements OnMapReadyCa
         DisplayMetrics metrics = new DisplayMetrics();
         WindowManager windowManager = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
         windowManager.getDefaultDisplay().getMetrics(metrics);
-        params.height = metrics.heightPixels/2;
+        if (metrics.heightPixels > metrics.widthPixels)
+            params.height = metrics.heightPixels/3;
+        else
+            params.height = metrics.heightPixels/2;
         map_layout.setLayoutParams(params);
+
+        int widthPerUnit = (int)((float)metrics.widthPixels/metrics.xdpi/1.4);
+        if (widthPerUnit < 2)
+            widthPerUnit = 2;
+        else if (widthPerUnit > 4)
+            widthPerUnit = 4;
+        final int numOfphoto = widthPerUnit;
 
         String eventId = getIntent().getStringExtra("event_id");
         ParseQuery<Event> query = Event.getQuery();
@@ -61,7 +74,52 @@ public class EventInfoActivity extends AppCompatActivity implements OnMapReadyCa
             @Override
             public void done(Event event, ParseException e) {
                 titleTextView.setText(event.getTitle());
-                stampCountTextView.setText(event.getNParticipant()+"");
+                stampCountTextView.setText(event.getNParticipant() + "");
+                ParseFile thumbnail1 = event.getThumbnail(1);
+                ParseFile thumbnail2 = event.getThumbnail(2);
+                ParseFile thumbnail3 = event.getThumbnail(3);
+                ParseFile thumbnail4 = event.getThumbnail(4);
+                if(thumbnail1 != null){
+                    imageView1.setVisibility(View.VISIBLE);
+                    imageView1.setParseFile(thumbnail1);
+                    imageView1.loadInBackground(new GetDataCallback() {
+                        @Override
+                        public void done(byte[] data, ParseException e) {
+                            //nothing to do
+                        }
+                    });
+                }
+                if(thumbnail2 != null){
+                    imageView2.setVisibility(View.VISIBLE);
+                    imageView2.setParseFile(thumbnail2);
+                    imageView2.loadInBackground(new GetDataCallback() {
+                        @Override
+                        public void done(byte[] data, ParseException e) {
+                            //nothing to do
+                        }
+                    });
+                }
+                if((thumbnail3 != null)&&(numOfphoto >= 3)){
+                    imageView3.setVisibility(View.VISIBLE);
+                    imageView3.setParseFile(thumbnail3);
+                    imageView3.loadInBackground(new GetDataCallback() {
+                        @Override
+                        public void done(byte[] data, ParseException e) {
+                            //nothing to do
+                        }
+                    });
+                }
+                if((thumbnail4 != null)&&(numOfphoto == 4)){
+                    imageView4.setVisibility(View.VISIBLE);
+                    imageView4.setParseFile(thumbnail4);
+                    imageView4.loadInBackground(new GetDataCallback() {
+                        @Override
+                        public void done(byte[] data, ParseException e) {
+                            //nothing to do
+                        }
+                    });
+                }
+
                 //TODO: event 대표사진(3개 미만일 경우 visibility = NONE), 시간, 위치
                 //TODO: 더보기에 스탬프들 볼 수 있는 listener
 //                imageView.setParseFile(stamp.getPhotoFile());
