@@ -28,12 +28,13 @@
             android:layout_marginRight="@dimen/pg_margin_side"
             android:layout_marginTop="@dimen/pg_margin_out">
             <com.parse.ParseImageView android:id="@+id/pg_writer_photo"
-                android:layout_width="24dp" android:layout_height="24dp"
+                android:layout_width="@dimen/pg_profile_size" android:layout_height="@dimen/pg_profile_size"
                 android:src="@mipmap/ic_user"
                 />
             <TextView android:id="@+id/pg_writer"
                 android:layout_width="wrap_content" android:layout_height="wrap_content"
                 android:hint="누구야" android:layout_gravity="center_vertical"
+                android:layout_marginLeft="@dimen/pg_margin_in"
                 android:textStyle="bold"/>
             <TextView
                 android:layout_width="wrap_content" android:layout_height="wrap_content"

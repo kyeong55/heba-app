@@ -136,6 +136,7 @@
             android:text="@string/event_info_see_more"/>
     </LinearLayout>
     <LinearLayout
+        android:id="@+id/event_info_image_layout"
         android:layout_width="match_parent"
         android:layout_height="@dimen/pg_image_size"
         android:orientation="horizontal">

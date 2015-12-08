@@ -496,7 +496,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onChildViewAttachedToWindow(View view) {
                 if (pgadapter.getItemCount() - 3 <= llm.findLastVisibleItemPosition()) {
-                    if(!pgadapter.isAdding() && (pgadapter.getItemCount()>=6)&&(!pgadapter.addedAll))
+                    if(!pgadapter.isAdding() && (!pgadapter.addedAll))
                         pgadapter.add();
                 }
             }
@@ -619,7 +619,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onChildViewAttachedToWindow(View view) {
                 if (msAdapter.getItemCount() - 4 <= llm.findLastVisibleItemPosition()) {
-                    if(!msAdapter.isAdding() && (msAdapter.getItemCount()>=5)&&(!msAdapter.addedAll))
+                    if(!msAdapter.isAdding() && (!msAdapter.addedAll))
                         msAdapter.add();
                 }
             }

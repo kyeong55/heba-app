@@ -25,13 +25,13 @@ public class DispatchActivity extends AppCompatActivity {
             Intent intent = new Intent(this, MainActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
-            overridePendingTransition(R.anim.trans_activity_fade_in, R.anim.trans_activity_fade_out);
+            overridePendingTransition(R.anim.trans_activity_fade_in, R.anim.trans_activity_none);
         } else {
             // Start and intent for the logged out activity
             Intent intent = new Intent(this, WelcomeActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
-            overridePendingTransition(R.anim.trans_activity_fade_in, R.anim.trans_activity_fade_out);
+            overridePendingTransition(R.anim.trans_activity_fade_in, R.anim.trans_activity_none);
         }
     }
 }

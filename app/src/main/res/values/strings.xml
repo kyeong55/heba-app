@@ -71,4 +71,5 @@
     <string name="event_info_time">에 처음 등록 되었습니다</string>
     <string name="event_info_subtitle">최근 추가된 스탬프</string>
     <string name="event_info_see_more">더보기</string>
+    <string name="event_info_add_wishlist">위시리스트 추가</string>
 </resources>

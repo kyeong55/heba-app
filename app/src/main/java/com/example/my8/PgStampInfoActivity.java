@@ -109,6 +109,9 @@ public class PgStampInfoActivity extends AppCompatActivity {
             final TextView textView = (TextView) rootView.findViewById(R.id.pg_stamp_info_text);
             final ProgressBar progressBar = (ProgressBar) rootView.findViewById(R.id.pg_stamp_info_progressbar);
             final LinearLayout llayout = (LinearLayout) rootView.findViewById(R.id.pg_stamp_info_linear_layout);
+            final TextView writerName = (TextView) rootView.findViewById(R.id.pg_stamp_info_writer);
+            final ParseImageView writerProfile = (ParseImageView) rootView.findViewById(R.id.pg_stamp_info_writer_profile);
+            final TextView time = (TextView) rootView.findViewById(R.id.pg_stamp_info_time);
 
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -116,7 +119,7 @@ public class PgStampInfoActivity extends AppCompatActivity {
                     if (is_text_visible) {
                         Animation alphaAni = AnimationUtils.loadAnimation(getContext(), R.anim.text_invisible);
                         llayout.startAnimation(alphaAni);
-                        llayout.setVisibility(View.INVISIBLE);
+                        llayout.setVisibility(View.GONE);
                     } else {
                         Animation alphaAni = AnimationUtils.loadAnimation(getContext(), R.anim.text_visible);
                         llayout.startAnimation(alphaAni);
@@ -133,6 +136,9 @@ public class PgStampInfoActivity extends AppCompatActivity {
                     imageView.setParseFile(stamp.getPhotoFile());
                     imageView.loadInBackground();
                     textView.setText(stamp.getComment());
+                    //TODO: writer profile, name, time
+//                    writerName.setText(stamp.getUser().getUsername());
+                    time.setText(stamp.getDatetime().toString());
                     progressBar.setVisibility(View.GONE);
                 }
             });

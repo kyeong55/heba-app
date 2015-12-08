@@ -313,6 +313,7 @@ public class SelectEvent extends AppCompatActivity implements OnMapReadyCallback
                         toCreateEventActivity.putExtra("eventId", (String)null);
                         toCreateEventActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         container.getContext().startActivity(toCreateEventActivity);
+                        getActivity().overridePendingTransition(R.anim.trans_activity_slide_left_in, R.anim.trans_activity_slide_left_out);
                     }
                 });
             }

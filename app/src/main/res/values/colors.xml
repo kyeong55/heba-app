@@ -14,6 +14,7 @@
     <color name="colorWhite">#FFFFFF</color>
     <color name="colorBlack">#000000</color>
     <color name="colorHintText">#707070</color>
+    <color name="colorHintTextWhite">#B0B0B0</color>
 
     <!-- Select Event -->
     <color name="colorSelectTitle">#A0000000</color>

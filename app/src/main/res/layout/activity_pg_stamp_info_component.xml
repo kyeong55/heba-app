@@ -14,13 +14,52 @@
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:background="@drawable/info_text_background"
-        android:layout_gravity="bottom">
+        android:layout_gravity="bottom"
+        android:padding="@dimen/stamp_info_text_padding"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            >
+            <com.parse.ParseImageView
+                android:id="@+id/pg_stamp_info_writer_profile"
+                android:layout_width="@dimen/stamp_info_profile_size"
+                android:layout_height="@dimen/stamp_info_profile_size"
+                android:src="@mipmap/ic_user"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/stamp_info_name_margin"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/pg_stamp_info_writer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:textSize="15sp"
+                    android:textColor="@color/colorWhite"
+                    android:text="누구야"/>
+                <TextView
+                    android:id="@+id/pg_stamp_info_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/stamp_info_time_size"
+                    android:textColor="@color/colorHintTextWhite"/>
+            </LinearLayout>
+        </LinearLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/colorWhite"
+            android:layout_marginTop="@dimen/stamp_info_text_padding_in"
+            android:layout_marginBottom="@dimen/stamp_info_text_padding_in"/>
         <TextView
             android:id="@+id/pg_stamp_info_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/colorWhite"
-            android:padding="@dimen/stamp_info_text_padding"/>
+            android:textColor="@color/colorWhite"/>
     </LinearLayout>
     <ProgressBar
         android:id="@+id/pg_stamp_info_progressbar"

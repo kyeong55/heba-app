@@ -115,7 +115,7 @@ public class SignUpActivity extends AppCompatActivity {
                     Intent intent = new Intent(SignUpActivity.this, DispatchActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
-                    overridePendingTransition(R.anim.trans_activity_fade_in, 0);
+                    overridePendingTransition(R.anim.trans_activity_fade_in, R.anim.trans_activity_none);
                 }
             }
         });

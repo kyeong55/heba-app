@@ -23,6 +23,7 @@
     <dimen name="pg_margin_in">8dp</dimen>
     <dimen name="pg_margin_out">12dp</dimen>
     <dimen name="pg_title_text_size">26sp</dimen>
+    <dimen name="pg_profile_size">24dp</dimen>
 
     <!-- Friends -->
     <dimen name="friends_card_margin">12dp</dimen>
@@ -36,6 +37,11 @@
     <dimen name="stamp_image_height">160dp</dimen>
     <!-- Stamp Info -->
     <dimen name="stamp_info_text_padding">32dp</dimen>
+    <dimen name="stamp_info_text_padding_in">4dp</dimen>
+    <dimen name="stamp_info_profile_size">32dp</dimen>
+    <dimen name="stamp_info_name_margin">8dp</dimen>
+    <dimen name="stamp_info_name_size">16sp</dimen>
+    <dimen name="stamp_info_time_size">12sp</dimen>
     <!-- Wishlist -->
     <dimen name="wishlist_margin_side">24dp</dimen>
     <dimen name="wishlist_margin_in">8dp</dimen>
