@@ -71,7 +71,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="명이 참여한 활동입니다."
+                android:text="명이 참여했습니다"
                 android:layout_weight="1"
                 android:layout_gravity="center_vertical"/>
             <TextView android:id="@+id/pg_addWL"

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -93,13 +94,14 @@ public class EventInfoStampAdapter extends RecyclerView.Adapter<EventInfoStampAd
             holder.eventStamp.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-//                    Intent intent = new Intent(context, MyStampInfoActivity.class);
-//                    String stampId = item.getID();
-//                    ArrayList<String> stampIdList = getStampObjectIdArrayList();
-//                    int pos = stampIdList.indexOf(stampId);
-//                    intent.putExtra("clicked_stamp_pos", pos);
-//                    intent.putExtra("stamp_id_list", stampIdList);
-//                    context.startActivity(intent);
+                    Intent intent = new Intent(context, PgStampInfoActivity.class);
+                    String stampId = item.getID();
+                    ArrayList<String> stampIdList = getStampObjectIdArrayList();
+                    int pos = stampIdList.indexOf(stampId);
+                    intent.putExtra("clicked_stamp_pos", pos);
+                    intent.putExtra("stamp_id_list", stampIdList);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(intent);
                 }
             });
             LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) holder.eventStamp.getLayoutParams();

@@ -1,6 +1,8 @@
 package com.example.my8;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
@@ -37,6 +39,10 @@ class Wishlist_item{
 
     public ParseFile getThumbnail(int idx) {
         return event.getThumbnail(idx);
+    }
+
+    public String getEventId() {
+        return event.getObjectId();
     }
 }
 public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.ViewHolder>{
@@ -82,6 +88,16 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.ViewHo
             final Wishlist_item item = items.get(position);
 
             holder.title.setText(item.getTitle());
+            holder.title.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, EventInfoActivity.class);
+                    intent.putExtra("event_id", item.getEventId());
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(intent);
+                    ((Activity)context).overridePendingTransition(R.anim.trans_activity_slide_left_in, R.anim.trans_activity_slide_left_out);
+                }
+            });
             ParseFile thumbnail1 = item.getThumbnail(1);
             if (thumbnail1 != null) {
                 ParseImageView stampImage = (ParseImageView)holder.thumbnail1;

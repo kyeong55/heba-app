@@ -203,7 +203,12 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_profile_image) {
+        if (id == R.id.nav_friends_list) {
+            Intent intent = new Intent(this, MyFriendActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            overridePendingTransition(R.anim.trans_activity_slide_left_in,R.anim.trans_activity_slide_left_out);
+        } else if (id == R.id.nav_profile_image) {
             Intent intent = new Intent(Intent.ACTION_PICK);
             intent.setType(MediaStore.Images.Media.CONTENT_TYPE);
             intent.setData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -223,10 +228,10 @@ public class MainActivity extends AppCompatActivity
             editPWDialogBuild.setPositiveButton("확인", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    String new_pw = ((TextView)dialog_layout.findViewById(R.id.dialog_new_password)).getText().toString().trim();
-                    String new_pw_again = ((TextView)dialog_layout.findViewById(R.id.dialog_new_password_again)).getText().toString().trim();
-                    if(new_pw.length()>0) {
-                        if(new_pw.equals(new_pw_again)) {
+                    String new_pw = ((TextView) dialog_layout.findViewById(R.id.dialog_new_password)).getText().toString().trim();
+                    String new_pw_again = ((TextView) dialog_layout.findViewById(R.id.dialog_new_password_again)).getText().toString().trim();
+                    if (new_pw.length() > 0) {
+                        if (new_pw.equals(new_pw_again)) {
                             final ProgressDialog editPWProgressDialog = new ProgressDialog(MainActivity.this);
                             editPWProgressDialog.setMessage(getString(R.string.progress_edit_password));
                             editPWProgressDialog.show();
@@ -239,12 +244,10 @@ public class MainActivity extends AppCompatActivity
                                     Toast.makeText(getApplicationContext(), "비밀번호가 변경되었습니다.", Toast.LENGTH_SHORT).show();
                                 }
                             });
-                        }
-                        else {
+                        } else {
                             Toast.makeText(getApplicationContext(), "비밀번호를 확인해 주세요.", Toast.LENGTH_SHORT).show();
                         }
-                    }
-                    else {
+                    } else {
                         Toast.makeText(getApplicationContext(), "비밀번호를 입력해 주세요.", Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -341,14 +344,18 @@ public class MainActivity extends AppCompatActivity
             }
         }
         else if(requestCode == REQ_CODE_SELECT_PROFILE_IMAGE) {
-            // TODO: Edit profile image
-            String imagePath = getImageNameToUri(data.getData());
-            navigationViewRefresh();
+            if (resultCode == Activity.RESULT_OK) {
+                // TODO: Edit profile image
+                String imagePath = getImageNameToUri(data.getData());
+                navigationViewRefresh();
+            }
         }
         else if(requestCode == REQ_CODE_SELECT_COVER_IMAGE) {
-            // TODO: Edit cover image
-            String imagePath = getImageNameToUri(data.getData());
-            navigationViewRefresh();
+            if (resultCode == Activity.RESULT_OK) {
+                // TODO: Edit cover image
+                String imagePath = getImageNameToUri(data.getData());
+                navigationViewRefresh();
+            }
         }
     }
 
@@ -529,7 +536,7 @@ public class MainActivity extends AppCompatActivity
             WindowManager windowManager = (WindowManager) container.getContext().getSystemService(Context.WINDOW_SERVICE);
             windowManager.getDefaultDisplay().getMetrics(metrics);
             float displayWidth = (float)metrics.widthPixels/metrics.xdpi;
-            int columnNum = (int) (displayWidth/1.5);
+            int columnNum = (int) (displayWidth/1.4);
             if (columnNum < 2)
                 columnNum = 2;
             else if (columnNum > 5)
@@ -568,7 +575,7 @@ public class MainActivity extends AppCompatActivity
             final TextView stamp_count = (TextView) header.findViewById(R.id.ms_stamp_count); // stamp 개수
 
             UserInfo userInfo = (UserInfo)ParseUser.getCurrentUser().getParseObject("userInfo");
-            user_name.setText(userInfo.getName());
+//            user_name.setText(userInfo.getName());
             // TODO update cover and profile photo
             // profile.setParseFile(user.getProfile());
             // profile.loadInBackground();
@@ -738,7 +745,7 @@ public class MainActivity extends AppCompatActivity
             wlView = (RecyclerView) rootView.findViewById(R.id.wishlist_view);
             wlView.setHasFixedSize(true);
             wlView.setLayoutManager(layoutManager);
-//            wlView.addOnChildAttachStateChangeListener(new ChildAttachListener(layoutManager));
+            wlView.addOnChildAttachStateChangeListener(new ChildAttachListener(layoutManager));
 
             wlAdapter = new WishlistAdapter(container.getContext());
             wlView.setAdapter(wlAdapter);
@@ -748,6 +755,28 @@ public class MainActivity extends AppCompatActivity
 
         public void refresh() {
             // TODO refresh wishlist
+        }
+
+        private class ChildAttachListener implements RecyclerView.OnChildAttachStateChangeListener {
+            LinearLayoutManager llm;
+
+            public ChildAttachListener(LinearLayoutManager llm){
+                super();
+                this.llm = llm;
+            }
+
+            @Override
+            public void onChildViewAttachedToWindow(View view) {
+                if (wlAdapter.getItemCount() - 3 <= llm.findLastVisibleItemPosition()) {
+                    if(!wlAdapter.isAdding() && (!wlAdapter.addedAll))
+                        wlAdapter.add();
+                }
+            }
+
+            @Override
+            public void onChildViewDetachedFromWindow(View view) {
+
+            }
         }
 //        private class ChildAttachListener implements RecyclerView.OnChildAttachStateChangeListener {
 //            LinearLayoutManager llm;

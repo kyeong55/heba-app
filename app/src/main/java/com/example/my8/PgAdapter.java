@@ -1,5 +1,6 @@
 package com.example.my8;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.LinearLayoutManager;
@@ -155,7 +156,9 @@ public class PgAdapter extends RecyclerView.Adapter<PgAdapter.ViewHolder> {
                 public void onClick(View v) {
                     Intent intent = new Intent(context, EventInfoActivity.class);
                     intent.putExtra("event_id", item.getEventId());
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(intent);
+                    ((Activity)context).overridePendingTransition(R.anim.trans_activity_slide_left_in, R.anim.trans_activity_slide_left_out);
                 }
             });
             holder.writer.setText(item.getWriter());

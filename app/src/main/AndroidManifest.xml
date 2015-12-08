@@ -87,7 +87,11 @@
         <activity
             android:name=".EventInfoStampViewActivity"
             android:label="@string/title_activity_event_info_stamp_view"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".MyFriendActivity"
+            android:label="@string/title_activity_my_friend"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
