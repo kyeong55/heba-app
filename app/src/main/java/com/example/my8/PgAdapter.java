@@ -2,16 +2,11 @@ package com.example.my8;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -123,6 +118,7 @@ public class PgAdapter extends RecyclerView.Adapter<PgAdapter.ViewHolder> {
         this.context = container.getContext();
         items = new ArrayList<>();
     }
+
     public void setItems(List<Playground_item> items) {
         this.items = items;
     }
@@ -167,17 +163,19 @@ public class PgAdapter extends RecyclerView.Adapter<PgAdapter.ViewHolder> {
             holder.addWL.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    List<String> wishlist = ParseUser.getCurrentUser().getList("wishlist");
-                    List<String> donelist = ParseUser.getCurrentUser().getList("donelist");
+                    UserInfo userInfo = (UserInfo)ParseUser.getCurrentUser().getParseObject("userInfo");
+                    List<ParseObject> wishlist = userInfo.getList(UserInfo.WISHLIST);
+                    List<ParseObject> donelist = userInfo.getList(UserInfo.DONELIST);
+                    Event event = item.getEvent();
                     String eventId = item.getEventId();
-                    if (donelist != null && donelist.contains(eventId)) {
+                    if (donelist != null && donelist.contains(event)) {
                         Toast.makeText(context, "이미 활동을 완료하였습니다", Toast.LENGTH_SHORT).show();
-                    } else if (wishlist != null && wishlist.contains(eventId)) {
+                    } else if (wishlist != null && wishlist.contains(event)) {
                         Toast.makeText(context, "이미 위시리스트에 추가되었습니다", Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(context, "위시리스트에 추가되었습니다", Toast.LENGTH_SHORT).show();
-                        ParseUser.getCurrentUser().addUnique("wishlist", eventId);
-                        ParseUser.getCurrentUser().saveInBackground();
+                        userInfo.addUnique(UserInfo.WISHLIST, event);
+                        userInfo.saveInBackground();
                     }
                 }
             });

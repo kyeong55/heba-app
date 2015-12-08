@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -12,10 +13,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.parse.ParseObject;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 import com.parse.SignUpCallback;
-
-import java.text.ParseException;
 
 /**
  * Activity which displays a login screen to the user.
@@ -98,24 +99,35 @@ public class SignUpActivity extends AppCompatActivity {
         dialog.show();
 
         // Set up a new Parse user
-        ParseUser user = new ParseUser();
+        final ParseUser user = new ParseUser();
+        UserInfo userInfo = new UserInfo(username);
         user.setUsername(username);
         user.setPassword(password);
+        user.put("userInfo", (ParseObject) userInfo);
 
         // Call the Parse signup method
-        user.signUpInBackground(new SignUpCallback() {
+        userInfo.saveInBackground(new SaveCallback() {
             @Override
             public void done(com.parse.ParseException e) {
-                dialog.dismiss();
                 if (e != null) {
-                    // Show the error message
                     Toast.makeText(SignUpActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
                 } else {
-                    // Start an intent for the dispatch activity
-                    Intent intent = new Intent(SignUpActivity.this, DispatchActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
-                    overridePendingTransition(R.anim.trans_activity_fade_in, R.anim.trans_activity_none);
+                    user.signUpInBackground(new SignUpCallback() {
+                        @Override
+                        public void done(com.parse.ParseException e) {
+                            dialog.dismiss();
+                            if (e != null) {
+                                // Show the error message
+                                Toast.makeText(SignUpActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                            } else {
+                                // Start an intent for the dispatch activity
+                                Intent intent = new Intent(SignUpActivity.this, DispatchActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(intent);
+                                overridePendingTransition(R.anim.trans_activity_fade_in, R.anim.trans_activity_fade_out);
+                            }
+                        }
+                    });
                 }
             }
         });

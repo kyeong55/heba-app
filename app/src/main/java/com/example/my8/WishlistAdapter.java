@@ -1,16 +1,12 @@
 package com.example.my8;
 
 import android.content.Context;
-import android.content.Intent;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -19,7 +15,6 @@ import com.parse.GetDataCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseImageView;
-import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
@@ -176,7 +171,8 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.ViewHo
 
     public void add(){
         inAdding = true;
-        List<String> wishlist = ParseUser.getCurrentUser().getList("wishlist");
+        UserInfo userInfo = (UserInfo)ParseUser.getCurrentUser().getParseObject("userInfo");
+        List<String> wishlist = userInfo.getWishlist();
         if (wishlist != null) {
             ParseQuery<Event> query = Event.getQuery();
             query.whereContainedIn("objectId", wishlist);

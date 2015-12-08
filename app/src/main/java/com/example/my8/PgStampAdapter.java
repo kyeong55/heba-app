@@ -33,9 +33,14 @@ import java.util.List;
  */
 class Playground_Stamp_item {
     Stamp stamp;
+    ParseFile thumbnail;
 
     public Playground_Stamp_item(Stamp stamp) {
         this.stamp = stamp;
+    }
+
+    public Playground_Stamp_item(ParseFile thumbnail) {
+        this.thumbnail = thumbnail;
     }
 
     public String getComment() {

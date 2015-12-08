@@ -5,7 +5,6 @@ import android.app.Application;
 import com.parse.Parse;
 import com.parse.ParseACL;
 import com.parse.ParseObject;
-import com.parse.ParseUser;
 
 /**
  * Created by yjchang on 11/25/15.
@@ -18,6 +17,8 @@ public class StarterApplication extends Application {
         /* Enable Local Datastore. */
         ParseObject.registerSubclass(Stamp.class);
         ParseObject.registerSubclass(Event.class);
+        ParseObject.registerSubclass(Friend.class);
+        ParseObject.registerSubclass(UserInfo.class);
         Parse.enableLocalDatastore(this);
         Parse.initialize(this,
                 "FxIKD0gxTd4rdcDyHxKZZG9XxeBMrKT1KmgM7xCl",

@@ -128,7 +128,7 @@ public class MyStampInfoActivity extends AppCompatActivity {
             query.getInBackground(getArguments().getString(ARG_STAMP_ID), new GetCallback<Stamp>() {
                 @Override
                 public void done(Stamp stamp, ParseException e) {
-                    imageView.setParseFile(stamp.getPhotoFile());
+                    imageView.setParseFile(stamp.getThumbnail());
                     imageView.loadInBackground();
                     textView.setText(stamp.getComment());
                     progressBar.setVisibility(View.GONE);

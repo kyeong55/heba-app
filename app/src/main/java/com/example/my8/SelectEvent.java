@@ -12,7 +12,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -113,7 +112,8 @@ public class SelectEvent extends AppCompatActivity implements OnMapReadyCallback
         final ProgressDialog dialog = new ProgressDialog(SelectEvent.this);
         dialog.setMessage("로딩 중");
         dialog.show();
-        List<String> wishlist = ParseUser.getCurrentUser().getList("wishlist");
+        UserInfo userInfo = (UserInfo)ParseUser.getCurrentUser().getParseObject("userInfo");
+        List<String> wishlist = userInfo.getWishlist();
         if (wishlist == null) {
             selectViewPager.setAdapter(new SelectEventPagerAdapter(getSupportFragmentManager(), new ArrayList<Event>(), imagePath));
             dialog.dismiss();

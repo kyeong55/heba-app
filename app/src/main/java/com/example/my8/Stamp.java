@@ -26,19 +26,18 @@ public class Stamp extends ParseObject {
     public static final String COMMENT = "comment";
     public static final String THUMBNAIL = "thumbnail";
     public static final String PHOTO = "photo";
-    public static final String USER = "user";
+    public static final String USERINFO = "userInfo";
     public static final String TITLE = "eventTitle";
     public static final String ID = "eventId";
-    public static final String EVENT = "event";
 
     public Stamp(ParseGeoPoint location, Date datetime, String comment, ParseFile thumbnail,
-                 ParseFile photo, ParseUser user, String eventTitle, String eventId) {
+                 ParseFile photo, UserInfo userInfo, String eventTitle, String eventId) {
         put(LOCATION, location);
         put(DATETIME, datetime);
         put(COMMENT, comment);
         put(THUMBNAIL, thumbnail);
         put(PHOTO, photo);
-        put(USER, user);
+        put(USERINFO, userInfo);
         put(TITLE, eventTitle);
         put(ID, eventId);
     }
@@ -51,8 +50,8 @@ public class Stamp extends ParseObject {
         return getString(COMMENT);
     }
 
-    public ParseUser getUser() {
-        return getParseUser(USER);
+    public UserInfo getUserInfo() {
+        return (UserInfo)getParseObject(USERINFO);
     }
 
     public ParseGeoPoint getLocation() {

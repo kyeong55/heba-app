@@ -43,7 +43,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.parse.FindCallback;
@@ -568,15 +567,15 @@ public class MainActivity extends AppCompatActivity
             TextView user_name = (TextView) header.findViewById(R.id.ms_user_name); // user 이름
             final TextView stamp_count = (TextView) header.findViewById(R.id.ms_stamp_count); // stamp 개수
 
-            ParseUser user = ParseUser.getCurrentUser();
-            user_name.setText(user.getUsername());
+            UserInfo userInfo = (UserInfo)ParseUser.getCurrentUser().getParseObject("userInfo");
+            user_name.setText(userInfo.getName());
             // TODO update cover and profile photo
             // profile.setParseFile(user.getProfile());
             // profile.loadInBackground();
             // cover.setParseFile(user.getCover());
             // cover.loadInBackground();
             ParseQuery<Stamp> query = Stamp.getQuery();
-            query.whereEqualTo(Stamp.USER, user);
+            query.whereEqualTo(Stamp.USERINFO, userInfo);
             query.orderByDescending("updatedAt");
 //            query.countInBackground(new CountCallback() {
 //                @Override
@@ -635,9 +634,9 @@ public class MainActivity extends AppCompatActivity
      * Friends Fragment
      */
     public static class FriendsFragment extends Fragment {
-        RecyclerView friendsView;
-        FriendsAdapter friendsAdapter;
-        SwipeRefreshLayout mySwipeRefreshLayout;
+        private RecyclerView friendsView;
+        private FriendsAdapter friendsAdapter;
+        private SwipeRefreshLayout mySwipeRefreshLayout;
 
         public FriendsFragment() {
         }
@@ -651,6 +650,7 @@ public class MainActivity extends AppCompatActivity
             friendsView = (RecyclerView) rootView.findViewById(R.id.friends_view);
             friendsView.setHasFixedSize(true);
             friendsView.setLayoutManager(layoutManager);
+            friendsView.addOnChildAttachStateChangeListener(new ChildAttachListener(layoutManager));
 
             friendsAdapter = new FriendsAdapter(container.getContext());
             friendsView.setAdapter(friendsAdapter);
@@ -661,57 +661,61 @@ public class MainActivity extends AppCompatActivity
                         @Override
                         public void onRefresh() {
                             // This method performs the actual data-refresh operation.
-//                            refresh(container, true);
-                            mySwipeRefreshLayout.setRefreshing(false);
+                            refresh();
                         }
                     }
             );
             mySwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorPrimaryDark);
-//            refresh(container, false);
-            friendsAdapter.add();
-            friendsAdapter.add();
+            refresh();
             return rootView;
         }
 
         public void refresh() {
-            ParseQuery<ParseUser> query = ParseUser.getQuery();
-            query.whereEqualTo("objectId", ParseUser.getCurrentUser().getList("requestList"));
-            query.findInBackground(new FindCallback<ParseUser>() {
-                public void done(List<ParseUser> users, ParseException e) {
+            friendsAdapter.setIsAdding(true);
+            ParseQuery<Friend> query = Friend.getQuery();
+            query.whereEqualTo(Friend.TO_USER_ID, ParseUser.getCurrentUser().getObjectId());
+            query.whereEqualTo(Friend.STATE, Friend.State.REQUESTED);
+            query.findInBackground(new FindCallback<Friend>() {
+                @Override
+                public void done(List<Friend> tuples, ParseException e) {
                     if (e == null) {
-                        //Todo: full the list, add other users.
-                    } else {
-                        // Something went wrong.
+                        List<Friends_item> items = new ArrayList<>();
+                        for (Friend tuple : tuples) {
+                            items.add(new Friends_item(tuple, (UserInfo)tuple.getFromUser()));
+                        }
+                        friendsAdapter.setItems(items);
+                        friendsAdapter.setNRequest(items.size());
+                        friendsAdapter.notifyDataSetChanged();
+                        mySwipeRefreshLayout.setRefreshing(false);
+
+                        friendsAdapter.addedAll = false;
+                        friendsAdapter.setIsAdding(false);
                     }
                 }
             });
         }
 
-//        public void refresh(final ViewGroup container, final boolean onRefresh) {
-//            ParseQuery<ParseObject> query = ParseQuery.getQuery("Event");
-//            query.orderByDescending("updatedAt");
-//            query.setLimit(10);
-//            query.findInBackground(new FindCallback<ParseObject>() {
-//                @Override
-//                public void done(List<ParseObject> objects, ParseException e) {
-//                    if (e == null) {
-//                        List<Playground_item> items = new ArrayList<>();
-//                        for (ParseObject event : objects) {
-//                            Event test = (Event) event;
-//                            String test_msg = test.getTitle();
-//                            Log.w("debugging", test_msg);
-//                            items.add(new Playground_item(container.getContext(), (Event) event));
-//                        }
-//                        Log.w("debugging", "done");
-//                        pgadapter.setItems(items);
-//                        pgadapter.notifyDataSetChanged();
-//                        if (onRefresh) {
-//                            mySwipeRefreshLayout.setRefreshing(false);
-//                        }
-//                    }
-//                }
-//            });
-//        }
+        private class ChildAttachListener implements RecyclerView.OnChildAttachStateChangeListener {
+            LinearLayoutManager llm;
+
+            public ChildAttachListener(LinearLayoutManager llm){
+                super();
+                this.llm = llm;
+            }
+
+            @Override
+            public void onChildViewAttachedToWindow(View view) {
+                if (friendsAdapter.getItemCount() - 3 <= llm.findLastVisibleItemPosition()) {
+                    if(!friendsAdapter.isAdding() && (friendsAdapter.getItemCount()>=6)&&(!friendsAdapter.addedAll))
+                        friendsAdapter.add();
+                }
+            }
+
+            @Override
+            public void onChildViewDetachedFromWindow(View view) {
+
+            }
+        }
     }
 
     /**

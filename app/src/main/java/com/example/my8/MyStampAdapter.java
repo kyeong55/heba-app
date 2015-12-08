@@ -1,6 +1,5 @@
 package com.example.my8;
 
-import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.CardView;
@@ -12,7 +11,6 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -152,9 +150,9 @@ public class MyStampAdapter extends RecyclerView.Adapter<MyStampAdapter.ViewHold
 
     public void add(){
         inAdding = true;
-        ParseUser user = ParseUser.getCurrentUser();
+        UserInfo userInfo = (UserInfo)ParseUser.getCurrentUser().getParseObject("userInfo");
         ParseQuery<Stamp> query = Stamp.getQuery();
-        query.whereEqualTo(Stamp.USER, user);
+        query.whereEqualTo(Stamp.USERINFO, userInfo);
         query.orderByDescending("updatedAt");
         if (items.size() == 0) {
         } else {

@@ -1,38 +1,26 @@
 package com.example.my8;
 
-import android.app.Application;
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.location.Location;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.graphics.Matrix;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.parse.GetDataCallback;
 import com.parse.ParseACL;
 import com.parse.ParseFile;
 import com.parse.ParseGeoPoint;
-import com.parse.ParseImageView;
-import com.parse.ParseObject;
-import com.parse.ParseQuery;
-import com.parse.ParseRelation;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
@@ -40,7 +28,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
 
 public class Create_Event extends AppCompatActivity {
@@ -231,36 +218,65 @@ public class Create_Event extends AppCompatActivity {
             if (eventId == null) {
                 eventTitle = titleEditText.getText().toString();
                 final Event event = new Event(eventTitle);
-                try {
-                    event.save();
-                    eventId = event.getObjectId();
-                } catch (com.parse.ParseException e) {
-                    e.printStackTrace();
-                }
-            }
+                ParseACL eventACL = new ParseACL();
+                eventACL.setPublicReadAccess(true);
+                eventACL.setPublicWriteAccess(true);
+                event.setACL(eventACL);
+                event.saveInBackground(new SaveCallback() {
+                    @Override
+                    public void done(com.parse.ParseException e) {
+                        eventId = event.getObjectId();
 
-            ParseUser.getCurrentUser().addUnique("donelist", eventId);
-            ParseUser.getCurrentUser().saveInBackground();
+                        UserInfo userInfo = (UserInfo)ParseUser.getCurrentUser().getParseObject("userInfo");
+                        userInfo.addDonelist(eventId);
+                        userInfo.saveInBackground();
 
-            Stamp stamp = new Stamp(stampLocation, stampDatetime, stampComment, scaledStampPhotoFile,
-                    stampPhotoFile, ParseUser.getCurrentUser(), eventTitle, eventId);
+                        Stamp stamp = new Stamp(stampLocation, stampDatetime, stampComment, scaledStampPhotoFile,
+                                stampPhotoFile, userInfo, eventTitle, eventId);
 
-            stamp.saveInBackground(new SaveCallback() {
-                @Override
-                public void done(com.parse.ParseException e) {
-                    if (e == null) {
-                        dialog.dismiss();
+                        stamp.saveInBackground(new SaveCallback() {
+                            @Override
+                            public void done(com.parse.ParseException e) {
+                                if (e == null) {
+                                    dialog.dismiss();
 
-                        //Activity change
-                        SelectEvent selectEventActivity = (SelectEvent) SelectEvent.selectEventActivity;
-                        finish();
-                        selectEventActivity.finish();
-                    } else {
-                        dialog.dismiss();
-                        Toast.makeText(Create_Event.this, "업로드에 실패하였습니다.", Toast.LENGTH_SHORT).show();
+                                    //Activity change
+                                    SelectEvent selectEventActivity = (SelectEvent) SelectEvent.selectEventActivity;
+                                    finish();
+                                    selectEventActivity.finish();
+                                } else {
+                                    dialog.dismiss();
+                                    Toast.makeText(Create_Event.this, "업로드에 실패하였습니다.", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
                     }
-                }
-            });
+                });
+            } else {
+                UserInfo userInfo = (UserInfo)ParseUser.getCurrentUser().getParseObject("userInfo");
+                userInfo.addDonelist(eventId);
+                userInfo.saveInBackground();
+
+                Stamp stamp = new Stamp(stampLocation, stampDatetime, stampComment, scaledStampPhotoFile,
+                        stampPhotoFile, userInfo, eventTitle, eventId);
+
+                stamp.saveInBackground(new SaveCallback() {
+                    @Override
+                    public void done(com.parse.ParseException e) {
+                        if (e == null) {
+                            dialog.dismiss();
+
+                            //Activity change
+                            SelectEvent selectEventActivity = (SelectEvent) SelectEvent.selectEventActivity;
+                            finish();
+                            selectEventActivity.finish();
+                        } else {
+                            dialog.dismiss();
+                            Toast.makeText(Create_Event.this, "업로드에 실패하였습니다.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+            }
         }
         return super.onOptionsItemSelected(item);
     }
