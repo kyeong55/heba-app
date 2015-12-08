@@ -86,7 +86,7 @@ public class EventInfoActivity extends AppCompatActivity implements OnMapReadyCa
         query.getInBackground(eventId, new GetCallback<Event>() {
             @Override
             public void done(Event event, ParseException e) {
-                int numOfPhoto = (int)((float)metrics.widthPixels/metrics.xdpi/1.4);
+                int numOfPhoto = (int) ((float) metrics.widthPixels / metrics.xdpi / 1.4);
                 if (numOfPhoto < 2)
                     numOfPhoto = 2;
                 else if (numOfPhoto > 4)
@@ -103,7 +103,8 @@ public class EventInfoActivity extends AppCompatActivity implements OnMapReadyCa
                     imageView1.setParseFile(thumbnail1);
                     imageView1.loadInBackground(new GetDataCallback() {
                         @Override
-                        public void done(byte[] data, ParseException e) {}
+                        public void done(byte[] data, ParseException e) {
+                        }
                     });
                 }
                 if (thumbnail2 != null) {
@@ -111,34 +112,34 @@ public class EventInfoActivity extends AppCompatActivity implements OnMapReadyCa
                     imageView2.setParseFile(thumbnail2);
                     imageView2.loadInBackground(new GetDataCallback() {
                         @Override
-                        public void done(byte[] data, ParseException e) {}
+                        public void done(byte[] data, ParseException e) {
+                        }
                     });
-                }
-                else
+                } else
                     numOfPhoto = 1;
                 if ((thumbnail3 != null) && (numOfPhoto >= 3)) {
                     imageView3.setVisibility(View.VISIBLE);
                     imageView3.setParseFile(thumbnail3);
                     imageView3.loadInBackground(new GetDataCallback() {
                         @Override
-                        public void done(byte[] data, ParseException e) {}
+                        public void done(byte[] data, ParseException e) {
+                        }
                     });
-                }
-                else if (numOfPhoto >= 3)
+                } else if (numOfPhoto >= 3)
                     numOfPhoto = 2;
                 if ((thumbnail4 != null) && (numOfPhoto == 4)) {
                     imageView4.setVisibility(View.VISIBLE);
                     imageView4.setParseFile(thumbnail4);
                     imageView4.loadInBackground(new GetDataCallback() {
                         @Override
-                        public void done(byte[] data, ParseException e) {}
+                        public void done(byte[] data, ParseException e) {
+                        }
                     });
-                }
-                else if (numOfPhoto == 4)
+                } else if (numOfPhoto == 4)
                     numOfPhoto = 3;
 
                 LinearLayout.LayoutParams imageParams = (LinearLayout.LayoutParams) imageLayout.getLayoutParams();
-                imageParams.height = metrics.widthPixels/numOfPhoto;
+                imageParams.height = metrics.widthPixels / numOfPhoto;
                 imageLayout.setLayoutParams(imageParams);
 
                 //TODO: event 대표시간, 위치
@@ -151,6 +152,17 @@ public class EventInfoActivity extends AppCompatActivity implements OnMapReadyCa
                         intent.setType(MediaStore.Images.Media.CONTENT_TYPE);
                         intent.setData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                         startActivityForResult(intent, REQ_CODE_SELECT_STAMP_IMAGE);
+                    }
+                });
+                seeMoreButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(getApplicationContext(), EventInfoStampViewActivity.class);
+                        intent.putExtra("eventId", eventId);
+                        intent.putExtra("eventTitle", eventTitle);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                        overridePendingTransition(R.anim.trans_activity_slide_left_in, R.anim.trans_activity_slide_left_out);
                     }
                 });
             }

@@ -29,8 +29,7 @@
             android:layout_marginBottom="@dimen/wishlist_margin_in"
             android:layout_width="wrap_content" android:layout_height="wrap_content"
             android:textStyle="bold" android:textSize="@dimen/wishlist_title_text_size"
-            android:textColor="@color/colorBlack"
-            android:text="테스트"/>
+            android:textColor="@color/colorBlack"/>
         <LinearLayout
             android:id="@+id/wl_image_layout"
             android:layout_width="match_parent"

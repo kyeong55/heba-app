@@ -83,7 +83,11 @@
         <activity
             android:name=".EventInfoActivity"
             android:label="@string/title_activity_event_info"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".EventInfoStampViewActivity"
+            android:label="@string/title_activity_event_info_stamp_view"
+            android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 
 </manifest>

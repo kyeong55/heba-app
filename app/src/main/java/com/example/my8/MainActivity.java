@@ -536,7 +536,7 @@ public class MainActivity extends AppCompatActivity
             else if (columnNum > 5)
                 columnNum = 5;
 
-            msAdapter = new MyStampAdapter(container.getContext(),header, columnNum);
+            msAdapter = new MyStampAdapter(container.getContext(),header, metrics.widthPixels*6/(7*columnNum));
 
             final GridLayoutManager layoutManager = new GridLayoutManager(container.getContext(),columnNum);
             layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
