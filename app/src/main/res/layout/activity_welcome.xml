@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    style="@android:style/Theme.Holo"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingBottom="@dimen/activity_vertical_margin"
@@ -9,38 +8,43 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".WelcomeActivity"
-    android:background="@drawable/welcome_page_background">
+    android:background="@drawable/welcome_page_background"
+    android:orientation="vertical"
+    android:gravity="center_horizontal">
 
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="3"/>
     <ImageView
         android:id="@+id/welcome_logo"
         android:src="@drawable/logo"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="90dp" />
-
+        android:layout_width="@dimen/welcome_logo_size"
+        android:layout_height="@dimen/welcome_logo_size" />
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="3"/>
     <Button
         android:id="@+id/login_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="400dp"
-        android:text="@string/login" />
-
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/welcome_button_height"
+        android:text="@string/login"
+        android:background="@drawable/transparent_button_selector"
+        android:textColor="@color/colorWhite"
+        android:textStyle="bold"
+        android:layout_margin="@dimen/welcome_button_margin"/>
     <Button
         android:id="@+id/signup_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_below="@id/login_button"
-        android:text="@string/signup" />
-
-</RelativeLayout>
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/welcome_button_height"
+        android:text="@string/signup"
+        android:background="@drawable/transparent_button_selector"
+        android:textColor="@color/colorWhite"
+        android:textStyle="bold"
+        android:layout_margin="@dimen/welcome_button_margin"/>
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+</LinearLayout>

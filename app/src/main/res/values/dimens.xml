@@ -6,6 +6,10 @@
     <dimen name="appbar_padding_top">8dp</dimen>
     <!-- RecyclerView Common -->
     <dimen name="recyclerview_padding">10dp</dimen>
+    <!-- Welcome page -->
+    <dimen name="welcome_logo_size">150dp</dimen>
+    <dimen name="welcome_button_height">40dp</dimen>
+    <dimen name="welcome_button_margin">4dp</dimen>
     <!-- Profile & Cover Image -->
     <dimen name="cover_image_height">160dp</dimen>
     <dimen name="option_cover_image_height">180dp</dimen>
