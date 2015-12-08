@@ -30,6 +30,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -575,7 +576,7 @@ public class MainActivity extends AppCompatActivity
             final TextView stamp_count = (TextView) header.findViewById(R.id.ms_stamp_count); // stamp 개수
 
             UserInfo userInfo = (UserInfo)ParseUser.getCurrentUser().getParseObject("userInfo");
-//            user_name.setText(userInfo.getName());
+            user_name.setText(ParseUser.getCurrentUser().getUsername());
             // TODO update cover and profile photo
             // profile.setParseFile(user.getProfile());
             // profile.loadInBackground();
@@ -681,23 +682,25 @@ public class MainActivity extends AppCompatActivity
             friendsAdapter.setIsAdding(true);
             ParseQuery<Friend> query = Friend.getQuery();
             query.whereEqualTo(Friend.TO_USER_ID, ParseUser.getCurrentUser().getObjectId());
-            query.whereEqualTo(Friend.STATE, Friend.State.REQUESTED);
+            query.whereEqualTo(Friend.STATE, Friend.REQUESTED);
             query.findInBackground(new FindCallback<Friend>() {
                 @Override
                 public void done(List<Friend> tuples, ParseException e) {
                     if (e == null) {
                         List<Friends_item> items = new ArrayList<>();
                         for (Friend tuple : tuples) {
-                            items.add(new Friends_item(tuple, (UserInfo)tuple.getFromUser()));
+                            items.add(new Friends_item(tuple, (UserInfo) tuple.getFromUser()));
                         }
                         friendsAdapter.setItems(items);
                         friendsAdapter.setNRequest(items.size());
                         friendsAdapter.notifyDataSetChanged();
-                        mySwipeRefreshLayout.setRefreshing(false);
-
-                        friendsAdapter.addedAll = false;
-                        friendsAdapter.setIsAdding(false);
+                    } else {
+                        Log.d("잡았다", e.getMessage());
+                        Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                     }
+                    friendsAdapter.addedAll = false;
+                    friendsAdapter.setIsAdding(false);
+                    mySwipeRefreshLayout.setRefreshing(false);
                 }
             });
         }
@@ -712,9 +715,15 @@ public class MainActivity extends AppCompatActivity
 
             @Override
             public void onChildViewAttachedToWindow(View view) {
+                Log.d("aaaa", "bbbb");
                 if (friendsAdapter.getItemCount() - 3 <= llm.findLastVisibleItemPosition()) {
-                    if(!friendsAdapter.isAdding() && (friendsAdapter.getItemCount()>=6)&&(!friendsAdapter.addedAll))
+                    Log.d("cccc", "dddd");
+                    Log.d("a", friendsAdapter.isAdding()+"");
+                    Log.d("a", friendsAdapter.addedAll+"");
+                    if(!friendsAdapter.isAdding() &&(!friendsAdapter.addedAll)) {
+                        Log.d("aaaaaa", "aaaaaaa");
                         friendsAdapter.add();
+                    }
                 }
             }
 

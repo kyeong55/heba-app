@@ -15,7 +15,9 @@ public class Friend extends ParseObject {
     public static final String TO_USER_ID = "toUserId";
     public static final String STATE = "state";
 
-    enum State { REQUESTED, REJECTED, APPROVED }
+    public static final int REQUESTED = 0;
+    public static final int REJECTED = 1;
+    public static final int APPROVED = 2;
 
     public Friend() {}
 
@@ -23,7 +25,7 @@ public class Friend extends ParseObject {
         put(FROM_USER, fromUserInfo);
         put(FROM_USER_ID, fromUserId);
         put(TO_USER_ID, toUserId);
-        put(STATE, State.REQUESTED);
+        put(STATE, REQUESTED);
     }
 
     public ParseObject getFromUser() {
@@ -34,9 +36,9 @@ public class Friend extends ParseObject {
 
     public String getToUserId() { return getString(TO_USER_ID); }
 
-    public State getState() { return State.valueOf(getString(STATE)); }
+    public int getState() { return getInt(STATE); }
 
-    public void setState(State state) { put(STATE, state.toString()); }
+    public void setState(int state) { put(STATE, state); }
 
     public static ParseQuery<Friend> getQuery() { return ParseQuery.getQuery(Friend.class); }
 }

@@ -177,7 +177,7 @@ public class PgAdapter extends RecyclerView.Adapter<PgAdapter.ViewHolder> {
                         Toast.makeText(context, "이미 위시리스트에 추가되었습니다", Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(context, "위시리스트에 추가되었습니다", Toast.LENGTH_SHORT).show();
-                        userInfo.addUnique(UserInfo.WISHLIST, event);
+                        userInfo.addUnique(UserInfo.WISHLIST, eventId);
                         userInfo.saveInBackground();
                     }
                 }

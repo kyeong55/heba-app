@@ -25,6 +25,10 @@ public class UserInfo extends ParseObject {
         put(NAME, username);
     }
 
+    public void setUserId(String userId) {
+        put(ID, userId);
+    }
+
     public String getUserId() {
         return getString(ID);
     }
