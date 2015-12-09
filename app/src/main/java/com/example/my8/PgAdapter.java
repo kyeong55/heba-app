@@ -278,8 +278,17 @@ public class PgAdapter extends RecyclerView.Adapter<PgAdapter.ViewHolder> {
 
         ParseQuery<ParseUser> userQuery = ParseQuery.or(userQueries);
 
-        ParseQuery<ActionContract> query = ActionContract.getQuery();
-        query.whereMatchesQuery(ActionContract.USER, userQuery);
+        ParseQuery<ActionContract> friendActionQuery = ActionContract.getQuery();
+        friendActionQuery.whereMatchesQuery(ActionContract.USER, userQuery);
+
+        ParseQuery<ActionContract> myActionQuery = ActionContract.getQuery();
+        myActionQuery.whereEqualTo(ActionContract.USER, ParseUser.getCurrentUser());
+
+        List<ParseQuery<ActionContract>> queries = new ArrayList<ParseQuery<ActionContract>>();
+        queries.add(friendActionQuery);
+        queries.add(myActionQuery);
+
+        ParseQuery<ActionContract> query = ParseQuery.or(queries);
         query.orderByDescending("updatedAt");
         if (items.size() == 0) {
         } else {
