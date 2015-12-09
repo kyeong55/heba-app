@@ -29,6 +29,7 @@ import java.util.List;
 class Friends_item{
     private Friend friend;
     private ParseUser user;
+    private boolean done = false;
 
     public Friends_item(ParseUser user) {
         this.friend = null;
@@ -67,6 +68,9 @@ class Friends_item{
     public Friend getFriend() {
         return friend;
     }
+
+    public void setDone(){done = true;}
+    public boolean isDone(){return done;}
 }
 public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHolder>{
     private Context context;
@@ -147,6 +151,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
                                 holder.done_background.setVisibility(View.VISIBLE);
                                 holder.done_init.setVisibility(View.INVISIBLE);
                                 holder.done_accept.setVisibility(View.VISIBLE);
+                                item.setDone();
                             }
                         }
                     });
@@ -167,6 +172,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
                                 holder.done_background.setVisibility(View.VISIBLE);
                                 holder.done_init.setVisibility(View.INVISIBLE);
                                 holder.done_reject.setVisibility(View.VISIBLE);
+                                item.setDone();
                             }
                         }
                     });
@@ -179,7 +185,10 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
                     Intent intent = new Intent(context, UserInfoActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     intent.putExtra("user_id", item.getId());
-                    intent.putExtra("already_friend", UserInfoActivity.FRIEND_REQUEST);
+                    if (item.isDone())
+                        intent.putExtra("already_friend", UserInfoActivity.FRIEND_DONE);
+                    else
+                        intent.putExtra("already_friend", UserInfoActivity.FRIEND_REQUEST);
                     context.startActivity(intent);
                 }
             });
@@ -225,6 +234,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
                                 holder.done_init.setVisibility(View.INVISIBLE);
                                 holder.done_add.setVisibility(View.VISIBLE);
                                 holder.friends_add_button.setVisibility(View.INVISIBLE);
+                                item.setDone();
                             }
                         }
                     });
@@ -236,7 +246,10 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
                     Intent intent = new Intent(context, UserInfoActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     intent.putExtra("user_id", item.getId());
-                    intent.putExtra("already_friend", UserInfoActivity.FRIEND_NONE);
+                    if (item.isDone())
+                        intent.putExtra("already_friend", UserInfoActivity.FRIEND_DONE);
+                    else
+                        intent.putExtra("already_friend", UserInfoActivity.FRIEND_NONE);
                     context.startActivity(intent);
                 }
             });

@@ -209,8 +209,6 @@ public class SelectEvent extends AppCompatActivity implements OnMapReadyCallback
         exif.getLatLong(geoPoint);
         String location = "";
 
-        Log.d("Debugging_map","lat: "+geoPoint[0]+", long: "+geoPoint[1]);
-
         Geocoder gc = new Geocoder(this, Locale.KOREAN);
         try {
             List<Address> addresses = gc.getFromLocation(geoPoint[0], geoPoint[1], 1);
@@ -230,8 +228,6 @@ public class SelectEvent extends AppCompatActivity implements OnMapReadyCallback
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        Log.d("Debugging_map", "위치: "+location);
 
         // Add a marker in Sydney and move the camera
         //LatLng loc = new LatLng(Double.parseDouble(intent.getStringExtra("latitude")), Double.parseDouble(intent.getStringExtra("longitude")));

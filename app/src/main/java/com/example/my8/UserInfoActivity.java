@@ -17,11 +17,10 @@ public class UserInfoActivity extends AppCompatActivity {
 
     UserInfoAdapter userInfoAdapter;
     private int friendState;
-    public static final int FRIEND_REQUEST = 0;//요청을 받은 거
-    public static final int FRIEND_APPLYED = 1;
-    public static final int FRIEND_NONE = 2;
-    public static final int FRIEND_REJECTED = 3;
-    public static final int FRIEND_SEND = 4; //내가 요청보낸 거
+    public static final int FRIEND_REQUEST = 0; //요청을 받은 거
+    public static final int FRIEND_APPLYED = 1; //이미 친구
+    public static final int FRIEND_NONE = 2;    //아무 사이 아님
+    public static final int FRIEND_DONE = 3;    //reject했거나 내가 요청을 보냄 (버튼 x)
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,7 +82,7 @@ public class UserInfoActivity extends AppCompatActivity {
             getMenuInflater().inflate(R.menu.user_info_apply_menu, menu);
         } else if (friendState == FRIEND_NONE){
             getMenuInflater().inflate(R.menu.user_info_add_menu, menu);
-        } else if (friendState == FRIEND_REJECTED){
+        } else if (friendState == FRIEND_DONE){
         }
         return true;
     }

@@ -255,6 +255,8 @@ public class Create_Event extends AppCompatActivity {
                                         EventInfoActivity eventInfoActivity = (EventInfoActivity) EventInfoActivity.eventInfoActivity;
                                         eventInfoActivity.refresh();
                                     }
+                                    MainActivity mainActivity = (MainActivity) MainActivity.mainActivity;
+                                    mainActivity.refreshAll();
                                     finish();
                                 } else {
                                     dialog.dismiss();

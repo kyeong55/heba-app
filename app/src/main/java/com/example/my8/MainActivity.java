@@ -96,7 +96,7 @@ public class MainActivity extends AppCompatActivity
      */
     private ViewPager mViewPager;
 
-    NavigationView navigationView;
+    static NavigationView navigationView;
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -130,7 +130,7 @@ public class MainActivity extends AppCompatActivity
                     invis();
                 if (position == 2) {
                     // TODO only refresh when new stamp added or profile updated
-                    ((MyStampFragment) mSectionsPagerAdapter.getItem(position)).refresh();
+//                    ((MyStampFragment) mSectionsPagerAdapter.getItem(position)).refresh();
                 }
             }
 
@@ -192,7 +192,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     // Refresh user info in option menu
-    public void navigationViewRefresh(){
+    public static void navigationViewRefresh(){
         View header = navigationView.getHeaderView(0);
         TextView userName = (TextView) header.findViewById(R.id.option_user_name);
         ParseImageView profileImage = (ParseImageView) header.findViewById(R.id.option_profile_image);
@@ -516,6 +516,32 @@ public class MainActivity extends AppCompatActivity
         cursor.moveToFirst();
 
         return cursor.getString(column_index);
+    }
+
+    public void refresh(int position) {
+        switch (position) {
+            case 0: //playground
+                ((PlaygroundFragment) mSectionsPagerAdapter.getItem(position)).refresh();
+                break;
+            case 1: //friend
+                ((FriendsFragment) mSectionsPagerAdapter.getItem(position)).refresh();
+                break;
+            case 2: //my stamp
+                ((MyStampFragment) mSectionsPagerAdapter.getItem(position)).refresh();
+                break;
+            case 3: //wishlist
+                ((WishlistFragment) mSectionsPagerAdapter.getItem(position)).refresh();
+                break;
+            case 4: //
+                navigationViewRefresh();
+        }
+    }
+    public static void refreshAll(){
+        ((PlaygroundFragment) mSectionsPagerAdapter.getItem(0)).refresh();
+        ((FriendsFragment) mSectionsPagerAdapter.getItem(1)).refresh();
+        ((MyStampFragment) mSectionsPagerAdapter.getItem(2)).refresh();
+        ((WishlistFragment) mSectionsPagerAdapter.getItem(3)).refresh();
+        navigationViewRefresh();
     }
 
     /**
@@ -1003,21 +1029,4 @@ public class MainActivity extends AppCompatActivity
 //        }
     }
 
-    /*
-    public static void refresh(int position) {
-        switch (position) {
-            case 0: //playground
-                ((PlaygroundFragment) mSectionsPagerAdapter.getItem(position)).refresh();
-                break;
-            case 1: //friend
-                //((FriendsFragment) mSectionsPagerAdapter.getItem(position)).refresh();
-                break;
-            case 2: //my stamp
-                ((MyStampFragment) mSectionsPagerAdapter.getItem(position)).refresh();
-                break;
-            case 3: //wishlist
-                ((WishlistFragment) mSectionsPagerAdapter.getItem(position)).refresh();
-                break;
-        }
-    }*/
 }
