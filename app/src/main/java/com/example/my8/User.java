@@ -8,4 +8,5 @@ public class User {
     final public static String PROFILE = "profile";
     final public static String WISHLIST = "wishlist";
     final public static String DONELIST = "donelist";
+    final public static String REQUESTLIST = "requestList";
 }

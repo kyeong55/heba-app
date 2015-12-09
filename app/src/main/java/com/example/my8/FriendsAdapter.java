@@ -194,7 +194,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
                 @Override
                 public void onClick(View v) {
                     //TODO: make request to friend
-                    ParseUser I = ParseUser.getCurrentUser();
+                    ParseUser user = ParseUser.getCurrentUser();
                     Friend friend = new Friend(ParseUser.getCurrentUser(), item.getId());
 
                     ParseACL friendACL = new ParseACL();
@@ -202,6 +202,9 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
                     friendACL.setWriteAccess(item.getId(), true);
                     friendACL.setWriteAccess(ParseUser.getCurrentUser().getObjectId(), true);
                     friend.setACL(friendACL);
+
+                    user.addUnique(User.REQUESTLIST, item.getId());
+                    user.saveInBackground();
 
                     friend.saveInBackground(new SaveCallback() {
                         @Override
@@ -282,24 +285,17 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
 
     public void add(){
         inAdding = true;
-        String userId = ParseUser.getCurrentUser().getObjectId();
+        ParseUser user = ParseUser.getCurrentUser();
+        String userId = user.getObjectId();
 
         ParseQuery<Friend> friendToQuery = Friend.getQuery();
-        friendToQuery.whereEqualTo(Friend.FROM_USER_ID, userId);
-
-        ParseQuery<Friend> friendFromQuery = Friend.getQuery();
-        friendFromQuery.whereEqualTo(Friend.TO_USER_ID, userId);
-
-        List<ParseQuery<Friend>> friendQueries = new ArrayList<ParseQuery<Friend>>();
-        friendQueries.add(friendToQuery);
-        friendQueries.add(friendFromQuery);
-
-        ParseQuery<Friend> friendQuery = ParseQuery.or(friendQueries);
+        friendToQuery.whereEqualTo(Friend.TO_USER_ID, userId);
 
         ParseQuery<ParseUser> query = ParseUser.getQuery();
         query.whereNotEqualTo(User.ID, userId);
-        query.whereDoesNotMatchKeyInQuery(User.ID, Friend.FROM_USER_ID, friendQuery);
-        query.whereDoesNotMatchKeyInQuery(User.ID, Friend.TO_USER_ID, friendQuery);
+        query.whereDoesNotMatchKeyInQuery(User.ID, Friend.FROM_USER_ID, friendToQuery);
+        if (user.getList(User.REQUESTLIST) != null)
+            query.whereNotContainedIn(User.ID, user.getList(User.REQUESTLIST));
         query.orderByDescending(User.ID);
         if (items.size() == nRequest) {
         } else {
