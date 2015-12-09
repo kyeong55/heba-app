@@ -3,6 +3,7 @@ package com.example.my8;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,6 +43,7 @@ class Friends_item{
     }
 
     public ParseFile getProfile() {
+        Log.d("null!!", user + "");
         if (user.getBoolean(User.EXIST_PROFILE))
             return user.getParseFile(User.PROFILE);
         return null;

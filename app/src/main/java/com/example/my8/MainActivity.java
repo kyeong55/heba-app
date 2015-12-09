@@ -940,6 +940,7 @@ public class MainActivity extends AppCompatActivity
             ParseQuery<Friend> query = Friend.getQuery();
             query.whereEqualTo(Friend.TO_USER_ID, ParseUser.getCurrentUser().getObjectId());
             query.whereEqualTo(Friend.STATE, Friend.REQUESTED);
+            query.include(Friend.FROM_USER);
             query.findInBackground(new FindCallback<Friend>() {
                 @Override
                 public void done(List<Friend> tuples, ParseException e) {

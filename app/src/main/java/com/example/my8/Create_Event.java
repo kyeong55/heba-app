@@ -130,15 +130,15 @@ public class Create_Event extends AppCompatActivity {
 
         //stamp datetime
         String datetime = exif.getAttribute(ExifInterface.TAG_DATETIME);
-        SimpleDateFormat dateFormat =
-                (SimpleDateFormat) android.text.format.DateFormat.getDateFormat(getApplicationContext());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss");
+                //(SimpleDateFormat) android.text.format.DateFormat.getDateFormat(getApplicationContext());
         stampDatetime = null;
         try {
             Log.d("hehehe", "exif: " + exif.toString());
             Log.d("hehehe", "DATE_TIME: " + exif.getAttribute(ExifInterface.TAG_DATETIME));
             Log.d("hehehe", "DATE_TIME_DIGITIZED: " + exif.getAttribute(ExifInterface.TAG_DATETIME_DIGITIZED));
             Log.d("hehehe", "datetime: " + datetime);
-            Log.d("hehehe", "dateformat: " + dateFormat.toLocalizedPattern());
+            Log.d("hehehe", "dateformat: " + dateFormat.toPattern());
             stampDatetime = dateFormat.parse(datetime);
         } catch (ParseException e) {
             e.printStackTrace();
