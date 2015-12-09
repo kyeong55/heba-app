@@ -8,12 +8,12 @@
     tools:showIn="@layout/activity_select_event"
     android:paddingTop="?attr/actionBarSize">
     <fragment
-        android:id="@+id/map"
+        android:id="@+id/select_event_map"
         android:layout_height="0dp"
         android:layout_width="match_parent"
         android:layout_weight="1"
         class="com.google.android.gms.maps.SupportMapFragment"
-        xmlns:android="http://schemas.android.com/apk/res/android">
+        tools:context="com.example.my8.SelectEvent">
     </fragment>
     <!--
     <android.support.v7.widget.RecyclerView

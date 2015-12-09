@@ -3,6 +3,9 @@ package com.example.my8;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,6 +15,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +27,8 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.parse.FindCallback;
@@ -32,8 +38,10 @@ import com.parse.ParseImageView;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 //public class SelectEvent extends FragmentActivity implements OnMapReadyCallback {
 public class SelectEvent extends AppCompatActivity implements OnMapReadyCallback {
@@ -91,11 +99,11 @@ public class SelectEvent extends AppCompatActivity implements OnMapReadyCallback
 
         refresh();
 
-        /*
+
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
+                .findFragmentById(R.id.select_event_map);
         mapFragment.getMapAsync(this);
-        */
+
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
@@ -188,12 +196,55 @@ public class SelectEvent extends AppCompatActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        Intent intent = getIntent();
+        ExifInterface exif = null;
+        try {
+            exif = new ExifInterface(imagePath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        float geoPoint[] = new float[2];
+        exif.getLatLong(geoPoint);
+        String location = "";
+
+        Log.d("Debugging_map","lat: "+geoPoint[0]+", long: "+geoPoint[1]);
+
+        Geocoder gc = new Geocoder(this, Locale.KOREAN);
+        try {
+            List<Address> addresses = gc.getFromLocation(geoPoint[0], geoPoint[1], 1);
+            StringBuffer sb = new StringBuffer();
+            if (addresses.size() > 0) {
+                Address address = addresses.get(0);
+                sb.append(address.getAddressLine(0).toString());
+//                for (int i = 0; i < address.getMaxAddressLineIndex(); i++)
+//                    sb.append(address.getAddressLine(i)).append("\n");
+//                sb.append(address.getCountryName()).append(" ");	// 나라코드
+//                sb.append(address.getLocality()).append(" ");		// 시
+//                sb.append(address.getSubLocality() + " ");  		// 구
+//                sb.append(address.getThoroughfare()).append(" ");	// 동
+//                sb.append(address.getFeatureName()).append(" ");	// 번지
+                location = sb.toString();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Log.d("Debugging_map", "위치: "+location);
 
         // Add a marker in Sydney and move the camera
         //LatLng loc = new LatLng(Double.parseDouble(intent.getStringExtra("latitude")), Double.parseDouble(intent.getStringExtra("longitude")));
-        LatLng loc = new LatLng(30,30);
-        mMap.addMarker(new MarkerOptions().position(loc).title("Marker in picture"));
+        LatLng loc = new LatLng(geoPoint[0],geoPoint[1]);
+        MarkerOptions marker = new MarkerOptions();
+        marker.title(location);
+        marker.position(loc);
+        marker.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+
+        MarkerOptions marker2 = new MarkerOptions();
+        marker2.title("하하");
+        marker2.position(new LatLng(geoPoint[0],geoPoint[1]+0.005));
+        marker2.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE));
+
+        mMap.addMarker(marker).showInfoWindow();
+        mMap.addMarker(marker2).showInfoWindow();
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(loc, 14));
     }
 
