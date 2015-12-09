@@ -1,6 +1,7 @@
 package com.example.my8;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.ExifInterface;
@@ -225,9 +226,17 @@ public class Create_Event extends AppCompatActivity {
                                         if (isSelectEvent.equalsIgnoreCase("true")) {
                                             SelectEvent selectEventActivity = (SelectEvent) SelectEvent.selectEventActivity;
                                             selectEventActivity.finish();
+                                            finish();
                                         } else {
                                             EventInfoActivity eventInfoActivity = (EventInfoActivity) EventInfoActivity.eventInfoActivity;
-                                            eventInfoActivity.refresh();
+                                            eventInfoActivity.finish();
+                                            MainActivity mainActivity = (MainActivity) MainActivity.mainActivity;
+                                            mainActivity.refreshAll();
+                                            Intent intent = new Intent(getApplicationContext(), EventInfoActivity.class);
+                                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                            intent.putExtra("event_id", eventId);
+                                            startActivity(intent);
+                                            overridePendingTransition(R.anim.trans_activity_slide_right_in, R.anim.trans_activity_slide_right_out);
                                         }
 
                                         finish();
@@ -274,12 +283,20 @@ public class Create_Event extends AppCompatActivity {
                                         if (isSelectEvent.equalsIgnoreCase("true")) {
                                             SelectEvent selectEventActivity = (SelectEvent) SelectEvent.selectEventActivity;
                                             selectEventActivity.finish();
+                                            finish();
                                         } else {
                                             EventInfoActivity eventInfoActivity = (EventInfoActivity) EventInfoActivity.eventInfoActivity;
-                                            eventInfoActivity.refresh();
+                                            eventInfoActivity.finish();
+                                            MainActivity mainActivity = (MainActivity) MainActivity.mainActivity;
+                                            mainActivity.refreshAll();
+                                            Intent intent = new Intent(getApplicationContext(), EventInfoActivity.class);
+                                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                            intent.putExtra("event_id", eventId);
+                                            startActivity(intent);
+                                            overridePendingTransition(R.anim.trans_activity_slide_right_in, R.anim.trans_activity_slide_right_out);
                                         }
 
-                                        finish();
+
                                     } else {
                                         dialog.dismiss();
                                         Toast.makeText(Create_Event.this, "업로드에 실패하였습니다.", Toast.LENGTH_SHORT).show();

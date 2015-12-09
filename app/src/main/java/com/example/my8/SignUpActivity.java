@@ -20,6 +20,8 @@ import com.parse.ParseUser;
 import com.parse.SaveCallback;
 import com.parse.SignUpCallback;
 
+import java.util.ArrayList;
+
 /**
  * ActionContract which displays a login screen to the user.
  */
@@ -108,6 +110,9 @@ public class SignUpActivity extends AppCompatActivity {
 
         user.put(User.EXIST_PROFILE, false);
         user.put(User.EXIST_COVER, false);
+
+        user.put(User.WISHLIST, new ArrayList<>());
+        user.put(User.DONELIST, new ArrayList<>());
 
         // Call the Parse signup method
         user.signUpInBackground(new SignUpCallback() {

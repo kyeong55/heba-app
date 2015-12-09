@@ -36,8 +36,10 @@ import com.parse.GetDataCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseImageView;
+import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 import java.io.IOException;
 import java.util.List;
@@ -90,6 +92,9 @@ public class EventInfoActivity extends AppCompatActivity implements OnMapReadyCa
         final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.event_info_fab);
 
         eventId = getIntent().getStringExtra("event_id");
+        if (ParseUser.getCurrentUser().getList(User.DONELIST).contains(eventId))
+            fab.setVisibility(View.GONE);
+
         ParseQuery<Event> query = Event.getQuery();
         query.getInBackground(eventId, new GetCallback<Event>() {
             @Override
@@ -244,16 +249,33 @@ public class EventInfoActivity extends AppCompatActivity implements OnMapReadyCa
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_add_wishlist) {
-            List<String> wishlist = ParseUser.getCurrentUser().getList("wishlist");
-            List<String> donelist = ParseUser.getCurrentUser().getList("donelist");
+            final ParseUser user = ParseUser.getCurrentUser();
+            List<ParseObject> wishlist = user.getList(User.WISHLIST);
+            List<ParseObject> donelist = user.getList(User.DONELIST);
             if (donelist != null && donelist.contains(eventId)) {
                 Toast.makeText(getApplicationContext(), "이미 활동을 완료하였습니다", Toast.LENGTH_SHORT).show();
             } else if (wishlist != null && wishlist.contains(eventId)) {
                 Toast.makeText(getApplicationContext(), "이미 위시리스트에 추가되었습니다", Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(getApplicationContext(), "위시리스트에 추가되었습니다", Toast.LENGTH_SHORT).show();
-                ParseUser.getCurrentUser().addUnique("wishlist", eventId);
-                ParseUser.getCurrentUser().saveInBackground();
+                ParseQuery<Event> query = Event.getQuery();
+                query.getInBackground(eventId, new GetCallback<Event>() {
+                    @Override
+                    public void done(Event event, ParseException e) {
+                        ActionContract actionContract = new ActionContract(user, ActionContract.WISHLIST, event);
+                        actionContract.saveInBackground();
+                    }
+                });
+
+                user.addUnique(User.WISHLIST, eventId);
+                user.saveInBackground(new SaveCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        Toast.makeText(getApplicationContext(), "위시리스트에 추가되었습니다", Toast.LENGTH_SHORT).show();
+
+                        MainActivity mainActivity = (MainActivity) MainActivity.mainActivity;
+                        mainActivity.refresh(3);
+                    }
+                });
             }
         }
         return super.onOptionsItemSelected(item);
@@ -293,7 +315,7 @@ public class EventInfoActivity extends AppCompatActivity implements OnMapReadyCa
         overridePendingTransition(R.anim.trans_activity_slide_right_in, R.anim.trans_activity_slide_right_out);
     }
 
-    public void refresh() {
+    public static void refresh() {
         //todo
     }
 }

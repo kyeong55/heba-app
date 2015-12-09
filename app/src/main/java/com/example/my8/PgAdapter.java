@@ -232,7 +232,7 @@ public class PgAdapter extends RecyclerView.Adapter<PgAdapter.ViewHolder> {
             holder.addWL.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    final ParseUser user = ParseUser.getCurrentUser();
+                    ParseUser user = ParseUser.getCurrentUser();
                     List<ParseObject> wishlist = user.getList(User.WISHLIST);
                     List<ParseObject> donelist = user.getList(User.DONELIST);
                     Event event = item.getEvent();
@@ -242,7 +242,7 @@ public class PgAdapter extends RecyclerView.Adapter<PgAdapter.ViewHolder> {
                     } else if (wishlist != null && wishlist.contains(eventId)) {
                         Toast.makeText(context, "이미 위시리스트에 추가되었습니다", Toast.LENGTH_SHORT).show();
                     } else {
-                        ActionContract actionContract = new ActionContract(ParseUser.getCurrentUser(), ActionContract.WISHLIST, event);
+                        ActionContract actionContract = new ActionContract(user, ActionContract.WISHLIST, event);
                         actionContract.saveInBackground();
 
                         user.addUnique(User.WISHLIST, eventId);
