@@ -59,8 +59,8 @@ public class MyFriendAdapter extends RecyclerView.Adapter<MyFriendAdapter.ViewHo
     final int VIEW_TYPE_ITEM=0;
     final int VIEW_TYPE_FOOTER=1;
 
-    public boolean addedAll = true;
-    private boolean inAdding;
+    public boolean addedAll = false;
+    private boolean inAdding = false;
 
     public MyFriendAdapter(Context context){
         this.context = context;
