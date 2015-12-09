@@ -52,7 +52,7 @@ public class UserInfoAdapter extends RecyclerView.Adapter<UserInfoAdapter.ViewHo
     private Context context;
     private List<UserInfo_item> items;
 
-    private ParseUser user;
+    private String userId;
 
     public final int VIEW_TYPE_HEADER=0;
     public final int VIEW_TYPE_ITEM=1;
@@ -60,11 +60,11 @@ public class UserInfoAdapter extends RecyclerView.Adapter<UserInfoAdapter.ViewHo
 
     private int imageHeight;
 
-    public UserInfoAdapter(Context context, ParseUser user, int imageHeight){
+    public UserInfoAdapter(Context context, String userId, int imageHeight){
         this.context = context;
         this.items = new ArrayList<>();
         this.imageHeight = imageHeight;
-        this.user = user;
+        this.userId = userId;
     }
 
     @Override
@@ -198,9 +198,11 @@ public class UserInfoAdapter extends RecyclerView.Adapter<UserInfoAdapter.ViewHo
 
     public void add(){
         inAdding = true;
-//        ParseUser user = ParseUser.getCurrentUser();
+        ParseQuery<ParseUser> userQuery = ParseUser.getQuery();
+        userQuery.whereEqualTo(User.ID, userId);
+
         ParseQuery<Stamp> query = Stamp.getQuery();
-        query.whereEqualTo(Stamp.USER, user);
+        query.whereMatchesQuery(Stamp.USER, userQuery);
         query.orderByDescending("updatedAt");
         if (items.size() == 0) {
         } else {
