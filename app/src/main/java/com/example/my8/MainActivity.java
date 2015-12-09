@@ -53,11 +53,13 @@ import android.widget.Toast;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.parse.FindCallback;
+import com.parse.GetCallback;
 import com.parse.GetDataCallback;
 import com.parse.LogOutCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseImageView;
+import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
@@ -549,7 +551,7 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    public void refresh(int position) {
+    public static void refresh(int position) {
         switch (position) {
             case 0: //playground
                 ((PlaygroundFragment) mSectionsPagerAdapter.getItem(position)).refresh();
@@ -1009,12 +1011,36 @@ public class MainActivity extends AppCompatActivity
 
             wlAdapter = new WishlistAdapter(container.getContext());
             wlView.setAdapter(wlAdapter);
-            wlAdapter.add();
+            refresh();
             return rootView;
         }
 
         public void refresh() {
-            // TODO refresh wishlist
+            wlAdapter.setIsAdding(true);
+            ParseUser user = ParseUser.getCurrentUser();
+            List<String> wishlist = user.getList(User.WISHLIST);
+            if (wishlist != null) {
+                ParseQuery<Event> query = Event.getQuery();
+                query.whereContainedIn("objectId", wishlist);
+                query.orderByDescending("title");
+                query.setLimit(5);
+                query.findInBackground(new FindCallback<Event>() {
+                    @Override
+                    public void done(List<Event> events, ParseException e) {
+                        if (e == null) {
+                            List<Wishlist_item> items = new ArrayList<>();
+                            for (Event event : events) {
+                                items.add(new Wishlist_item(event));
+                            }
+                            wlAdapter.setItems(items);
+                            wlAdapter.notifyDataSetChanged();
+
+                            wlAdapter.addedAll = false;
+                            wlAdapter.setIsAdding(false);
+                        }
+                    }
+                });
+            }
         }
 
         private class ChildAttachListener implements RecyclerView.OnChildAttachStateChangeListener {

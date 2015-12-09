@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.parse.FindCallback;
+import com.parse.GetCallback;
 import com.parse.GetDataCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -231,7 +232,7 @@ public class PgAdapter extends RecyclerView.Adapter<PgAdapter.ViewHolder> {
             holder.addWL.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ParseUser user = ParseUser.getCurrentUser();
+                    final ParseUser user = ParseUser.getCurrentUser();
                     List<ParseObject> wishlist = user.getList(User.WISHLIST);
                     List<ParseObject> donelist = user.getList(User.DONELIST);
                     Event event = item.getEvent();
@@ -249,6 +250,9 @@ public class PgAdapter extends RecyclerView.Adapter<PgAdapter.ViewHolder> {
                             @Override
                             public void done(ParseException e) {
                                 Toast.makeText(context, "위시리스트에 추가되었습니다", Toast.LENGTH_SHORT).show();
+
+                                MainActivity mainActivity = (MainActivity) MainActivity.mainActivity;
+                                mainActivity.refresh(3);
                             }
                         });
                     }
@@ -348,11 +352,10 @@ public class PgAdapter extends RecyclerView.Adapter<PgAdapter.ViewHolder> {
                             lastUpdate = action.getUpdatedAt();
                         idx = idx + 1;
                     }
-                    if(items.size()==pos){ // 더 이상 받아올게 없음
+                    if(items.size() == pos && idx == 1){ // 더 이상 받아올게 없음
                         addedAll=true;
                         notifyItemChanged(pos);
-                    }
-                    else
+                    } else
                         notifyItemRangeInserted(pos, items.size() - pos);
                     inAdding=false;
                 }

@@ -222,6 +222,9 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.ViewHo
                     inAdding = false;
                 }
             });
+        } else {
+            addedAll = true;
+            notifyDataSetChanged();
         }
     }
 

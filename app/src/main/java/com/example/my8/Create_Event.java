@@ -23,6 +23,7 @@ import com.parse.GetCallback;
 import com.parse.ParseACL;
 import com.parse.ParseFile;
 import com.parse.ParseGeoPoint;
+import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
@@ -33,7 +34,9 @@ import java.text.DateFormat;
 import java.text.Format;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class Create_Event extends AppCompatActivity {
     private Bitmap rotatedStampPhoto;
@@ -200,6 +203,9 @@ public class Create_Event extends AppCompatActivity {
                         if (e == null) {
                             eventId = event.getObjectId();
 
+                            List<String> eventIds = new ArrayList<>();
+                            eventIds.add(eventId);
+                            ParseUser.getCurrentUser().removeAll(User.WISHLIST, eventIds);
                             ParseUser.getCurrentUser().addUnique(User.DONELIST, eventId);
                             ParseUser.getCurrentUser().saveInBackground();
 
@@ -223,8 +229,7 @@ public class Create_Event extends AppCompatActivity {
                                             EventInfoActivity eventInfoActivity = (EventInfoActivity) EventInfoActivity.eventInfoActivity;
                                             eventInfoActivity.refresh();
                                         }
-                                        MainActivity mainActivity = (MainActivity) MainActivity.mainActivity;
-                                        mainActivity.refreshAll();
+
                                         finish();
                                     } else {
                                         dialog.dismiss();
@@ -238,8 +243,10 @@ public class Create_Event extends AppCompatActivity {
                     }
                 });
             } else {
+                List<String> eventIds = new ArrayList<>();
+                eventIds.add(eventId);
+                ParseUser.getCurrentUser().removeAll(User.WISHLIST, eventIds);
                 ParseUser.getCurrentUser().addUnique(User.DONELIST, eventId);
-                ParseUser.getCurrentUser().saveInBackground();
 
                 ParseQuery<Event> query = Event.getQuery();
                 query.getInBackground(eventId, new GetCallback<Event>() {
@@ -250,28 +257,35 @@ public class Create_Event extends AppCompatActivity {
                     }
                 });
 
-                Stamp stamp = new Stamp(stampLocation, stampDatetime, stampComment, scaledStampPhotoFile,
-                        stampPhotoFile, ParseUser.getCurrentUser(), eventTitle, eventId);
-
-                stamp.saveInBackground(new SaveCallback() {
+                ParseUser.getCurrentUser().saveInBackground(new SaveCallback() {
                     @Override
                     public void done(com.parse.ParseException e) {
                         if (e == null) {
-                            dialog.dismiss();
+                            Stamp stamp = new Stamp(stampLocation, stampDatetime, stampComment, scaledStampPhotoFile,
+                                    stampPhotoFile, ParseUser.getCurrentUser(), eventTitle, eventId);
 
-                            //ActionContract change
-                            if (isSelectEvent.equalsIgnoreCase("true")) {
-                                SelectEvent selectEventActivity = (SelectEvent) SelectEvent.selectEventActivity;
-                                selectEventActivity.finish();
-                            }
-                            else {
-                                EventInfoActivity eventInfoActivity = (EventInfoActivity) EventInfoActivity.eventInfoActivity;
-                                eventInfoActivity.refresh();
-                            }
-                            finish();
-                        } else {
-                            dialog.dismiss();
-                            Toast.makeText(Create_Event.this, "업로드에 실패하였습니다.", Toast.LENGTH_SHORT).show();
+                            stamp.saveInBackground(new SaveCallback() {
+                                @Override
+                                public void done(com.parse.ParseException e) {
+                                    if (e == null) {
+                                        dialog.dismiss();
+
+                                        //ActionContract change
+                                        if (isSelectEvent.equalsIgnoreCase("true")) {
+                                            SelectEvent selectEventActivity = (SelectEvent) SelectEvent.selectEventActivity;
+                                            selectEventActivity.finish();
+                                        } else {
+                                            EventInfoActivity eventInfoActivity = (EventInfoActivity) EventInfoActivity.eventInfoActivity;
+                                            eventInfoActivity.refresh();
+                                        }
+
+                                        finish();
+                                    } else {
+                                        dialog.dismiss();
+                                        Toast.makeText(Create_Event.this, "업로드에 실패하였습니다.", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
                         }
                     }
                 });
@@ -282,6 +296,8 @@ public class Create_Event extends AppCompatActivity {
     @Override
     public void finish(){
         super.finish();
+        MainActivity mainActivity = (MainActivity) MainActivity.mainActivity;
+        mainActivity.refreshAll();
         overridePendingTransition(R.anim.trans_activity_slide_right_in, R.anim.trans_activity_slide_right_out);
     }
 }
