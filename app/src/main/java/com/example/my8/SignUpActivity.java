@@ -106,6 +106,9 @@ public class SignUpActivity extends AppCompatActivity {
         user.setUsername(username);
         user.setPassword(password);
 
+        user.put(User.EXIST_PROFILE, false);
+        user.put(User.EXIST_COVER, false);
+
         // Call the Parse signup method
         user.signUpInBackground(new SignUpCallback() {
             @Override

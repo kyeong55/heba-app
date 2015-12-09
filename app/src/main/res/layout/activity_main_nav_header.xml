@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="@dimen/option_cover_image_height">
-    <ImageView
+    <com.parse.ParseImageView
         android:id="@+id/option_cover_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -11,7 +11,7 @@
         android:layout_height="match_parent"
         android:background="@drawable/cover_photo_background"
         android:orientation="horizontal">
-        <ImageView
+        <com.parse.ParseImageView
             android:id="@+id/option_profile_image"
             android:layout_height="@dimen/profile_image_width"
             android:layout_width="@dimen/profile_image_width"

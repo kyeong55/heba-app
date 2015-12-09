@@ -7,6 +7,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.design.widget.NavigationView;
@@ -47,13 +51,17 @@ import android.widget.Toast;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.parse.FindCallback;
+import com.parse.GetDataCallback;
 import com.parse.LogOutCallback;
 import com.parse.ParseException;
+import com.parse.ParseFile;
 import com.parse.ParseImageView;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -178,12 +186,32 @@ public class MainActivity extends AppCompatActivity
     public void navigationViewRefresh(){
         View header = navigationView.getHeaderView(0);
         TextView userName = (TextView) header.findViewById(R.id.option_user_name);
-        ImageView profileImage = (ImageView) header.findViewById(R.id.option_profile_image);
-        ImageView coverImage = (ImageView) header.findViewById(R.id.option_cover_image);
+        ParseImageView profileImage = (ParseImageView) header.findViewById(R.id.option_profile_image);
+        ParseImageView coverImage = (ParseImageView) header.findViewById(R.id.option_cover_image);
         TextView stampCount = (TextView) header.findViewById(R.id.option_stamp_count);
         // TODO: refresh user info (name, profile image, cover, stamp count)
         ParseUser user = ParseUser.getCurrentUser();
         userName.setText(user.getUsername());
+
+        if (user.getBoolean(User.EXIST_PROFILE)) {
+            profileImage.setParseFile(user.getParseFile(User.PROFILE));
+            profileImage.loadInBackground(new GetDataCallback() {
+                @Override
+                public void done(byte[] data, ParseException e) {
+                    //nothing to do
+                }
+            });
+        }
+
+        if (user.getBoolean(User.EXIST_COVER)) {
+            coverImage.setParseFile(user.getParseFile(User.COVER));
+            coverImage.loadInBackground(new GetDataCallback() {
+                @Override
+                public void done(byte[] data, ParseException e) {
+                    //nothing to do
+                }
+            });
+        }
     }
 
     @Override
@@ -348,14 +376,121 @@ public class MainActivity extends AppCompatActivity
             if (resultCode == Activity.RESULT_OK) {
                 // TODO: Edit profile image
                 String imagePath = getImageNameToUri(data.getData());
-                navigationViewRefresh();
+
+                ExifInterface exif = null;
+                try {
+                    exif = new ExifInterface(imagePath);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                //Log.d("?!?!", imagePath+"");
+                Bitmap profile = BitmapFactory.decodeFile(imagePath);
+                String orientString = exif.getAttribute(ExifInterface.TAG_ORIENTATION);
+                int orientation = orientString != null ? Integer.parseInt(orientString) :  ExifInterface.ORIENTATION_NORMAL;
+
+                int rotationAngle = 0;
+                if (orientation == ExifInterface.ORIENTATION_ROTATE_90) rotationAngle = 90;
+                if (orientation == ExifInterface.ORIENTATION_ROTATE_180) rotationAngle = 180;
+                if (orientation == ExifInterface.ORIENTATION_ROTATE_270) rotationAngle = 270;
+
+                Matrix matrix = new Matrix();
+                matrix.postRotate(rotationAngle);
+                Bitmap rotatedProfile = Bitmap.createBitmap(profile, 0,
+                        0, profile.getWidth(), profile.getHeight(),
+                        matrix, true);
+
+                Bitmap scaledRotatedProfile;
+                if (rotatedProfile.getWidth() > rotatedProfile.getHeight()) {
+                    if (rotatedProfile.getHeight() > 100) {
+                        scaledRotatedProfile = Bitmap.createScaledBitmap(rotatedProfile,
+                                100 * rotatedProfile.getWidth() / rotatedProfile.getHeight(), 100, false);
+                    } else {
+                        scaledRotatedProfile = rotatedProfile;
+                    }
+                } else {
+                    if (rotatedProfile.getWidth() > 100) {
+                        scaledRotatedProfile = Bitmap.createScaledBitmap(rotatedProfile, 100, 100
+                                * rotatedProfile.getHeight() / rotatedProfile.getWidth(), false);
+                    } else {
+                        scaledRotatedProfile = rotatedProfile;
+                    }
+                }
+
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                rotatedProfile.compress(Bitmap.CompressFormat.JPEG, 25, bos);
+                byte[] Photo = bos.toByteArray();
+                ParseFile ProfileFile = new ParseFile("profile.jpg", Photo);
+                ProfileFile.saveInBackground();
+
+                ParseUser.getCurrentUser().put(User.EXIST_PROFILE, true);
+                ParseUser.getCurrentUser().put(User.PROFILE, ProfileFile);
+                ParseUser.getCurrentUser().saveInBackground(new SaveCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        navigationViewRefresh();
+                    }
+                });
             }
         }
         else if(requestCode == REQ_CODE_SELECT_COVER_IMAGE) {
             if (resultCode == Activity.RESULT_OK) {
                 // TODO: Edit cover image
                 String imagePath = getImageNameToUri(data.getData());
-                navigationViewRefresh();
+
+                ExifInterface exif = null;
+                try {
+                    exif = new ExifInterface(imagePath);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                Bitmap cover = BitmapFactory.decodeFile(imagePath);
+                String orientString = exif.getAttribute(ExifInterface.TAG_ORIENTATION);
+                int orientation = orientString != null ? Integer.parseInt(orientString) :  ExifInterface.ORIENTATION_NORMAL;
+
+                int rotationAngle = 0;
+                if (orientation == ExifInterface.ORIENTATION_ROTATE_90) rotationAngle = 90;
+                if (orientation == ExifInterface.ORIENTATION_ROTATE_180) rotationAngle = 180;
+                if (orientation == ExifInterface.ORIENTATION_ROTATE_270) rotationAngle = 270;
+
+                Matrix matrix = new Matrix();
+                matrix.postRotate(rotationAngle);
+                Bitmap rotatedCover = Bitmap.createBitmap(cover, 0,
+                        0, cover.getWidth(), cover.getHeight(),
+                        matrix, true);
+
+                Bitmap scaledRotatedProfile;
+                if (rotatedCover.getWidth() > rotatedCover.getHeight()) {
+                    if (rotatedCover.getHeight() > 100) {
+                        scaledRotatedProfile = Bitmap.createScaledBitmap(rotatedCover,
+                                100 * rotatedCover.getWidth() / rotatedCover.getHeight(), 100, false);
+                    } else {
+                        scaledRotatedProfile = rotatedCover;
+                    }
+                } else {
+                    if (rotatedCover.getWidth() > 100) {
+                        scaledRotatedProfile = Bitmap.createScaledBitmap(rotatedCover, 100, 100
+                                * rotatedCover.getHeight() / rotatedCover.getWidth(), false);
+                    } else {
+                        scaledRotatedProfile = rotatedCover;
+                    }
+                }
+
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                rotatedCover.compress(Bitmap.CompressFormat.JPEG, 25, bos);
+                byte[] Photo = bos.toByteArray();
+                ParseFile CoverFile = new ParseFile("profile.jpg", Photo);
+                CoverFile.saveInBackground();
+
+                ParseUser.getCurrentUser().put(User.EXIST_COVER, true);
+                ParseUser.getCurrentUser().put(User.PROFILE, CoverFile);
+                ParseUser.getCurrentUser().saveInBackground(new SaveCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        navigationViewRefresh();
+                    }
+                });
             }
         }
     }

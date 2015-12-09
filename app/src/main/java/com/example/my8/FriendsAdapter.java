@@ -42,7 +42,9 @@ class Friends_item{
     }
 
     public ParseFile getProfile() {
-        return user.getParseFile(User.PROFILE);
+        if (user.getBoolean(User.EXIST_PROFILE))
+            return user.getParseFile(User.PROFILE);
+        return null;
     }
 
     public String getName() {
