@@ -484,7 +484,7 @@ public class MainActivity extends AppCompatActivity
                 CoverFile.saveInBackground();
 
                 ParseUser.getCurrentUser().put(User.EXIST_COVER, true);
-                ParseUser.getCurrentUser().put(User.PROFILE, CoverFile);
+                ParseUser.getCurrentUser().put(User.COVER, CoverFile);
                 ParseUser.getCurrentUser().saveInBackground(new SaveCallback() {
                     @Override
                     public void done(ParseException e) {
