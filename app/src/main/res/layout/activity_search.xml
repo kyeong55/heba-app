@@ -31,6 +31,7 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/search_recycler_view"
         android:layout_height="match_parent"
-        android:layout_width="match_parent"/>
+        android:layout_width="match_parent"
+        android:layout_marginTop="?attr/actionBarSize"/>
 
 </android.support.design.widget.CoordinatorLayout>

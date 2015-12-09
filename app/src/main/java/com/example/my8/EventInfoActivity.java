@@ -210,6 +210,7 @@ public class EventInfoActivity extends AppCompatActivity implements OnMapReadyCa
         marker.title(getLocation(lat,lng)).position(loc);
         mMap.addCircle(circle);
         mMap.addMarker(marker).showInfoWindow();
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(loc, 14));
     }
 
     public String getLocation(double lat, double lng){

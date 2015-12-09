@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:id="@+id/search_event_card">
+    <TextView android:id="@+id/search_event_title"
+        android:layout_marginLeft="@dimen/wishlist_margin_side"
+        android:layout_marginRight="@dimen/wishlist_margin_side"
+        android:layout_marginTop="@dimen/wishlist_margin_side"
+        android:layout_marginBottom="@dimen/wishlist_margin_in"
+        android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:textStyle="bold" android:textSize="@dimen/search_event_title_size"
+        android:textColor="@color/colorBlack" />
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/wishlist_margin_side"
+        android:paddingRight="@dimen/wishlist_margin_side"
+        android:paddingBottom="@dimen/wishlist_margin_in">
+        <TextView android:id="@+id/search_event_participate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:layout_gravity="center_vertical"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="명이 참여했습니다"
+            android:layout_weight="1"
+            android:layout_gravity="center_vertical"/>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/search_event_image_layout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/pg_image_size"
+        android:orientation="horizontal">
+        <com.parse.ParseImageView
+            android:id="@+id/search_event_image_1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_margin="1dp"
+            android:scaleType="centerCrop"/>
+        <com.parse.ParseImageView
+            android:id="@+id/search_event_image_2"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_margin="1dp"
+            android:scaleType="centerCrop"/>
+        <com.parse.ParseImageView
+            android:id="@+id/search_event_image_3"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_margin="1dp"
+            android:scaleType="centerCrop"
+            android:visibility="gone"/>
+        <com.parse.ParseImageView
+            android:id="@+id/search_event_image_4"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_margin="1dp"
+            android:scaleType="centerCrop"
+            android:visibility="gone"/>
+    </LinearLayout>
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/wishlist_margin_out" />
+</LinearLayout>

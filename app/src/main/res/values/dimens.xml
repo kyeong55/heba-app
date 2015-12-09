@@ -71,4 +71,6 @@
     <dimen name="event_info_margin_in">4dp</dimen>
     <dimen name="event_info_margin_out">12dp</dimen>
     <dimen name="event_info_title_text_size">20sp</dimen>
+    <!-- Search Activity -->
+    <dimen name="search_event_title_size">20sp</dimen>
 </resources>

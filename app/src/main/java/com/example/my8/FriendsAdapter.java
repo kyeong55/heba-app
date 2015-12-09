@@ -181,6 +181,13 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
                 }
             });
 
+            if (!item.isDone()) {
+                holder.done_background.setVisibility(View.INVISIBLE);
+                holder.done_init.setVisibility(View.VISIBLE);
+                holder.done_reject.setVisibility(View.INVISIBLE);
+                holder.done_accept.setVisibility(View.INVISIBLE);
+            }
+
             holder.friends_card.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -210,6 +217,13 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
 
             holder.user_name.setText(item.getName());
             holder.stamp_count.setText(item.getStampCount());
+
+            if (!item.isDone()){
+                holder.done_background.setVisibility(View.INVISIBLE);
+                holder.done_init.setVisibility(View.VISIBLE);
+                holder.done_add.setVisibility(View.INVISIBLE);
+                holder.friends_add_button.setVisibility(View.VISIBLE);
+            }
 
             holder.friends_add_button.setOnClickListener(new View.OnClickListener() {
                 @Override
