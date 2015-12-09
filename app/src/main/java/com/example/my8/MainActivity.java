@@ -123,9 +123,8 @@ public class MainActivity extends AppCompatActivity
                     vis();
                 else
                     invis();
-                if (position == 2) {
-                    // TODO only refresh when new stamp added or profile updated
-//                    ((MyStampFragment) mSectionsPagerAdapter.getItem(position)).refresh();
+                if (position == 1) {
+                    refresh(1);
                 }
             }
 
@@ -437,7 +436,9 @@ public class MainActivity extends AppCompatActivity
                 ParseUser.getCurrentUser().saveInBackground(new SaveCallback() {
                     @Override
                     public void done(ParseException e) {
-                        navigationViewRefresh();
+                        refresh(0);
+                        refresh(2);
+                        refresh(4);
                     }
                 });
             }
@@ -497,7 +498,8 @@ public class MainActivity extends AppCompatActivity
                 ParseUser.getCurrentUser().saveInBackground(new SaveCallback() {
                     @Override
                     public void done(ParseException e) {
-                        navigationViewRefresh();
+                        refresh(2);
+                        refresh(4);
                     }
                 });
             }
