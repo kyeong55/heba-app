@@ -132,6 +132,8 @@ public class PgAdapter extends RecyclerView.Adapter<PgAdapter.ViewHolder> {
     public boolean addedAll=false;
     private boolean inAdding=false;
 
+    private Date lastUpdate;
+
     /* Constructors */
     public PgAdapter(ViewGroup container){
         this.container = container;
@@ -146,6 +148,10 @@ public class PgAdapter extends RecyclerView.Adapter<PgAdapter.ViewHolder> {
 
     public void setCheckList(List<Event> checkList) {
         this.checkList = checkList;
+    }
+
+    public void setLastUpdate(Date update) {
+        lastUpdate = update;
     }
 
     @Override
@@ -297,11 +303,8 @@ public class PgAdapter extends RecyclerView.Adapter<PgAdapter.ViewHolder> {
 
         ParseQuery<ActionContract> query = ParseQuery.or(queries);
         query.orderByDescending("updatedAt");
-        if (items.size() == 0) {
-        } else {
-            Playground_item oldestItem = items.get(items.size() - 1);
-            query.whereLessThan("updatedAt", oldestItem.getUpdateTime());
-        }
+        if (items.size() > 0)
+            query.whereLessThan("updatedAt", lastUpdate);
         query.setLimit(5);
         query.include(ActionContract.USER);
         query.include(ActionContract.EVENT);
@@ -310,13 +313,15 @@ public class PgAdapter extends RecyclerView.Adapter<PgAdapter.ViewHolder> {
             public void done(List<ActionContract> actions, ParseException e) {
                 if (e == null) {
                     int pos = items.size();
+                    int idx = 1;
                     for (ActionContract action : actions) {
                         if (!checkList.contains(action.getEvent())) {
                             checkList.add(action.getEvent());
-                            Log.d("checkAdd", checkList + "");
-                            //items.add(new Playground_item(container, action, context));
+                            items.add(new Playground_item(container, action, context));
                         }
-                        items.add(new Playground_item(container, action, context));
+                        if (idx == actions.size())
+                            lastUpdate = action.getUpdatedAt();
+                        idx = idx + 1;
                     }
                     if(items.size()==pos){ // 더 이상 받아올게 없음
                         addedAll=true;

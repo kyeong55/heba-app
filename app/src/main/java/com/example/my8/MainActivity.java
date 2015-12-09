@@ -71,6 +71,7 @@ import com.parse.SaveCallback;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity
@@ -661,13 +662,15 @@ public class MainActivity extends AppCompatActivity
                     if (e == null) {
                         List<Playground_item> items = new ArrayList<>();
                         List<Event> checkList = new ArrayList<>();
+                        int idx = 1;
                         for (ActionContract action : actions) {
                             if (!checkList.contains(action.getEvent())) {
                                 checkList.add(action.getEvent());
-                                Log.d("checkRefresh", checkList+"");
-                                //items.add(new Playground_item(container, action, container.getContext()));
+                                items.add(new Playground_item(container, action, container.getContext()));
                             }
-                            items.add(new Playground_item(container, action, container.getContext()));
+                            if (idx == actions.size())
+                                pgadapter.setLastUpdate(action.getUpdatedAt());
+                            idx = idx + 1;
                         }
                         pgadapter.setCheckList(checkList);
                         pgadapter.setItems(items);
