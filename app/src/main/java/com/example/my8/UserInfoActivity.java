@@ -24,6 +24,7 @@ import java.util.List;
 public class UserInfoActivity extends AppCompatActivity {
 
     UserInfoAdapter userInfoAdapter;
+    private boolean is_friend;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
