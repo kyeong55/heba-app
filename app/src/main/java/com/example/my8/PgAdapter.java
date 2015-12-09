@@ -204,9 +204,9 @@ public class PgAdapter extends RecyclerView.Adapter<PgAdapter.ViewHolder> {
                     List<ParseObject> donelist = user.getList(User.DONELIST);
                     Event event = item.getEvent();
                     String eventId = item.getEventId();
-                    if (donelist != null && donelist.contains(event)) {
+                    if (donelist != null && donelist.contains(eventId)) {
                         Toast.makeText(context, "이미 활동을 완료하였습니다", Toast.LENGTH_SHORT).show();
-                    } else if (wishlist != null && wishlist.contains(event)) {
+                    } else if (wishlist != null && wishlist.contains(eventId)) {
                         Toast.makeText(context, "이미 위시리스트에 추가되었습니다", Toast.LENGTH_SHORT).show();
                     } else {
                         ActionContract actionContract = new ActionContract(ParseUser.getCurrentUser(), ActionContract.WISHLIST, event);
