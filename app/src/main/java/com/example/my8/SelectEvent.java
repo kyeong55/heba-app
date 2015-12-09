@@ -36,9 +36,11 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.parse.FindCallback;
+import com.parse.GetCallback;
 import com.parse.GetDataCallback;
 import com.parse.ParseException;
 import com.parse.ParseImageView;
+import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
@@ -126,37 +128,44 @@ public class SelectEvent extends AppCompatActivity implements OnMapReadyCallback
         final ProgressDialog dialog = new ProgressDialog(SelectEvent.this);
         dialog.setMessage("로딩 중");
         dialog.show();
-        ParseUser user = ParseUser.getCurrentUser();
-        List<String> wishlist = user.getList(User.WISHLIST);
-        if (wishlist == null) {
-            selectViewPager.setAdapter(new SelectEventPagerAdapter(getSupportFragmentManager(), new ArrayList<Event>(), imagePath));
-            dialog.dismiss();
-        } else {
-            ParseQuery<Event> query = Event.getQuery();
-            query.whereContainedIn("objectId", wishlist);
-            query.findInBackground(new FindCallback<Event>() {
-                @Override
-                public void done(List<Event> events, ParseException e) {
-                    if (e == null) {
-                        //                    List<Select_Event_Image_item> items = new ArrayList<>();
-                        //                    for (Event event : events) {
-                        //                        ParseQuery<Stamp> subQuery = Stamp.getQuery();
-                        //                        subQuery.whereEqualTo("event", event);
-                        //                        try {
-                        //                            Stamp stamp = subQuery.getFirst();
-                        //                            items.add(new Select_Event_Image_item(event, stamp));
-                        //                        } catch (ParseException e1) {
-                        //                            e1.printStackTrace();
-                        //                        }
-                        //                    }
-                        selectViewPager.setAdapter(new SelectEventPagerAdapter(getSupportFragmentManager(), events, imagePath));
+        final ParseUser user = ParseUser.getCurrentUser();
+        user.fetchIfNeededInBackground(new GetCallback<ParseObject>() {
+            @Override
+            public void done(ParseObject object, ParseException e) {
+                if (e == null) {
+                    List<String> wishlist = user.getList(User.WISHLIST);
+                    if (wishlist == null) {
+                        selectViewPager.setAdapter(new SelectEventPagerAdapter(getSupportFragmentManager(), new ArrayList<Event>(), imagePath));
                         dialog.dismiss();
-                        //                    selectEventImageAdapter.setItems(items);
-                        //                    selectEventImageAdapter.notifyDataSetChanged();
+                    } else {
+                        ParseQuery<Event> query = Event.getQuery();
+                        query.whereContainedIn("objectId", wishlist);
+                        query.findInBackground(new FindCallback<Event>() {
+                            @Override
+                            public void done(List<Event> events, ParseException e) {
+                                if (e == null) {
+                                    //                    List<Select_Event_Image_item> items = new ArrayList<>();
+                                    //                    for (Event event : events) {
+                                    //                        ParseQuery<Stamp> subQuery = Stamp.getQuery();
+                                    //                        subQuery.whereEqualTo("event", event);
+                                    //                        try {
+                                    //                            Stamp stamp = subQuery.getFirst();
+                                    //                            items.add(new Select_Event_Image_item(event, stamp));
+                                    //                        } catch (ParseException e1) {
+                                    //                            e1.printStackTrace();
+                                    //                        }
+                                    //                    }
+                                    selectViewPager.setAdapter(new SelectEventPagerAdapter(getSupportFragmentManager(), events, imagePath));
+                                    dialog.dismiss();
+                                    //                    selectEventImageAdapter.setItems(items);
+                                    //                    selectEventImageAdapter.notifyDataSetChanged();
+                                }
+                            }
+                        });
                     }
                 }
-            });
-        }
+            }
+        });
     }
 
     @Override

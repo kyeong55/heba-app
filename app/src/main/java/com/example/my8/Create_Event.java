@@ -29,6 +29,7 @@ import com.parse.SaveCallback;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.text.DateFormat;
 import java.text.Format;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -130,6 +131,7 @@ public class Create_Event extends AppCompatActivity {
 
         //stamp datetime
         String datetime = exif.getAttribute(ExifInterface.TAG_DATETIME);
+        //SimpleDateFormat dateFormat = (SimpleDateFormat) DateFormat.getDateInstance();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss");
                 //(SimpleDateFormat) android.text.format.DateFormat.getDateFormat(getApplicationContext());
         stampDatetime = null;
