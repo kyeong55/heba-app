@@ -59,6 +59,10 @@ class Playground_item {
         return event.getNParticipant() + "";
     }
 
+    public int getNThumbnail() {
+        return event.getNParticipant();
+    }
+
     public List<Playground_Stamp_item> getPlaygroundStampItems() {
         return this.playgroundStampItems;
     }
@@ -308,6 +312,12 @@ public class PgAdapter extends RecyclerView.Adapter<PgAdapter.ViewHolder> {
         query.setLimit(5);
         query.include(ActionContract.USER);
         query.include(ActionContract.EVENT);
+        query.include(ActionContract.EVENT + "." + "stamp0");
+        query.include(ActionContract.EVENT + "." + "stamp1");
+        query.include(ActionContract.EVENT + "." + "stamp2");
+        query.include(ActionContract.EVENT + "." + "stamp3");
+        query.include(ActionContract.EVENT + "." + "stamp4");
+        query.include(ActionContract.EVENT + "." + "stamp5");
         query.findInBackground(new FindCallback<ActionContract>() {
             @Override
             public void done(List<ActionContract> actions, ParseException e) {
@@ -360,25 +370,17 @@ public class PgAdapter extends RecyclerView.Adapter<PgAdapter.ViewHolder> {
 
     public void refresh(final Playground_item item) {
         item.setIsAdding(true);
-        ParseQuery<Stamp> query = Stamp.getQuery();
-        query.whereEqualTo("eventId", item.getEventId());
-        query.orderByDescending("updatedAt");
-        query.setLimit(6);
-        query.findInBackground(new FindCallback<Stamp>() {
-            @Override
-            public void done(List<Stamp> stamps, ParseException e) {
-                if (e == null) {
-                    List<Playground_Stamp_item> newItems = new ArrayList<>();
-                    for (Stamp stamp : stamps) {
-                        newItems.add(new Playground_Stamp_item(stamp));
-                    }
-                    item.setPlaygroundStampItems(newItems);
-                    item.notifyDataSetChanged();
-                    item.setAddedAll(false);
-                    item.setIsAdding(false);
-                }
-            }
-        });
+
+        Event event = item.getEvent();
+        List<Playground_Stamp_item> newItems = new ArrayList<>();
+        for (int i = 0; i < item.getNThumbnail(); i++) {
+            newItems.add(new Playground_Stamp_item(event.getStamp(i+1)));
+        }
+
+        item.setPlaygroundStampItems(newItems);
+        item.notifyDataSetChanged();
+        item.setAddedAll(false);
+        item.setIsAdding(false);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

@@ -24,6 +24,7 @@ public class Event extends ParseObject {
     private static final String TITLE = "title";
     private static final String PARTICIPANT = "nParticipant";
     private static final String THUMBNAIL = "thumbnail";
+    private static final String STAMP = "stamp";
     private static final String INDEX = "thumbnailIndex";
     private static final String FIRST = "first";
 
@@ -45,6 +46,10 @@ public class Event extends ParseObject {
 
     public ParseFile getThumbnail(int idx) {
         return getParseFile(THUMBNAIL + ((getIndex() - idx + 6) % 6));
+    }
+
+    public Stamp getStamp(int idx) {
+        return (Stamp)getParseObject(STAMP + ((getIndex() - idx + 6) % 6));
     }
 
     public static ParseQuery<Event> getQuery() {

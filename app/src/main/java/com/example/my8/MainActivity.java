@@ -656,6 +656,12 @@ public class MainActivity extends AppCompatActivity
             query.setLimit(5);
             query.include(ActionContract.USER);
             query.include(ActionContract.EVENT);
+            query.include(ActionContract.EVENT + "." + "stamp0");
+            query.include(ActionContract.EVENT + "." + "stamp1");
+            query.include(ActionContract.EVENT + "." + "stamp2");
+            query.include(ActionContract.EVENT + "." + "stamp3");
+            query.include(ActionContract.EVENT + "." + "stamp4");
+            query.include(ActionContract.EVENT + "." + "stamp5");
             query.findInBackground(new FindCallback<ActionContract>() {
                 @Override
                 public void done(List<ActionContract> actions, ParseException e) {
