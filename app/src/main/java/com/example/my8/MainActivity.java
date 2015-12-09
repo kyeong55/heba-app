@@ -416,15 +416,15 @@ public class MainActivity extends AppCompatActivity
 
                 Bitmap scaledRotatedProfile;
                 if (rotatedProfile.getWidth() > rotatedProfile.getHeight()) {
-                    if (rotatedProfile.getHeight() > 100) {
+                    if (rotatedProfile.getHeight() > 200) {
                         scaledRotatedProfile = Bitmap.createScaledBitmap(rotatedProfile,
-                                100 * rotatedProfile.getWidth() / rotatedProfile.getHeight(), 100, false);
+                                200 * rotatedProfile.getWidth() / rotatedProfile.getHeight(), 200, false);
                     } else {
                         scaledRotatedProfile = rotatedProfile;
                     }
                 } else {
-                    if (rotatedProfile.getWidth() > 100) {
-                        scaledRotatedProfile = Bitmap.createScaledBitmap(rotatedProfile, 100, 100
+                    if (rotatedProfile.getWidth() > 200) {
+                        scaledRotatedProfile = Bitmap.createScaledBitmap(rotatedProfile, 200, 200
                                 * rotatedProfile.getHeight() / rotatedProfile.getWidth(), false);
                     } else {
                         scaledRotatedProfile = rotatedProfile;
@@ -476,15 +476,15 @@ public class MainActivity extends AppCompatActivity
 
                 Bitmap scaledRotatedProfile;
                 if (rotatedCover.getWidth() > rotatedCover.getHeight()) {
-                    if (rotatedCover.getHeight() > 100) {
+                    if (rotatedCover.getHeight() > 1024) {
                         scaledRotatedProfile = Bitmap.createScaledBitmap(rotatedCover,
-                                100 * rotatedCover.getWidth() / rotatedCover.getHeight(), 100, false);
+                                1024 * rotatedCover.getWidth() / rotatedCover.getHeight(), 1024, false);
                     } else {
                         scaledRotatedProfile = rotatedCover;
                     }
                 } else {
-                    if (rotatedCover.getWidth() > 100) {
-                        scaledRotatedProfile = Bitmap.createScaledBitmap(rotatedCover, 100, 100
+                    if (rotatedCover.getWidth() > 1024) {
+                        scaledRotatedProfile = Bitmap.createScaledBitmap(rotatedCover, 1024, 1024
                                 * rotatedCover.getHeight() / rotatedCover.getWidth(), false);
                     } else {
                         scaledRotatedProfile = rotatedCover;
