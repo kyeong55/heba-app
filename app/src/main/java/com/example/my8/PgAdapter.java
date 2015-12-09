@@ -12,7 +12,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.parse.FindCallback;
+import com.parse.GetDataCallback;
 import com.parse.ParseException;
+import com.parse.ParseFile;
 import com.parse.ParseImageView;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -30,15 +32,18 @@ class Playground_item {
     List<Playground_Stamp_item> playgroundStampItems;
     PgStampAdapter pgStampAdapter;
     Context context;
+    ActionContract action;
     Event event;
+    ParseUser user;
 
-    public Playground_item(ViewGroup container, Event event, Context context) {
+    public Playground_item(ViewGroup container, ActionContract action, Context context) {
         this.context = context;
         this.pgStampAdapter = new PgStampAdapter(context, event);
         this.playgroundStampItems = new ArrayList<>();
 
-        this.event = event;
-        this.writer="누구야";
+        this.action = action;
+        this.event = action.getEvent();
+        this.user = action.getUser();
     }
 
     public String getEventId() {
@@ -67,7 +72,7 @@ class Playground_item {
     }
 
     public Date getUpdateTime() {
-        return event.getUpdatedAt();
+        return action.getUpdatedAt();
     }
 
     public void setIsAdding(boolean inAdding) {
@@ -98,8 +103,19 @@ class Playground_item {
         return event;
     }
 
-    String writer;
-    String getWriter() { return writer; }
+    public ParseUser getUser() {
+        return user;
+    }
+
+    public String getDescription() {
+        switch (action.getAction()) {
+            case 0:
+                return "님이 위시리스트에 추가하였습니다.";
+            case 1:
+                return "님이 참여하였습니다.";
+        }
+        return "";
+    }
 }
 
 
@@ -162,7 +178,23 @@ public class PgAdapter extends RecyclerView.Adapter<PgAdapter.ViewHolder> {
                     ((Activity)context).overridePendingTransition(R.anim.trans_activity_slide_left_in, R.anim.trans_activity_slide_left_out);
                 }
             });
-            holder.writer.setText(item.getWriter());
+
+            ParseUser user = item.getUser();
+
+
+            if (user.getBoolean(User.EXIST_PROFILE)) {
+                ParseImageView userProfile = (ParseImageView) holder.writer_photo;
+                userProfile.setParseFile(user.getParseFile(User.PROFILE));
+                userProfile.loadInBackground(new GetDataCallback() {
+                    @Override
+                    public void done(byte[] data, ParseException e) {
+                        //nothing to do
+                    }
+                });
+            }
+
+            holder.writer.setText(user.getUsername());
+            holder.description.setText(item.getDescription());
             holder.participate.setText(item.getNParticipant());
             holder.addWL.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -224,7 +256,30 @@ public class PgAdapter extends RecyclerView.Adapter<PgAdapter.ViewHolder> {
 
     public void add(){
         inAdding = true;
-        ParseQuery<Event> query = Event.getQuery();
+        String userId = ParseUser.getCurrentUser().getObjectId();
+
+        ParseQuery<Friend> friendToQuery = Friend.getQuery();
+        friendToQuery.whereEqualTo(Friend.STATE, Friend.APPROVED);
+        friendToQuery.whereEqualTo(Friend.TO_USER_ID, userId);
+
+        ParseQuery<ParseUser> userToQuery = ParseUser.getQuery();
+        userToQuery.whereMatchesKeyInQuery(User.ID, Friend.FROM_USER_ID, friendToQuery);
+
+        ParseQuery<Friend> friendFromQuery = Friend.getQuery();
+        friendFromQuery.whereEqualTo(Friend.STATE, Friend.APPROVED);
+        friendFromQuery.whereEqualTo(Friend.FROM_USER_ID, userId);
+
+        ParseQuery<ParseUser> userFromQuery = ParseUser.getQuery();
+        userFromQuery.whereMatchesKeyInQuery(User.ID, Friend.TO_USER_ID, friendFromQuery);
+
+        List<ParseQuery<ParseUser>> userQueries = new ArrayList<ParseQuery<ParseUser>>();
+        userQueries.add(userToQuery);
+        userQueries.add(userFromQuery);
+
+        ParseQuery<ParseUser> userQuery = ParseQuery.or(userQueries);
+
+        ParseQuery<ActionContract> query = ActionContract.getQuery();
+        query.whereMatchesQuery(ActionContract.USER, userQuery);
         query.orderByDescending("updatedAt");
         if (items.size() == 0) {
         } else {
@@ -232,13 +287,15 @@ public class PgAdapter extends RecyclerView.Adapter<PgAdapter.ViewHolder> {
             query.whereLessThan("updatedAt", oldestItem.getUpdateTime());
         }
         query.setLimit(5);
-        query.findInBackground(new FindCallback<Event>() {
+        query.include(ActionContract.USER);
+        query.include(ActionContract.EVENT);
+        query.findInBackground(new FindCallback<ActionContract>() {
             @Override
-            public void done(List<Event> events, ParseException e) {
+            public void done(List<ActionContract> actions, ParseException e) {
                 if (e == null) {
                     int pos = items.size();
-                    for (Event event : events) {
-                        items.add(new Playground_item(container, event, context));
+                    for (ActionContract action : actions) {
+                        items.add(new Playground_item(container, action, context));
                     }
                     if(items.size()==pos){ // 더 이상 받아올게 없음
                         addedAll=true;
@@ -302,6 +359,7 @@ public class PgAdapter extends RecyclerView.Adapter<PgAdapter.ViewHolder> {
         TextView title;
         ParseImageView writer_photo;
         TextView writer;
+        TextView description;
         TextView participate;
         TextView addWL;
         RecyclerView stamps;
@@ -314,6 +372,7 @@ public class PgAdapter extends RecyclerView.Adapter<PgAdapter.ViewHolder> {
             if(viewType == VIEW_TYPE_ITEM) {
                 title = (TextView) itemView.findViewById(R.id.pg_title);
                 writer = (TextView) itemView.findViewById(R.id.pg_writer);
+                description = (TextView) itemView.findViewById(R.id.pg_description);
                 writer_photo = (ParseImageView) itemView.findViewById(R.id.pg_writer_photo);
                 participate = (TextView) itemView.findViewById(R.id.pg_participate);
                 addWL = (TextView) itemView.findViewById(R.id.pg_addWL);

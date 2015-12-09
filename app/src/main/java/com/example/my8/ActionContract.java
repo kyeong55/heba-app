@@ -13,7 +13,7 @@ public class ActionContract extends ParseObject {
     public static final String CLASSNAME = "Action";
     public static final String USER = "user";
     public static final String ACTION = "action";
-    public static final String EVENT = "object";
+    public static final String EVENT = "event";
 
     public static final int WISHLIST = 0;
     public static final int STAMP = 1;

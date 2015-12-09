@@ -33,12 +33,12 @@
                 />
             <TextView android:id="@+id/pg_writer"
                 android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:hint="누구야" android:layout_gravity="center_vertical"
+                android:layout_gravity="center_vertical"
                 android:layout_marginLeft="@dimen/pg_margin_in"
                 android:textStyle="bold"/>
-            <TextView
+            <TextView android:id="@+id/pg_description"
                 android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="님이 참여했습니다." android:layout_gravity="center_vertical"/>
+                android:layout_gravity="center_vertical"/>
         </LinearLayout>
         <TextView android:id="@+id/pg_title"
             android:layout_marginLeft="@dimen/pg_margin_side"

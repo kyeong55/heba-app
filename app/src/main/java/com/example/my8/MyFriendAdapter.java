@@ -139,7 +139,7 @@ public class MyFriendAdapter extends RecyclerView.Adapter<MyFriendAdapter.ViewHo
         friendFromQuery.whereEqualTo(Friend.FROM_USER_ID, userId);
 
         ParseQuery<ParseUser> userFromQuery = ParseUser.getQuery();
-        userFromQuery.whereMatchesKeyInQuery(User.ID, Friend.TO_USER_ID, friendToQuery);
+        userFromQuery.whereMatchesKeyInQuery(User.ID, Friend.TO_USER_ID, friendFromQuery);
 
         List<ParseQuery<ParseUser>> queries = new ArrayList<ParseQuery<ParseUser>>();
         queries.add(userToQuery);

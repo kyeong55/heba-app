@@ -611,16 +611,41 @@ public class MainActivity extends AppCompatActivity
 
         public void refresh() {
             pgadapter.setIsAdding(true);
-            ParseQuery<Event> query = Event.getQuery();
+            String userId = ParseUser.getCurrentUser().getObjectId();
+
+            ParseQuery<Friend> friendToQuery = Friend.getQuery();
+            friendToQuery.whereEqualTo(Friend.STATE, Friend.APPROVED);
+            friendToQuery.whereEqualTo(Friend.TO_USER_ID, userId);
+
+            ParseQuery<ParseUser> userToQuery = ParseUser.getQuery();
+            userToQuery.whereMatchesKeyInQuery(User.ID, Friend.FROM_USER_ID, friendToQuery);
+
+            ParseQuery<Friend> friendFromQuery = Friend.getQuery();
+            friendFromQuery.whereEqualTo(Friend.STATE, Friend.APPROVED);
+            friendFromQuery.whereEqualTo(Friend.FROM_USER_ID, userId);
+
+            ParseQuery<ParseUser> userFromQuery = ParseUser.getQuery();
+            userFromQuery.whereMatchesKeyInQuery(User.ID, Friend.TO_USER_ID, friendFromQuery);
+
+            List<ParseQuery<ParseUser>> userQueries = new ArrayList<ParseQuery<ParseUser>>();
+            userQueries.add(userToQuery);
+            userQueries.add(userFromQuery);
+
+            ParseQuery<ParseUser> userQuery = ParseQuery.or(userQueries);
+
+            ParseQuery<ActionContract> query = ActionContract.getQuery();
+            query.whereMatchesQuery(ActionContract.USER, userQuery);
             query.orderByDescending("updatedAt");
             query.setLimit(5);
-            query.findInBackground(new FindCallback<Event>() {
+            query.include(ActionContract.USER);
+            query.include(ActionContract.EVENT);
+            query.findInBackground(new FindCallback<ActionContract>() {
                 @Override
-                public void done(List<Event> events, ParseException e) {
+                public void done(List<ActionContract> actions, ParseException e) {
                     if (e == null) {
                         List<Playground_item> items = new ArrayList<>();
-                        for (Event event : events) {
-                            items.add(new Playground_item(container, event, container.getContext()));
+                        for (ActionContract action : actions) {
+                            items.add(new Playground_item(container, action, container.getContext()));
                         }
                         pgadapter.setItems(items);
                         pgadapter.notifyDataSetChanged();
