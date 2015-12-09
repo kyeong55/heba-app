@@ -187,8 +187,8 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.ViewHo
 
     public void add(){
         inAdding = true;
-        UserInfo userInfo = (UserInfo)ParseUser.getCurrentUser().getParseObject("userInfo");
-        List<String> wishlist = userInfo.getWishlist();
+        ParseUser user = ParseUser.getCurrentUser();
+        List<String> wishlist = user.getList(User.WISHLIST);
         if (wishlist != null) {
             ParseQuery<Event> query = Event.getQuery();
             query.whereContainedIn("objectId", wishlist);

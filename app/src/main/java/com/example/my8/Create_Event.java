@@ -227,12 +227,11 @@ public class Create_Event extends AppCompatActivity {
                     public void done(com.parse.ParseException e) {
                         eventId = event.getObjectId();
 
-                        UserInfo userInfo = (UserInfo)ParseUser.getCurrentUser().getParseObject("userInfo");
-                        userInfo.addDonelist(eventId);
-                        userInfo.saveInBackground();
+                        ParseUser.getCurrentUser().addUnique(User.DONELIST, eventId);
+                        ParseUser.getCurrentUser().saveInBackground();
 
                         Stamp stamp = new Stamp(stampLocation, stampDatetime, stampComment, scaledStampPhotoFile,
-                                stampPhotoFile, userInfo, eventTitle, eventId);
+                                stampPhotoFile, ParseUser.getCurrentUser(), eventTitle, eventId);
 
                         stamp.saveInBackground(new SaveCallback() {
                             @Override
@@ -253,12 +252,11 @@ public class Create_Event extends AppCompatActivity {
                     }
                 });
             } else {
-                UserInfo userInfo = (UserInfo)ParseUser.getCurrentUser().getParseObject("userInfo");
-                userInfo.addDonelist(eventId);
-                userInfo.saveInBackground();
+                ParseUser.getCurrentUser().addUnique(User.DONELIST, eventId);
+                ParseUser.getCurrentUser().saveInBackground();
 
                 Stamp stamp = new Stamp(stampLocation, stampDatetime, stampComment, scaledStampPhotoFile,
-                        stampPhotoFile, userInfo, eventTitle, eventId);
+                        stampPhotoFile, ParseUser.getCurrentUser(), eventTitle, eventId);
 
                 stamp.saveInBackground(new SaveCallback() {
                     @Override

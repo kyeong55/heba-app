@@ -101,7 +101,7 @@ public class SignUpActivity extends AppCompatActivity {
         dialog.show();
 
         // Set up a new Parse user
-        final ParseUser user = new ParseUser();
+        ParseUser user = new ParseUser();
 
         user.setUsername(username);
         user.setPassword(password);
@@ -115,25 +115,6 @@ public class SignUpActivity extends AppCompatActivity {
                     // Show the error message
                     Toast.makeText(SignUpActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
                 } else {
-                    final UserInfo userInfo = new UserInfo(username);
-
-                    String userId = user.getObjectId();
-
-                    ParseACL userInfoACL = new ParseACL();
-                    userInfoACL.setPublicReadAccess(true);
-                    userInfoACL.setWriteAccess(userId, true);
-                    userInfo.setACL(userInfoACL);
-
-                    userInfo.setUserId(userId);
-
-                    userInfo.saveInBackground(new SaveCallback() {
-                        @Override
-                        public void done(ParseException e) {
-                            user.put("userInfo", userInfo);
-                            user.saveInBackground();
-                        }
-                    });
-
                     // Start an intent for the dispatch activity
                     Intent intent = new Intent(SignUpActivity.this, DispatchActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -142,44 +123,6 @@ public class SignUpActivity extends AppCompatActivity {
                 }
             }
         });
-
-        /*
-        userInfo.saveInBackground(new SaveCallback() {
-            @Override
-            public void done(com.parse.ParseException e) {
-                if (e != null) {
-                    Toast.makeText(SignUpActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
-                } else {
-                    user.signUpInBackground(new SignUpCallback() {
-                        @Override
-                        public void done(com.parse.ParseException e) {
-                            dialog.dismiss();
-                            if (e != null) {
-                                // Show the error message
-                                Toast.makeText(SignUpActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
-                            } else {
-                                String userId = user.getObjectId();
-
-                                ParseACL userInfoACL = new ParseACL();
-                                userInfoACL.setPublicReadAccess(true);
-                                userInfoACL.setWriteAccess(userId, true);
-                                userInfo.setACL(userInfoACL);
-
-                                userInfo.setUserId(userId);
-
-                                userInfo.saveInBackground();
-
-                                // Start an intent for the dispatch activity
-                                Intent intent = new Intent(SignUpActivity.this, DispatchActivity.class);
-                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                startActivity(intent);
-                                overridePendingTransition(R.anim.trans_activity_fade_in, R.anim.trans_activity_fade_out);
-                            }
-                        }
-                    });
-                }
-            }
-        });*/
     }
     @Override
     public void finish(){

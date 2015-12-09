@@ -112,8 +112,8 @@ public class SelectEvent extends AppCompatActivity implements OnMapReadyCallback
         final ProgressDialog dialog = new ProgressDialog(SelectEvent.this);
         dialog.setMessage("로딩 중");
         dialog.show();
-        UserInfo userInfo = (UserInfo)ParseUser.getCurrentUser().getParseObject("userInfo");
-        List<String> wishlist = userInfo.getWishlist();
+        ParseUser user = ParseUser.getCurrentUser();
+        List<String> wishlist = user.getList(User.WISHLIST);
         if (wishlist == null) {
             selectViewPager.setAdapter(new SelectEventPagerAdapter(getSupportFragmentManager(), new ArrayList<Event>(), imagePath));
             dialog.dismiss();

@@ -208,7 +208,7 @@ public class MainActivity extends AppCompatActivity
             Intent intent = new Intent(this, MyFriendActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
-            overridePendingTransition(R.anim.trans_activity_slide_left_in,R.anim.trans_activity_slide_left_out);
+            overridePendingTransition(R.anim.trans_activity_slide_left_in, R.anim.trans_activity_slide_left_out);
         } else if (id == R.id.nav_profile_image) {
             Intent intent = new Intent(Intent.ACTION_PICK);
             intent.setType(MediaStore.Images.Media.CONTENT_TYPE);
@@ -575,15 +575,15 @@ public class MainActivity extends AppCompatActivity
             TextView user_name = (TextView) header.findViewById(R.id.ms_user_name); // user 이름
             final TextView stamp_count = (TextView) header.findViewById(R.id.ms_stamp_count); // stamp 개수
 
-            UserInfo userInfo = (UserInfo)ParseUser.getCurrentUser().getParseObject("userInfo");
-            user_name.setText(ParseUser.getCurrentUser().getUsername());
+            ParseUser user = ParseUser.getCurrentUser();
+            user_name.setText(user.getUsername());
             // TODO update cover and profile photo
             // profile.setParseFile(user.getProfile());
             // profile.loadInBackground();
             // cover.setParseFile(user.getCover());
             // cover.loadInBackground();
             ParseQuery<Stamp> query = Stamp.getQuery();
-            query.whereEqualTo(Stamp.USERINFO, userInfo);
+            query.whereEqualTo(Stamp.USER, user);
             query.orderByDescending("updatedAt");
 //            query.countInBackground(new CountCallback() {
 //                @Override
@@ -689,18 +689,16 @@ public class MainActivity extends AppCompatActivity
                     if (e == null) {
                         List<Friends_item> items = new ArrayList<>();
                         for (Friend tuple : tuples) {
-                            items.add(new Friends_item(tuple, (UserInfo) tuple.getFromUser()));
+                            items.add(new Friends_item(tuple, tuple.getFromUser()));
                         }
                         friendsAdapter.setItems(items);
                         friendsAdapter.setNRequest(items.size());
                         friendsAdapter.notifyDataSetChanged();
-                    } else {
-                        Log.d("잡았다", e.getMessage());
-                        Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+
+                        friendsAdapter.addedAll = false;
+                        friendsAdapter.setIsAdding(false);
+                        mySwipeRefreshLayout.setRefreshing(false);
                     }
-                    friendsAdapter.addedAll = false;
-                    friendsAdapter.setIsAdding(false);
-                    mySwipeRefreshLayout.setRefreshing(false);
                 }
             });
         }
@@ -715,13 +713,8 @@ public class MainActivity extends AppCompatActivity
 
             @Override
             public void onChildViewAttachedToWindow(View view) {
-                Log.d("aaaa", "bbbb");
                 if (friendsAdapter.getItemCount() - 3 <= llm.findLastVisibleItemPosition()) {
-                    Log.d("cccc", "dddd");
-                    Log.d("a", friendsAdapter.isAdding()+"");
-                    Log.d("a", friendsAdapter.addedAll+"");
                     if(!friendsAdapter.isAdding() &&(!friendsAdapter.addedAll)) {
-                        Log.d("aaaaaa", "aaaaaaa");
                         friendsAdapter.add();
                     }
                 }

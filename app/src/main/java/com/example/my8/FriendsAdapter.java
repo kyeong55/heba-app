@@ -16,6 +16,7 @@ import com.parse.ParseACL;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseImageView;
+import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
@@ -28,36 +29,38 @@ import java.util.List;
  */
 class Friends_item{
     private Friend friend;
-    private UserInfo userInfo;
+    private ParseUser user;
 
-    public Friends_item(UserInfo userInfo) {
+    public Friends_item(ParseUser user) {
         this.friend = null;
-        this.userInfo = userInfo;
+        this.user = user;
     }
 
-    public Friends_item(Friend friend, UserInfo userInfo) {
+    public Friends_item(Friend friend, ParseUser user) {
         this.friend = friend;
-        this.userInfo = userInfo;
+        this.user = user;
     }
 
     public ParseFile getProfile() {
-        return userInfo.getProfile();
+        return user.getParseFile(User.PROFILE);
     }
 
     public String getName() {
-        return userInfo.getName();
+        return user.getUsername();
     }
 
-    public int getStampCount() {
-        return userInfo.getDonelist().size();
+    public String getStampCount() {
+        if (user.getList(User.DONELIST) == null)
+            return 0+"";
+        return user.getList(User.DONELIST).size()+"";
     }
 
     public String getId() {
-        return userInfo.getUserId();
+        return user.getObjectId();
     }
 
-    public UserInfo getUserInfo() {
-        return userInfo;
+    public ParseUser getUser() {
+        return user;
     }
 
     public Friend getFriend() {
@@ -114,17 +117,20 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
         else if(viewType == VIEW_TYPE_ITEM_REQUEST) {
             final Friends_item item = items.get(getItemRequestPosition(position));
 
-            //ParseImageView userProfile = (ParseImageView)holder.profile_image;
-            //userProfile.setParseFile(item.getProfile());
-            /*userProfile.loadInBackground(new GetDataCallback() {
-                @Override
-                public void done(byte[] data, ParseException e) {
-                    //nothing to do
-                }
-            });*/
+            ParseFile profile = item.getProfile();
+            if (profile != null) {
+                ParseImageView userProfile = (ParseImageView) holder.profile_image;
+                userProfile.setParseFile(item.getProfile());
+                userProfile.loadInBackground(new GetDataCallback() {
+                    @Override
+                    public void done(byte[] data, ParseException e) {
+                        //nothing to do
+                    }
+                });
+            }
 
             holder.user_name.setText(item.getName());
-            //holder.stamp_count.setText(item.getStampCount());
+            holder.stamp_count.setText(item.getStampCount());
 
             holder.friends_accept_button.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -169,24 +175,27 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
         } else if(viewType == VIEW_TYPE_ITEM_SUGGEST) {
             final Friends_item item = items.get(getItemSuggestPosition(position));
 
-            ParseImageView userProfile = (ParseImageView)holder.profile_image;
-            userProfile.setParseFile(item.getProfile());
-            userProfile.loadInBackground(new GetDataCallback() {
-                @Override
-                public void done(byte[] data, ParseException e) {
-                    //nothing to do
-                }
-            });
+            ParseFile profile = item.getProfile();
+            if (profile != null) {
+                ParseImageView userProfile = (ParseImageView) holder.profile_image;
+                userProfile.setParseFile(item.getProfile());
+                userProfile.loadInBackground(new GetDataCallback() {
+                    @Override
+                    public void done(byte[] data, ParseException e) {
+                        //nothing to do
+                    }
+                });
+            }
 
             holder.user_name.setText(item.getName());
-            //holder.stamp_count.setText(item.getStampCount());
+            holder.stamp_count.setText(item.getStampCount());
 
             holder.friends_add_button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     //TODO: make request to friend
                     ParseUser I = ParseUser.getCurrentUser();
-                    Friend friend = new Friend((UserInfo)I.getParseObject("userInfo"), I.getObjectId(), item.getId());
+                    Friend friend = new Friend(ParseUser.getCurrentUser(), item.getId());
 
                     ParseACL friendACL = new ParseACL();
                     friendACL.setPublicReadAccess(true);
@@ -273,62 +282,49 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
 
     public void add(){
         inAdding = true;
-        String I = ParseUser.getCurrentUser().getObjectId();
+        String userId = ParseUser.getCurrentUser().getObjectId();
+
         ParseQuery<Friend> friendToQuery = Friend.getQuery();
-        friendToQuery.whereEqualTo(Friend.FROM_USER_ID, I);
+        friendToQuery.whereEqualTo(Friend.FROM_USER_ID, userId);
 
         ParseQuery<Friend> friendFromQuery = Friend.getQuery();
-        friendFromQuery.whereEqualTo(Friend.TO_USER_ID, I);
+        friendFromQuery.whereEqualTo(Friend.TO_USER_ID, userId);
 
-        /*
-        List<ParseQuery<Friend>> queries = new ArrayList<ParseQuery<Friend>>();
-        queries.add(friendToQuery);
-        queries.add(friendFromQuery);
+        List<ParseQuery<Friend>> friendQueries = new ArrayList<ParseQuery<Friend>>();
+        friendQueries.add(friendToQuery);
+        friendQueries.add(friendFromQuery);
 
-        ParseQuery<Friend> friendQuery = ParseQuery.or(queries);*/
+        ParseQuery<Friend> friendQuery = ParseQuery.or(friendQueries);
 
-        ParseQuery<UserInfo> query = UserInfo.getQuery();
-        query.whereDoesNotMatchKeyInQuery(UserInfo.ID, Friend.FROM_USER_ID, friendToQuery);
-        query.whereDoesNotMatchKeyInQuery(UserInfo.ID, Friend.TO_USER_ID, friendFromQuery);
-        query.orderByDescending(UserInfo.ID);
-        Log.d("itemsize", items.size()+"");
-        Log.d("nRequest", nRequest + "");
+        ParseQuery<ParseUser> query = ParseUser.getQuery();
+        query.whereNotEqualTo(User.ID, userId);
+        query.whereDoesNotMatchKeyInQuery(User.ID, Friend.FROM_USER_ID, friendQuery);
+        query.whereDoesNotMatchKeyInQuery(User.ID, Friend.TO_USER_ID, friendQuery);
+        query.orderByDescending(User.ID);
         if (items.size() == nRequest) {
         } else {
             Friends_item oldestItem = items.get(items.size() - 1);
-            query.whereLessThan(UserInfo.ID, oldestItem.getId());
+            query.whereLessThan(User.ID, oldestItem.getId());
         }
         query.setLimit(5);
-        query.findInBackground(new FindCallback<UserInfo>() {
+        query.findInBackground(new FindCallback<ParseUser>() {
             @Override
-            public void done(List<UserInfo> userInfos, ParseException e) {
+            public void done(List<ParseUser> users, ParseException e) {
                 if (e == null) {
                     int pos = items.size();
-                    Log.d("pos", pos + "");
-                    for (UserInfo userInfo : userInfos) {
-                        items.add(new Friends_item(userInfo));
-                        Log.d("username", userInfo.getName());
+                    for (ParseUser user : users) {
+                        items.add(new Friends_item(user));
                     }
                     if (items.size() == pos) {
-                        Log.d("addedAll", "done");
                         addedAll = true;
                         notifyItemChanged(getItemCount() - 1);
                     } else
                         notifyItemRangeInserted(pos, items.size() - pos);
                     inAdding = false;
-                } else
-                    Log.d("잡음", e.getMessage());
+                }
             }
         });
     }
-
-    /*
-    //TODO: test용
-    public void add(){
-        items_request.add(new Friends_item());
-        items_suggest.add(new Friends_item());
-        notifyDataSetChanged();
-    }*/
 
     public class ViewHolder extends RecyclerView.ViewHolder{
         TextView user_name;

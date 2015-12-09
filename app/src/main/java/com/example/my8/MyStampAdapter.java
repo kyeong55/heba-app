@@ -150,9 +150,9 @@ public class MyStampAdapter extends RecyclerView.Adapter<MyStampAdapter.ViewHold
 
     public void add(){
         inAdding = true;
-        UserInfo userInfo = (UserInfo)ParseUser.getCurrentUser().getParseObject("userInfo");
+        ParseUser user = ParseUser.getCurrentUser();
         ParseQuery<Stamp> query = Stamp.getQuery();
-        query.whereEqualTo(Stamp.USERINFO, userInfo);
+        query.whereEqualTo(Stamp.USER, user);
         query.orderByDescending("updatedAt");
         if (items.size() == 0) {
         } else {

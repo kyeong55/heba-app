@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import com.parse.FindCallback;
 import com.parse.GetCallback;
+import com.parse.GetDataCallback;
 import com.parse.ParseException;
 import com.parse.ParseImageView;
 import com.parse.ParseQuery;
@@ -134,12 +135,16 @@ public class PgStampInfoActivity extends AppCompatActivity {
                 @Override
                 public void done(Stamp stamp, ParseException e) {
                     imageView.setParseFile(stamp.getPhotoFile());
-                    imageView.loadInBackground();
+                    imageView.loadInBackground(new GetDataCallback() {
+                        @Override
+                        public void done(byte[] data, ParseException e) {
+                            progressBar.setVisibility(View.GONE);
+                        }
+                    });
                     textView.setText(stamp.getComment());
                     //TODO: writer profile, name, time
 //                    writerName.setText(stamp.getUser().getUsername());
                     time.setText(stamp.getDatetime().toString());
-                    progressBar.setVisibility(View.GONE);
                 }
             });
 

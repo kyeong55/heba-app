@@ -3,6 +3,7 @@ package com.example.my8;
 import com.parse.ParseClassName;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
 
 /**
  * Subclass for friend
@@ -21,15 +22,15 @@ public class Friend extends ParseObject {
 
     public Friend() {}
 
-    public Friend(UserInfo fromUserInfo, String fromUserId, String toUserId) {
-        put(FROM_USER, fromUserInfo);
-        put(FROM_USER_ID, fromUserId);
+    public Friend(ParseUser fromUser, String toUserId) {
+        put(FROM_USER, fromUser);
+        put(FROM_USER_ID, fromUser.getObjectId());
         put(TO_USER_ID, toUserId);
         put(STATE, REQUESTED);
     }
 
-    public ParseObject getFromUser() {
-        return getParseObject(FROM_USER);
+    public ParseUser getFromUser() {
+        return getParseUser(FROM_USER);
     }
 
     public String getFromUserId() { return getString(FROM_USER_ID); }
