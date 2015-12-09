@@ -191,7 +191,13 @@ public class MainActivity extends AppCompatActivity
         TextView stampCount = (TextView) header.findViewById(R.id.option_stamp_count);
         // TODO: refresh user info (name, profile image, cover, stamp count)
         ParseUser user = ParseUser.getCurrentUser();
+
         userName.setText(user.getUsername());
+        if (user.getList(User.DONELIST) == null) {
+            stampCount.setText("0");
+        } else {
+            stampCount.setText(user.getList(User.DONELIST).size()+"");
+        }
 
         if (user.getBoolean(User.EXIST_PROFILE)) {
             profileImage.setParseFile(user.getParseFile(User.PROFILE));
