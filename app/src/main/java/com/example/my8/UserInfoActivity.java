@@ -13,6 +13,8 @@ import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.WindowManager;
 
+import com.parse.ParseUser;
+
 public class UserInfoActivity extends AppCompatActivity {
 
     UserInfoAdapter userInfoAdapter;
@@ -26,6 +28,10 @@ public class UserInfoActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("친구 정보");
 
+        String userId = getIntent().getStringExtra("user_id");
+        //TODO: userId로 user 포인터
+        ParseUser user = null;
+
         DisplayMetrics metrics = new DisplayMetrics();
         WindowManager windowManager = (WindowManager) getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
         windowManager.getDefaultDisplay().getMetrics(metrics);
@@ -37,7 +43,7 @@ public class UserInfoActivity extends AppCompatActivity {
         else if (columnNum > 5)
             columnNum = 5;
 
-        userInfoAdapter = new UserInfoAdapter(getApplicationContext(),metrics.widthPixels*6/(7*columnNum));
+        userInfoAdapter = new UserInfoAdapter(getApplicationContext(), user, metrics.widthPixels*6/(7*columnNum));
 
         final GridLayoutManager layoutManager = new GridLayoutManager(getApplicationContext(),columnNum);
         layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {

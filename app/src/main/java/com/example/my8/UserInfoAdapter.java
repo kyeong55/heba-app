@@ -52,16 +52,19 @@ public class UserInfoAdapter extends RecyclerView.Adapter<UserInfoAdapter.ViewHo
     private Context context;
     private List<UserInfo_item> items;
 
+    private ParseUser user;
+
     public final int VIEW_TYPE_HEADER=0;
     public final int VIEW_TYPE_ITEM=1;
     public final int VIEW_TYPE_FOOTER=2;
 
     private int imageHeight;
 
-    public UserInfoAdapter(Context context, int imageHeight){
+    public UserInfoAdapter(Context context, ParseUser user, int imageHeight){
         this.context = context;
         this.items = new ArrayList<>();
         this.imageHeight = imageHeight;
+        this.user = user;
     }
 
     @Override
@@ -96,17 +99,17 @@ public class UserInfoAdapter extends RecyclerView.Adapter<UserInfoAdapter.ViewHo
             holder.stamp.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(context, MyStampInfoActivity.class);
-                    String stampId = item.getID();
-                    ArrayList<String> stampIdList = getStampObjectIdArrayList();
-                    ArrayList<String> eventIdList = getEventIdArrayList();
-                    ArrayList<String> eventTitleList = getEventTitleArrayList();
-                    int pos = stampIdList.indexOf(stampId);
-                    intent.putExtra("clicked_stamp_pos", pos);
-                    intent.putExtra("stamp_id_list", stampIdList);
-                    intent.putExtra("event_id_list", eventIdList);
-                    intent.putExtra("event_title_list", eventTitleList);
-                    context.startActivity(intent);
+//                    Intent intent = new Intent(context, MyStampInfoActivity.class);
+//                    String stampId = item.getID();
+//                    ArrayList<String> stampIdList = getStampObjectIdArrayList();
+//                    ArrayList<String> eventIdList = getEventIdArrayList();
+//                    ArrayList<String> eventTitleList = getEventTitleArrayList();
+//                    int pos = stampIdList.indexOf(stampId);
+//                    intent.putExtra("clicked_stamp_pos", pos);
+//                    intent.putExtra("stamp_id_list", stampIdList);
+//                    intent.putExtra("event_id_list", eventIdList);
+//                    intent.putExtra("event_title_list", eventTitleList);
+//                    context.startActivity(intent);
                 }
             });
             LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) holder.user_info_card.getLayoutParams();
@@ -195,7 +198,7 @@ public class UserInfoAdapter extends RecyclerView.Adapter<UserInfoAdapter.ViewHo
 
     public void add(){
         inAdding = true;
-        ParseUser user = ParseUser.getCurrentUser();
+//        ParseUser user = ParseUser.getCurrentUser();
         ParseQuery<Stamp> query = Stamp.getQuery();
         query.whereEqualTo(Stamp.USER, user);
         query.orderByDescending("updatedAt");

@@ -47,6 +47,9 @@ class MyFriends_item{
             return 0+"";
         return user.getList(User.DONELIST).size()+"";
     }
+    public String getUserId(){
+        return user.getObjectId();
+    }
 }
 public class MyFriendAdapter extends RecyclerView.Adapter<MyFriendAdapter.ViewHolder>{
     Context context;
@@ -100,6 +103,7 @@ public class MyFriendAdapter extends RecyclerView.Adapter<MyFriendAdapter.ViewHo
                 public void onClick(View v) {
                     Intent intent = new Intent(context, UserInfoActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.putExtra("user_id", item.getUserId());
                     context.startActivity(intent);
 //                    ((Activity)context).overridePendingTransition(R.anim.trans_activity_slide_left_in,R.anim.trans_activity_slide_left_out);
                 }
