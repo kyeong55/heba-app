@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.parse.FindCallback;
+import com.parse.GetDataCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseImageView;
@@ -111,6 +112,36 @@ public class MyStampAdapter extends RecyclerView.Adapter<MyStampAdapter.ViewHold
             LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) holder.ms_card.getLayoutParams();
             params.height = imageHeight;
             holder.ms_card.setLayoutParams(params);
+        }
+        else if (viewType == VIEW_TYPE_HEADER) {
+            ParseUser user = ParseUser.getCurrentUser();
+
+            holder.header_user_name.setText(user.getUsername());
+            if (user.getList(User.DONELIST) == null) {
+                holder.header_stamp_count.setText("0");
+            } else {
+                holder.header_stamp_count.setText(user.getList(User.DONELIST).size() + "");
+            }
+
+            if (user.getBoolean(User.EXIST_PROFILE)) {
+                holder.header_profile_image.setParseFile(user.getParseFile(User.PROFILE));
+                holder.header_profile_image.loadInBackground(new GetDataCallback() {
+                    @Override
+                    public void done(byte[] data, ParseException e) {
+                        //nothing to do
+                    }
+                });
+            }
+
+            if (user.getBoolean(User.EXIST_COVER)) {
+                holder.header_cover_image.setParseFile(user.getParseFile(User.COVER));
+                holder.header_cover_image.loadInBackground(new GetDataCallback() {
+                    @Override
+                    public void done(byte[] data, ParseException e) {
+                        //nothing to do
+                    }
+                });
+            }
         }
     }
 
