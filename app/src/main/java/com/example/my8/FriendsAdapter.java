@@ -163,7 +163,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
                 public void onClick(View v){
                     //TODO: reject friend request
                     Friend friend = item.getFriend();
-                    friend.setState(Friend.APPROVED);
+                    friend.setState(Friend.REJECTED);
 
                     friend.saveInBackground(new SaveCallback() {
                         @Override

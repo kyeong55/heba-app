@@ -123,7 +123,6 @@ class Playground_item {
     }
 }
 
-
 public class PgAdapter extends RecyclerView.Adapter<PgAdapter.ViewHolder> {
     private ViewGroup container;
     private Context context;
@@ -132,6 +131,9 @@ public class PgAdapter extends RecyclerView.Adapter<PgAdapter.ViewHolder> {
 
     final private int VIEW_TYPE_FOOTER=0;
     final private int VIEW_TYPE_ITEM=1;
+
+    public boolean relatedAddedAll=false;
+    public boolean notRelatedAddedAll=false;
 
     public boolean addedAll=false;
     private boolean inAdding=false;
@@ -198,6 +200,7 @@ public class PgAdapter extends RecyclerView.Adapter<PgAdapter.ViewHolder> {
 
             final ParseUser user = item.getUser();
 
+            //holder.description_visible.setVisibility(View.GONE);
 
             if (user.getBoolean(User.EXIST_PROFILE)) {
                 ParseImageView userProfile = (ParseImageView) holder.writer_photo;
@@ -221,7 +224,9 @@ public class PgAdapter extends RecyclerView.Adapter<PgAdapter.ViewHolder> {
                     context.startActivity(intent);
                 }
             });
+
             holder.description.setText(item.getDescription());
+
             holder.participate.setText(item.getNParticipant());
             holder.addWL.setOnClickListener(new View.OnClickListener() {
                 @Override
