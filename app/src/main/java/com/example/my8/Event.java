@@ -41,6 +41,12 @@ public class Event extends ParseObject {
         put(VAR_LO, 0.0);
     }
 
+    public Double getRadius() {
+        Double x = 111*1000*Math.sqrt(getVarLa());
+        Double y = 88.8*1000*Math.sqrt(getVarLo());
+        return Math.sqrt(Math.pow(x,2)+Math.pow(y,2));
+    }
+
     public Double getMeanLa() {
         return getDouble(MEAN_LA);
     }
