@@ -8,7 +8,7 @@ import android.util.Log;
 import com.parse.ParseUser;
 
 /**
- * Activity which starts an intent for either the logged in (MainActivity) or logged out
+ * ActionContract which starts an intent for either the logged in (MainActivity) or logged out
  * (SignUpOrLoginActivity) activity.
  */
 public class DispatchActivity extends AppCompatActivity {

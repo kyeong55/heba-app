@@ -8,9 +8,9 @@ import com.parse.ParseUser;
 /**
  * Created by JAEMYUNG on 15. 12. 7..
  */
-@ParseClassName("Activity")
-public class Activity extends ParseObject {
-    public static final String CLASSNAME = "Activity";
+@ParseClassName("Action")
+public class ActionContract extends ParseObject {
+    public static final String CLASSNAME = "Action";
     public static final String USER = "user";
     public static final String ACTION = "action";
     public static final String EVENT = "object";
@@ -18,9 +18,9 @@ public class Activity extends ParseObject {
     public static final int WISHLIST = 0;
     public static final int STAMP = 1;
 
-    public Activity() {}
+    public ActionContract() {}
 
-    public Activity(ParseUser user, int action, Event event) {
+    public ActionContract(ParseUser user, int action, Event event) {
         put(USER, user);
         put(ACTION, action);
         put(EVENT, event);
@@ -52,5 +52,5 @@ public class Activity extends ParseObject {
         return user + "님이 " + action;
     }
 
-    public static ParseQuery<Activity> getQuery() { return ParseQuery.getQuery(Activity.class); }
+    public static ParseQuery<ActionContract> getQuery() { return ParseQuery.getQuery(ActionContract.class); }
 }

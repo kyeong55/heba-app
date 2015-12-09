@@ -61,7 +61,7 @@
     <dimen name="dialog_editpw_text_margin_side">36dp</dimen>
     <dimen name="dialog_editpw_text_margin_in">16dp</dimen>
     <dimen name="dialog_editpw_text_height">40dp</dimen>
-    <!-- Event Info Activity -->
+    <!-- Event Info ActionContract -->
     <dimen name="event_info_margin_side">16dp</dimen>
     <dimen name="event_info_margin_in">4dp</dimen>
     <dimen name="event_info_margin_out">12dp</dimen>

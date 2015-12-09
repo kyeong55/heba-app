@@ -21,7 +21,7 @@ import com.parse.SaveCallback;
 import com.parse.SignUpCallback;
 
 /**
- * Activity which displays a login screen to the user.
+ * ActionContract which displays a login screen to the user.
  */
 public class SignUpActivity extends AppCompatActivity {
     //UI references.

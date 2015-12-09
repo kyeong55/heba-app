@@ -20,7 +20,7 @@ import org.w3c.dom.Text;
 import java.text.ParseException;
 
 /**
- * Activity which displays a login screen to the user, offering registration as well.
+ * ActionContract which displays a login screen to the user, offering registration as well.
  */
 public class LoginActivity extends AppCompatActivity {
     // UI references.

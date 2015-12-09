@@ -18,6 +18,7 @@ public class StarterApplication extends Application {
         ParseObject.registerSubclass(Stamp.class);
         ParseObject.registerSubclass(Event.class);
         ParseObject.registerSubclass(Friend.class);
+        ParseObject.registerSubclass(ActionContract.class);
         Parse.enableLocalDatastore(this);
         Parse.initialize(this,
                 "FxIKD0gxTd4rdcDyHxKZZG9XxeBMrKT1KmgM7xCl",

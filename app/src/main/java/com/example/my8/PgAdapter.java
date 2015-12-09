@@ -17,6 +17,7 @@ import com.parse.ParseImageView;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -176,9 +177,16 @@ public class PgAdapter extends RecyclerView.Adapter<PgAdapter.ViewHolder> {
                     } else if (wishlist != null && wishlist.contains(event)) {
                         Toast.makeText(context, "이미 위시리스트에 추가되었습니다", Toast.LENGTH_SHORT).show();
                     } else {
-                        Toast.makeText(context, "위시리스트에 추가되었습니다", Toast.LENGTH_SHORT).show();
+                        ActionContract actionContract = new ActionContract(ParseUser.getCurrentUser(), ActionContract.WISHLIST, event);
+                        actionContract.saveInBackground();
+
                         user.addUnique(User.WISHLIST, eventId);
-                        user.saveInBackground();
+                        user.saveInBackground(new SaveCallback() {
+                            @Override
+                            public void done(ParseException e) {
+                                Toast.makeText(context, "위시리스트에 추가되었습니다", Toast.LENGTH_SHORT).show();
+                            }
+                        });
                     }
                 }
             });

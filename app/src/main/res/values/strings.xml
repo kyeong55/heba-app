@@ -35,7 +35,7 @@
     <!-- String related to Playground -->
     <string name="pg_progress">이벤트를 불러오는 중</string>
     <string name="pg_end_progress">더 이상 불러올 이벤트가 없습니다</string>
-    <!-- String related to Friends Activity -->
+    <!-- String related to Friends ActionContract -->
     <string name="friends_add">친구추가</string>
     <string name="friends_request_accept">확인</string>
     <string name="friends_request_reject">무시</string>
@@ -52,10 +52,10 @@
     <!-- String related to Wishlist -->
     <string name="wl_progress">위시리스트를 불러오는 중</string>
     <string name="wl_end_progress">더 이상 불러올 위시리스트가 없습니다</string>
-    <!-- String related to Select Event Activity -->
+    <!-- String related to Select Event ActionContract -->
     <string name="select_title">참여할 이벤트</string>
     <string name="select_add">새로운 이벤트 추가</string>
-    <!-- String related to Create Event Activity -->
+    <!-- String related to Create Event ActionContract -->
     <string name="create_commit">확인</string>
     <string name="create_title_hint">제목을 입력해주세요.</string>
     <string name="create_comment_hint">글쓰기...</string>
@@ -63,9 +63,9 @@
     <string name="dialog_current_password">현재 비밀번호</string>
     <string name="dialog_new_password">새 비밀번호</string>
     <string name="dialog_new_password_again">새 비밀번호 확인</string>
-    <!-- String related to Search Activity -->
+    <!-- String related to Search ActionContract -->
     <string name="search_hint_text">이벤트 검색</string>
-    <!-- String related to Event Info Activity -->
+    <!-- String related to Event Info ActionContract -->
     <string name="title_activity_event_info">EventInfoActivity</string>
     <string name="event_info_stamp_count">명이 참여했습니다</string>
     <string name="event_info_time">에 처음 등록 되었습니다</string>
@@ -73,7 +73,7 @@
     <string name="event_info_see_more">더보기</string>
     <string name="event_info_add_wishlist">위시리스트 추가</string>
     <string name="title_activity_event_info_stamp_view">EventInfoStampViewActivity</string>
-    <!-- String related to Event Info Stamp View Activity -->
+    <!-- String related to Event Info Stamp View ActionContract -->
     <string name="event_info_stamp_view_progress">스탬프를 불러오는 중</string>
     <string name="event_info_stamp_view_end_progress">더 이상 불러올 스탬프가 없습니다</string>
     <string name="title_activity_my_friend">MyFriendActivity</string>

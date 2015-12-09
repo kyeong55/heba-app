@@ -18,9 +18,11 @@ import android.widget.Toast;
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.parse.GetCallback;
 import com.parse.ParseACL;
 import com.parse.ParseFile;
 import com.parse.ParseGeoPoint;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
@@ -230,6 +232,9 @@ public class Create_Event extends AppCompatActivity {
                         ParseUser.getCurrentUser().addUnique(User.DONELIST, eventId);
                         ParseUser.getCurrentUser().saveInBackground();
 
+                        ActionContract actionContract = new ActionContract(ParseUser.getCurrentUser(), ActionContract.STAMP, event);
+                        actionContract.saveInBackground();
+
                         Stamp stamp = new Stamp(stampLocation, stampDatetime, stampComment, scaledStampPhotoFile,
                                 stampPhotoFile, ParseUser.getCurrentUser(), eventTitle, eventId);
 
@@ -239,7 +244,7 @@ public class Create_Event extends AppCompatActivity {
                                 if (e == null) {
                                     dialog.dismiss();
 
-                                    //Activity change
+                                    //ActionContract change
                                     SelectEvent selectEventActivity = (SelectEvent) SelectEvent.selectEventActivity;
                                     finish();
                                     selectEventActivity.finish();
@@ -255,6 +260,15 @@ public class Create_Event extends AppCompatActivity {
                 ParseUser.getCurrentUser().addUnique(User.DONELIST, eventId);
                 ParseUser.getCurrentUser().saveInBackground();
 
+                ParseQuery<Event> query = Event.getQuery();
+                query.getInBackground(eventId, new GetCallback<Event>() {
+                    @Override
+                    public void done(Event event, com.parse.ParseException e) {
+                        ActionContract actionContract = new ActionContract(ParseUser.getCurrentUser(), ActionContract.STAMP, event);
+                        actionContract.saveInBackground();
+                    }
+                });
+
                 Stamp stamp = new Stamp(stampLocation, stampDatetime, stampComment, scaledStampPhotoFile,
                         stampPhotoFile, ParseUser.getCurrentUser(), eventTitle, eventId);
 
@@ -264,7 +278,7 @@ public class Create_Event extends AppCompatActivity {
                         if (e == null) {
                             dialog.dismiss();
 
-                            //Activity change
+                            //ActionContract change
                             SelectEvent selectEventActivity = (SelectEvent) SelectEvent.selectEventActivity;
                             finish();
                             selectEventActivity.finish();
