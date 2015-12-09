@@ -23,4 +23,8 @@
 
     <!-- Friends page -->
     <color name="colorDone">#DDDDDD</color>
+
+    <!-- Maps -->
+    <color name="colorMapCircleStroke">#B0FF4E50</color>
+    <color name="colorMapCircleFill">#50FC913A</color>
 </resources>

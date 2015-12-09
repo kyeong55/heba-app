@@ -4,12 +4,15 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.location.Address;
+import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
@@ -25,6 +28,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.parse.GetCallback;
@@ -35,7 +39,9 @@ import com.parse.ParseImageView;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 
 public class EventInfoActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -146,6 +152,8 @@ public class EventInfoActivity extends AppCompatActivity implements OnMapReadyCa
 
                 //TODO: event 대표시간, 위치
                 //TODO: 더보기에 스탬프들 볼 수 있는 listener
+//                locationTextView.setText(getLocation(latitude,longitude));
+//                setMap(latitude, longitude, radius);
 
                 fab.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -178,13 +186,42 @@ public class EventInfoActivity extends AppCompatActivity implements OnMapReadyCa
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        Intent intent = getIntent();
+//        Intent intent = getIntent();
 
         // Add a marker in Sydney and move the camera
         //LatLng loc = new LatLng(Double.parseDouble(intent.getStringExtra("latitude")), Double.parseDouble(intent.getStringExtra("longitude")));
-        LatLng loc = new LatLng(30,30);
-        mMap.addMarker(new MarkerOptions().position(loc).title("Marker in picture"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(loc, 14));
+//        LatLng loc = new LatLng(30,30);
+//        mMap.addMarker(new MarkerOptions().position(loc).title("Marker in picture"));
+//        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(loc, 14));
+    }
+
+    public void setMap(double lat, double lng, double radius){
+        LatLng loc = new LatLng(lat,lng);
+        CircleOptions circle = new CircleOptions();
+        circle.center(loc).radius(radius);
+        circle.strokeColor(ContextCompat.getColor(getApplicationContext(), R.color.colorMapCircleStroke));
+        circle.fillColor(ContextCompat.getColor(getApplicationContext(), R.color.colorMapCircleFill));
+        MarkerOptions marker = new MarkerOptions();
+        marker.title(getLocation(lat,lng)).position(loc);
+        mMap.addCircle(circle);
+        mMap.addMarker(marker).showInfoWindow();
+    }
+
+    public String getLocation(double lat, double lng){
+        String location = null;
+        Geocoder gc = new Geocoder(this, Locale.KOREAN);
+        try {
+            List<Address> addresses = gc.getFromLocation(lat, lng, 1);
+            StringBuffer sb = new StringBuffer();
+            if (addresses.size() > 0) {
+                Address address = addresses.get(0);
+                sb.append(address.getAddressLine(0).toString());
+                location = sb.toString();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return location;
     }
 
     @Override

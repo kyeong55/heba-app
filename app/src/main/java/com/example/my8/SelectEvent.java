@@ -3,6 +3,7 @@ package com.example.my8;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.media.ExifInterface;
@@ -11,6 +12,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
@@ -29,6 +31,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -255,6 +258,14 @@ public class SelectEvent extends AppCompatActivity implements OnMapReadyCallback
 //        mMap.addMarker(marker).showInfoWindow();
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(loc, 14));
         mMap.addMarker(marker2).showInfoWindow();
+
+        CircleOptions circle = new CircleOptions();
+        circle.center(loc);
+        circle.radius(1000);
+        circle.strokeColor(ContextCompat.getColor(getApplicationContext(), R.color.colorMapCircleStroke));
+        circle.fillColor(ContextCompat.getColor(getApplicationContext(), R.color.colorMapCircleFill));
+
+        mMap.addCircle(circle);
     }
 
     public void setMarker(List<Event> events){
