@@ -165,9 +165,9 @@ public class MyFriendAdapter extends RecyclerView.Adapter<MyFriendAdapter.ViewHo
         query.orderByAscending(User.NAME);
         if (items.size() != 0){
             MyFriends_item oldestItem = items.get(items.size() - 1);
-            query.whereLessThan(User.ID, oldestItem.getName());
+            query.whereGreaterThan(User.ID, oldestItem.getName());
         }
-        query.setLimit(5);
+        query.setLimit(15);
         query.findInBackground(new FindCallback<ParseUser>() {
             @Override
             public void done(List<ParseUser> users, ParseException e) {
