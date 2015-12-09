@@ -44,7 +44,7 @@ public class Event extends ParseObject {
     }
 
     public ParseFile getThumbnail(int idx) {
-        return getParseFile(THUMBNAIL + ((getIndex() + idx + 4) % 6));
+        return getParseFile(THUMBNAIL + ((getIndex() - idx + 6) % 6));
     }
 
     public static ParseQuery<Event> getQuery() {
