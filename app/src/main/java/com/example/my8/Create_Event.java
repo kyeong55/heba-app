@@ -195,41 +195,44 @@ public class Create_Event extends AppCompatActivity {
                 event.saveInBackground(new SaveCallback() {
                     @Override
                     public void done(com.parse.ParseException e) {
-                        eventId = event.getObjectId();
+                        if (e == null) {
+                            eventId = event.getObjectId();
 
-                        ParseUser.getCurrentUser().addUnique(User.DONELIST, eventId);
-                        ParseUser.getCurrentUser().saveInBackground();
+                            ParseUser.getCurrentUser().addUnique(User.DONELIST, eventId);
+                            ParseUser.getCurrentUser().saveInBackground();
 
-                        ActionContract actionContract = new ActionContract(ParseUser.getCurrentUser(), ActionContract.STAMP, event);
-                        actionContract.saveInBackground();
+                            ActionContract actionContract = new ActionContract(ParseUser.getCurrentUser(), ActionContract.STAMP, event);
+                            actionContract.saveInBackground();
 
-                        Stamp stamp = new Stamp(stampLocation, stampDatetime, stampComment, scaledStampPhotoFile,
-                                stampPhotoFile, ParseUser.getCurrentUser(), eventTitle, eventId);
+                            Stamp stamp = new Stamp(stampLocation, stampDatetime, stampComment, scaledStampPhotoFile,
+                                    stampPhotoFile, ParseUser.getCurrentUser(), eventTitle, eventId);
 
-                        stamp.saveInBackground(new SaveCallback() {
-                            @Override
-                            public void done(com.parse.ParseException e) {
-                                if (e == null) {
-                                    dialog.dismiss();
+                            stamp.saveInBackground(new SaveCallback() {
+                                @Override
+                                public void done(com.parse.ParseException e) {
+                                    if (e == null) {
+                                        dialog.dismiss();
 
-                                    //ActionContract change
-                                    if (isSelectEvent.equalsIgnoreCase("true")) {
-                                        SelectEvent selectEventActivity = (SelectEvent) SelectEvent.selectEventActivity;
-                                        selectEventActivity.finish();
+                                        //ActionContract change
+                                        if (isSelectEvent.equalsIgnoreCase("true")) {
+                                            SelectEvent selectEventActivity = (SelectEvent) SelectEvent.selectEventActivity;
+                                            selectEventActivity.finish();
+                                        } else {
+                                            EventInfoActivity eventInfoActivity = (EventInfoActivity) EventInfoActivity.eventInfoActivity;
+                                            eventInfoActivity.refresh();
+                                        }
+                                        MainActivity mainActivity = (MainActivity) MainActivity.mainActivity;
+                                        mainActivity.refreshAll();
+                                        finish();
+                                    } else {
+                                        dialog.dismiss();
+                                        Toast.makeText(Create_Event.this, "업로드에 실패하였습니다.", Toast.LENGTH_SHORT).show();
                                     }
-                                    else {
-                                        EventInfoActivity eventInfoActivity = (EventInfoActivity) EventInfoActivity.eventInfoActivity;
-                                        eventInfoActivity.refresh();
-                                    }
-                                    MainActivity mainActivity = (MainActivity) MainActivity.mainActivity;
-                                    mainActivity.refreshAll();
-                                    finish();
-                                } else {
-                                    dialog.dismiss();
-                                    Toast.makeText(Create_Event.this, "업로드에 실패하였습니다.", Toast.LENGTH_SHORT).show();
                                 }
-                            }
-                        });
+                            });
+                        } else {
+                            Log.d("shit!!!!", e.getMessage());
+                        }
                     }
                 });
             } else {
