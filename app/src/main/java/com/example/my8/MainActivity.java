@@ -486,7 +486,7 @@ public class MainActivity extends AppCompatActivity
                 ByteArrayOutputStream bos = new ByteArrayOutputStream();
                 rotatedCover.compress(Bitmap.CompressFormat.JPEG, 25, bos);
                 byte[] Photo = bos.toByteArray();
-                ParseFile CoverFile = new ParseFile("profile.jpg", Photo);
+                ParseFile CoverFile = new ParseFile("cover.jpg", Photo);
                 CoverFile.saveInBackground();
 
                 ParseUser.getCurrentUser().put(User.EXIST_COVER, true);
