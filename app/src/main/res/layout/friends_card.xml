@@ -14,6 +14,7 @@
         android:background="@color/colorDone"
         android:visibility="invisible"></FrameLayout>
     <LinearLayout
+        android:id="@+id/friends_card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"

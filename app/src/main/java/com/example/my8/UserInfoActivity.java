@@ -2,29 +2,26 @@ package com.example.my8;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Toast;
-
-import com.parse.ParseUser;
-
-import java.util.List;
 
 public class UserInfoActivity extends AppCompatActivity {
 
     UserInfoAdapter userInfoAdapter;
-    private boolean is_friend;
+    private int friendState;
+    public static final int FRIEND_REQUEST = 0;//요청을 받은 거
+    public static final int FRIEND_APPLYED = 1;
+    public static final int FRIEND_NONE = 2;
+    public static final int FRIEND_REJECTED = 3;
+    public static final int FRIEND_SEND = 4; //내가 요청보낸 거
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +36,7 @@ public class UserInfoActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("사용자 정보");
 
         String userId = getIntent().getStringExtra("user_id");
+        friendState = getIntent().getIntExtra("already_friend",-1);
 
         DisplayMetrics metrics = new DisplayMetrics();
         WindowManager windowManager = (WindowManager) getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
@@ -80,7 +78,13 @@ public class UserInfoActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.user_info_menu, menu);
+        if (friendState == FRIEND_APPLYED){
+        } else if (friendState == FRIEND_REQUEST){
+            getMenuInflater().inflate(R.menu.user_info_apply_menu, menu);
+        } else if (friendState == FRIEND_NONE){
+            getMenuInflater().inflate(R.menu.user_info_add_menu, menu);
+        } else if (friendState == FRIEND_REJECTED){
+        }
         return true;
     }
 
@@ -91,7 +95,10 @@ public class UserInfoActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_add_friend) {
-
+            //TODO: add friend
+        }
+        else if (id == R.id.action_apply_friend) {
+            //TODO: apply friend
         }
         return super.onOptionsItemSelected(item);
     }

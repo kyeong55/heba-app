@@ -1,8 +1,8 @@
 package com.example.my8;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +16,6 @@ import com.parse.ParseACL;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseImageView;
-import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
@@ -173,6 +172,17 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
                     });
                 }
             });
+
+            holder.friends_card.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, UserInfoActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.putExtra("user_id", item.getId());
+                    intent.putExtra("already_friend", UserInfoActivity.FRIEND_REQUEST);
+                    context.startActivity(intent);
+                }
+            });
         } else if(viewType == VIEW_TYPE_ITEM_SUGGEST) {
             final Friends_item item = items.get(getItemSuggestPosition(position));
 
@@ -218,6 +228,16 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
                             }
                         }
                     });
+                }
+            });
+            holder.friends_card.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, UserInfoActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.putExtra("user_id", item.getId());
+                    intent.putExtra("already_friend", UserInfoActivity.FRIEND_NONE);
+                    context.startActivity(intent);
                 }
             });
         } else if(viewType == VIEW_TYPE_FOOTER) {
@@ -329,6 +349,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
         Button friends_add_button;
         Button friends_accept_button;
         Button friends_reject_button;
+        View friends_card;
 
         View footer_progress_in;
         TextView footer_progress_end;
@@ -355,6 +376,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
                 done_init = itemView.findViewById(R.id.friends_done_init);
                 done_accept = itemView.findViewById(R.id.friends_done_accept);
                 done_reject = itemView.findViewById(R.id.friends_done_reject);
+                friends_card = itemView.findViewById(R.id.friends_card);
             }
             else if(viewType == VIEW_TYPE_ITEM_SUGGEST){
                 user_name = (TextView)itemView.findViewById(R.id.friends_name);
@@ -364,6 +386,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
                 done_background = itemView.findViewById(R.id.friends_done_background);
                 done_init = itemView.findViewById(R.id.friends_done_init);
                 done_add = itemView.findViewById(R.id.friends_done_add);
+                friends_card = itemView.findViewById(R.id.friends_card);
             }
             else if(viewType == VIEW_TYPE_FOOTER) {
                 footer_progress_in = itemView.findViewById(R.id.progress_in);

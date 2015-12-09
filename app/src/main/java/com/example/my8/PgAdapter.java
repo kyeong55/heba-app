@@ -196,7 +196,7 @@ public class PgAdapter extends RecyclerView.Adapter<PgAdapter.ViewHolder> {
                 }
             });
 
-            ParseUser user = item.getUser();
+            final ParseUser user = item.getUser();
 
 
             if (user.getBoolean(User.EXIST_PROFILE)) {
@@ -211,6 +211,16 @@ public class PgAdapter extends RecyclerView.Adapter<PgAdapter.ViewHolder> {
             }
 
             holder.writer.setText(user.getUsername());
+            holder.writer.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, UserInfoActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.putExtra("user_id", user.getObjectId());
+                    intent.putExtra("already_friend", UserInfoActivity.FRIEND_APPLYED);
+                    context.startActivity(intent);
+                }
+            });
             holder.description.setText(item.getDescription());
             holder.participate.setText(item.getNParticipant());
             holder.addWL.setOnClickListener(new View.OnClickListener() {
@@ -392,6 +402,8 @@ public class PgAdapter extends RecyclerView.Adapter<PgAdapter.ViewHolder> {
         TextView addWL;
         RecyclerView stamps;
 
+        View description_visible;
+
         View footer_progress_in;
         TextView footer_progress_end;
 
@@ -405,6 +417,7 @@ public class PgAdapter extends RecyclerView.Adapter<PgAdapter.ViewHolder> {
                 participate = (TextView) itemView.findViewById(R.id.pg_participate);
                 addWL = (TextView) itemView.findViewById(R.id.pg_addWL);
                 stamps = (RecyclerView) itemView.findViewById(R.id.pg_stamp_view);
+                description_visible = itemView.findViewById(R.id.pg_description_visible);
             }
             else if(viewType == VIEW_TYPE_FOOTER) {
                 footer_progress_in = itemView.findViewById(R.id.progress_in);
