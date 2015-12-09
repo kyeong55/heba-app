@@ -664,6 +664,8 @@ public class MainActivity extends AppCompatActivity
                         List<Event> checkList = new ArrayList<>();
                         int idx = 1;
                         for (ActionContract action : actions) {
+                            if (idx == 1)
+                                pgadapter.setLastUpdate(action.getUpdatedAt());
                             if (!checkList.contains(action.getEvent())) {
                                 checkList.add(action.getEvent());
                                 items.add(new Playground_item(container, action, container.getContext()));
