@@ -398,7 +398,6 @@ public class MainActivity extends AppCompatActivity
                     e.printStackTrace();
                 }
 
-                //Log.d("?!?!", imagePath+"");
                 Bitmap profile = BitmapFactory.decodeFile(imagePath);
                 String orientString = exif.getAttribute(ExifInterface.TAG_ORIENTATION);
                 int orientation = orientString != null ? Integer.parseInt(orientString) :  ExifInterface.ORIENTATION_NORMAL;
@@ -661,9 +660,16 @@ public class MainActivity extends AppCompatActivity
                 public void done(List<ActionContract> actions, ParseException e) {
                     if (e == null) {
                         List<Playground_item> items = new ArrayList<>();
+                        List<Event> checkList = new ArrayList<>();
                         for (ActionContract action : actions) {
+                            if (!checkList.contains(action.getEvent())) {
+                                checkList.add(action.getEvent());
+                                Log.d("checkRefresh", checkList+"");
+                                //items.add(new Playground_item(container, action, container.getContext()));
+                            }
                             items.add(new Playground_item(container, action, container.getContext()));
                         }
+                        pgadapter.setCheckList(checkList);
                         pgadapter.setItems(items);
                         pgadapter.notifyDataSetChanged();
                         mySwipeRefreshLayout.setRefreshing(false);

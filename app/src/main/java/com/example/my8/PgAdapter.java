@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -123,6 +124,7 @@ public class PgAdapter extends RecyclerView.Adapter<PgAdapter.ViewHolder> {
     private ViewGroup container;
     private Context context;
     private List<Playground_item> items;
+    private List<Event> checkList;
 
     final private int VIEW_TYPE_FOOTER=0;
     final private int VIEW_TYPE_ITEM=1;
@@ -135,10 +137,15 @@ public class PgAdapter extends RecyclerView.Adapter<PgAdapter.ViewHolder> {
         this.container = container;
         this.context = container.getContext();
         items = new ArrayList<>();
+        checkList = new ArrayList<>();
     }
 
     public void setItems(List<Playground_item> items) {
         this.items = items;
+    }
+
+    public void setCheckList(List<Event> checkList) {
+        this.checkList = checkList;
     }
 
     @Override
@@ -304,6 +311,11 @@ public class PgAdapter extends RecyclerView.Adapter<PgAdapter.ViewHolder> {
                 if (e == null) {
                     int pos = items.size();
                     for (ActionContract action : actions) {
+                        if (!checkList.contains(action.getEvent())) {
+                            checkList.add(action.getEvent());
+                            Log.d("checkAdd", checkList + "");
+                            //items.add(new Playground_item(container, action, context));
+                        }
                         items.add(new Playground_item(container, action, context));
                     }
                     if(items.size()==pos){ // 더 이상 받아올게 없음
