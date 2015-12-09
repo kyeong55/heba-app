@@ -135,11 +135,11 @@ public class MyFriendAdapter extends RecyclerView.Adapter<MyFriendAdapter.ViewHo
         userToQuery.whereMatchesKeyInQuery(User.ID, Friend.FROM_USER_ID, friendToQuery);
 
         ParseQuery<Friend> friendFromQuery = Friend.getQuery();
-        friendToQuery.whereEqualTo(Friend.STATE, Friend.APPROVED);
-        friendToQuery.whereEqualTo(Friend.FROM_USER_ID, userId);
+        friendFromQuery.whereEqualTo(Friend.STATE, Friend.APPROVED);
+        friendFromQuery.whereEqualTo(Friend.FROM_USER_ID, userId);
 
         ParseQuery<ParseUser> userFromQuery = ParseUser.getQuery();
-        userToQuery.whereMatchesKeyInQuery(User.ID, Friend.TO_USER_ID, friendToQuery);
+        userFromQuery.whereMatchesKeyInQuery(User.ID, Friend.TO_USER_ID, friendToQuery);
 
         List<ParseQuery<ParseUser>> queries = new ArrayList<ParseQuery<ParseUser>>();
         queries.add(userToQuery);
