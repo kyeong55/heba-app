@@ -492,7 +492,7 @@ public class MainActivity extends AppCompatActivity
                 }
 
                 ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                scaledRotatedProfile.compress(Bitmap.CompressFormat.JPEG, 25, bos);
+                scaledRotatedProfile.compress(Bitmap.CompressFormat.JPEG, 100, bos);
                 byte[] Photo = bos.toByteArray();
                 ParseFile CoverFile = new ParseFile("cover.jpg", Photo);
                 CoverFile.saveInBackground();
