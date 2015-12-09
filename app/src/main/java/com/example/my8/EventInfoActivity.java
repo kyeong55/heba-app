@@ -40,6 +40,7 @@ import java.util.List;
 public class EventInfoActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
+    public static Activity eventInfoActivity;
 
     final int REQ_CODE_SELECT_STAMP_IMAGE = 200;
 
@@ -49,6 +50,7 @@ public class EventInfoActivity extends AppCompatActivity implements OnMapReadyCa
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        eventInfoActivity = EventInfoActivity.this;
         setContentView(R.layout.activity_event_info);
         Toolbar toolbar = (Toolbar) findViewById(R.id.event_info_toolbar);
         setSupportActionBar(toolbar);
@@ -231,6 +233,7 @@ public class EventInfoActivity extends AppCompatActivity implements OnMapReadyCa
                 toCreateEventActivity.putExtra("imagePath", imagePath);
                 toCreateEventActivity.putExtra("eventId", eventId);
                 toCreateEventActivity.putExtra("eventTitle", eventTitle);
+                toCreateEventActivity.putExtra("isSelectActivity", "false");
                 toCreateEventActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(toCreateEventActivity);
                 overridePendingTransition(R.anim.trans_activity_slide_left_in, R.anim.trans_activity_slide_left_out);
@@ -251,5 +254,9 @@ public class EventInfoActivity extends AppCompatActivity implements OnMapReadyCa
     public void finish(){
         super.finish();
         overridePendingTransition(R.anim.trans_activity_slide_right_in, R.anim.trans_activity_slide_right_out);
+    }
+
+    public void refresh() {
+        //todo
     }
 }

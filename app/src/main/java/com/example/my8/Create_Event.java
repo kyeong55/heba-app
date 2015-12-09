@@ -45,6 +45,7 @@ public class Create_Event extends AppCompatActivity {
 
     private String eventId;
     private String eventTitle;
+    private String isSelectEvent;
 
     private ExifInterface exif;
 
@@ -110,6 +111,7 @@ public class Create_Event extends AppCompatActivity {
         }
 
         eventId = getIntent().getStringExtra("eventId");
+        isSelectEvent = getIntent().getStringExtra("isSelectActivity");
         if (eventId == null) {
             titleEditText.setHint("이벤트 제목을 입력해주세요.");
         } else {
@@ -245,9 +247,15 @@ public class Create_Event extends AppCompatActivity {
                                     dialog.dismiss();
 
                                     //ActionContract change
-                                    SelectEvent selectEventActivity = (SelectEvent) SelectEvent.selectEventActivity;
+                                    if (isSelectEvent.equalsIgnoreCase("true")) {
+                                        SelectEvent selectEventActivity = (SelectEvent) SelectEvent.selectEventActivity;
+                                        selectEventActivity.finish();
+                                    }
+                                    else {
+                                        EventInfoActivity eventInfoActivity = (EventInfoActivity) EventInfoActivity.eventInfoActivity;
+                                        eventInfoActivity.refresh();
+                                    }
                                     finish();
-                                    selectEventActivity.finish();
                                 } else {
                                     dialog.dismiss();
                                     Toast.makeText(Create_Event.this, "업로드에 실패하였습니다.", Toast.LENGTH_SHORT).show();
@@ -279,9 +287,15 @@ public class Create_Event extends AppCompatActivity {
                             dialog.dismiss();
 
                             //ActionContract change
-                            SelectEvent selectEventActivity = (SelectEvent) SelectEvent.selectEventActivity;
+                            if (isSelectEvent.equalsIgnoreCase("true")) {
+                                SelectEvent selectEventActivity = (SelectEvent) SelectEvent.selectEventActivity;
+                                selectEventActivity.finish();
+                            }
+                            else {
+                                EventInfoActivity eventInfoActivity = (EventInfoActivity) EventInfoActivity.eventInfoActivity;
+                                eventInfoActivity.refresh();
+                            }
                             finish();
-                            selectEventActivity.finish();
                         } else {
                             dialog.dismiss();
                             Toast.makeText(Create_Event.this, "업로드에 실패하였습니다.", Toast.LENGTH_SHORT).show();
