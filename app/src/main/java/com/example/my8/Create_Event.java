@@ -9,6 +9,7 @@ import android.graphics.Matrix;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
@@ -28,6 +29,7 @@ import com.parse.SaveCallback;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.text.Format;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -51,8 +53,6 @@ public class Create_Event extends AppCompatActivity {
 
     EditText titleEditText;
     EditText commentEditText;
-
-    private GoogleApiClient client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,8 +121,6 @@ public class Create_Event extends AppCompatActivity {
             commentEditText.requestFocus();
         }
 
-        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
-
         //stamp location
         float geopoint[] = new float[2];
         exif.getLatLong(geopoint);
@@ -132,10 +130,16 @@ public class Create_Event extends AppCompatActivity {
 
         //stamp datetime
         String datetime = exif.getAttribute(ExifInterface.TAG_DATETIME);
-        SimpleDateFormat format = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss");
+        SimpleDateFormat dateFormat =
+                (SimpleDateFormat) android.text.format.DateFormat.getDateFormat(getApplicationContext());
         stampDatetime = null;
         try {
-            stampDatetime = format.parse(datetime);
+            Log.d("hehehe", "exif: " + exif.toString());
+            Log.d("hehehe", "DATE_TIME: " + exif.getAttribute(ExifInterface.TAG_DATETIME));
+            Log.d("hehehe", "DATE_TIME_DIGITIZED: " + exif.getAttribute(ExifInterface.TAG_DATETIME_DIGITIZED));
+            Log.d("hehehe", "datetime: " + datetime);
+            Log.d("hehehe", "dateformat: " + dateFormat.toLocalizedPattern());
+            stampDatetime = dateFormat.parse(datetime);
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -144,44 +148,6 @@ public class Create_Event extends AppCompatActivity {
     public boolean onSupportNavigateUp(){
         finish();
         return true;
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client.connect();
-        Action viewAction = Action.newAction(
-                Action.TYPE_VIEW, // TODO: choose an action type.
-                "Create_Event Page", // TODO: Define a title for the content shown.
-                // TODO: If you have web page content that matches this app activity's content,
-                // make sure this auto-generated web page URL is correct.
-                // Otherwise, set the URL to null.
-                Uri.parse("http://host/path"),
-                // TODO: Make sure this auto-generated app deep link URI is correct.
-                Uri.parse("android-app://com.example.my8/http/host/path")
-        );
-        AppIndex.AppIndexApi.start(client, viewAction);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-
-        Action viewAction = Action.newAction(
-                Action.TYPE_VIEW, // TODO: choose an action type.
-                "Create_Event Page", // TODO: Define a title for the content shown.
-                // TODO: If you have web page content that matches this app activity's content,
-                // make sure this auto-generated web page URL is correct.
-                // Otherwise, set the URL to null.
-                Uri.parse("http://host/path"),
-                // TODO: Make sure this auto-generated app deep link URI is correct.
-                Uri.parse("android-app://com.example.my8/http/host/path")
-        );
-        AppIndex.AppIndexApi.end(client, viewAction);
-        client.disconnect();
     }
 
     @Override

@@ -1,6 +1,5 @@
 package com.example.my8;
 
-import android.*;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -12,16 +11,8 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Matrix;
-import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
-import android.graphics.Rect;
-import android.graphics.RectF;
 import android.media.ExifInterface;
-import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.design.widget.NavigationView;
@@ -56,7 +47,6 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -75,7 +65,6 @@ import com.parse.SaveCallback;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity
@@ -514,7 +503,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public String getImageNameToUri(Uri contentUri) {
-        verifyStoragePermissions(this);
+        verifyPermissions(this);
         Cursor cursor = null;
         try {
             String[] proj = { MediaStore.Images.Media.DATA };
@@ -533,18 +522,30 @@ public class MainActivity extends AppCompatActivity
     }
 
     /**
-     * Checks if the app has permission to write to device storage
+     * Checks if the app has permissions
      *
-     * If the app does not has permission then the user will be prompted to grant permissions
+     * If the app does not has permissions then the user will be prompted to grant permissions
      *
      * @param activity
      */
-    public static void verifyStoragePermissions(Activity activity) {
+    public static void verifyPermissions(Activity activity) {
         // Check if we have write permission
-        int permission = ActivityCompat.checkSelfPermission(activity, android.Manifest.permission.READ_EXTERNAL_STORAGE);
-        if (permission != PackageManager.PERMISSION_GRANTED) {
+        String[] permissions = new String[]{
+                Manifest.permission_group.LOCATION,
+                Manifest.permission.READ_EXTERNAL_STORAGE
+        };
+        boolean haveAllPermissions = true;
+        for (String permission : permissions) {
+            boolean havePermission = ActivityCompat.checkSelfPermission(activity, permission) == PackageManager.PERMISSION_GRANTED;
+            haveAllPermissions = haveAllPermissions && havePermission;
+        }
+        if (!haveAllPermissions) {
             // We don't have permission so prompt the user
-            ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+            ActivityCompat.requestPermissions(activity,
+                    new String[]{
+                            Manifest.permission.READ_EXTERNAL_STORAGE,
+                            Manifest.permission_group.LOCATION
+                    }, 1);
         }
     }
 
