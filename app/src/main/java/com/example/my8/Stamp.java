@@ -70,6 +70,10 @@ public class Stamp extends ParseObject {
         return getString(ID);
     }
 
+    public String getEventTitle() {
+        return getString(TITLE);
+    }
+
     public static ParseQuery<Stamp> getQuery() {
         return ParseQuery.getQuery(Stamp.class);
     }

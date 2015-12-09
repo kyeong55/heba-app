@@ -14,10 +14,12 @@
     <dimen name="cover_image_height">160dp</dimen>
     <dimen name="option_cover_image_height">180dp</dimen>
     <dimen name="profile_image_width">60dp</dimen>
+    <dimen name="profile_image_radius">30dp</dimen>
     <dimen name="profile_image_padding">16dp</dimen>
     <dimen name="user_name_size">24sp</dimen>
     <dimen name="user_name_padding">8dp</dimen>
     <dimen name="user_info_padding_bottom">20dp</dimen>
+    <dimen name="profile_image_border">0dp</dimen>
     <!-- Playground -->
     <dimen name="pg_image_size">220dp</dimen>
     <dimen name="pg_progressbar_size">24dp</dimen>
@@ -28,10 +30,12 @@
     <dimen name="pg_margin_out">12dp</dimen>
     <dimen name="pg_title_text_size">26sp</dimen>
     <dimen name="pg_profile_size">24dp</dimen>
+    <dimen name="pg_profile_radius">12dp</dimen>
 
     <!-- Friends -->
     <dimen name="friends_card_margin">12dp</dimen>
     <dimen name="friends_image_width">70dp</dimen>
+    <dimen name="friends_image_radius">35dp</dimen>
     <dimen name="friends_name_text_size">16sp</dimen>
     <dimen name="friends_request_button_width">120dp</dimen>
     <dimen name="friends_request_button_height">40dp</dimen>
@@ -43,6 +47,7 @@
     <dimen name="stamp_info_text_padding">32dp</dimen>
     <dimen name="stamp_info_text_padding_in">4dp</dimen>
     <dimen name="stamp_info_profile_size">32dp</dimen>
+    <dimen name="stamp_info_profile_radius">16dp</dimen>
     <dimen name="stamp_info_name_margin">8dp</dimen>
     <dimen name="stamp_info_name_size">16sp</dimen>
     <dimen name="stamp_info_time_size">12sp</dimen>

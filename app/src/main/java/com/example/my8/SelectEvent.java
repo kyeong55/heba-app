@@ -30,6 +30,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.parse.FindCallback;
 import com.parse.GetDataCallback;
@@ -48,6 +49,8 @@ public class SelectEvent extends AppCompatActivity implements OnMapReadyCallback
     private SelectEventImageAdapter selectEventImageAdapter;
 
     private GoogleMap mMap;
+    private List<Marker> markers;
+
     public static Activity selectEventActivity;
     private ViewPager selectViewPager;
     /**
@@ -236,16 +239,71 @@ public class SelectEvent extends AppCompatActivity implements OnMapReadyCallback
         MarkerOptions marker = new MarkerOptions();
         marker.title(location);
         marker.position(loc);
-        marker.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+//        marker.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
 
         MarkerOptions marker2 = new MarkerOptions();
         marker2.title("하하");
-        marker2.position(new LatLng(geoPoint[0],geoPoint[1]+0.005));
+        marker2.position(new LatLng(geoPoint[0], geoPoint[1] + 0.005));
         marker2.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE));
+        marker2.alpha((float) 0.5);
 
-        mMap.addMarker(marker).showInfoWindow();
-        mMap.addMarker(marker2).showInfoWindow();
+        MarkerOptions marker3 = new MarkerOptions();
+        marker3.title("하하");
+        marker3.position(new LatLng(geoPoint[0], geoPoint[1] - 0.005));
+        marker3.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE));
+        marker3.alpha((float) 0.5);
+
+//        mMap.addMarker(marker2).showInfoWindow();
+        mMap.addMarker(marker3);
+        mMap.addMarker(marker);
+//        mMap.addMarker(marker).showInfoWindow();
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(loc, 14));
+        mMap.addMarker(marker2).showInfoWindow();
+    }
+
+    public void setMarker(List<Event> events){
+        markers = new ArrayList<>();
+        Geocoder gc = new Geocoder(this, Locale.KOREAN);
+        for (Event event : events){
+            //TODO: set lat long of event
+            double latitude = 0;
+            double longitude = 0;
+            String location = "";
+            try {
+                List<Address> addresses = gc.getFromLocation(latitude, longitude, 1);
+                StringBuffer sb = new StringBuffer();
+                if (addresses.size() > 0) {
+                    Address address = addresses.get(0);
+                    sb.append(address.getAddressLine(0).toString());
+                    location = sb.toString();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            markers.add(mMap.addMarker((new MarkerOptions()).title(location).position(new LatLng(latitude, longitude)).alpha((float) 0.6)
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE))));
+        }
+        selectViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageSelected(int position) {
+                Marker m = markers.get(position);
+                m.showInfoWindow();
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(m.getPosition(), 14));
+                for (int i=0; i<markers.size();i++){
+                    if (i == position)
+                        m.setAlpha((float)1.0);
+                    else
+                        markers.get(position).setAlpha((float)0.6);
+                }
+            }
+
+            @Override
+            public void onPageScrolled(int position, float positionOffest, int positionOffsetPixels) {
+            }
+            @Override
+            public void onPageScrollStateChanged(int state) {
+            }
+        });
     }
 
     @Override

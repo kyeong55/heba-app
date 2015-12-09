@@ -1,6 +1,8 @@
 package com.example.my8;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -92,6 +94,16 @@ public class MyFriendAdapter extends RecyclerView.Adapter<MyFriendAdapter.ViewHo
                     }
                 });
             }
+
+            holder.my_friend_card.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, UserInfoActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(intent);
+//                    ((Activity)context).overridePendingTransition(R.anim.trans_activity_slide_left_in,R.anim.trans_activity_slide_left_out);
+                }
+            });
         }
         else if(viewType == VIEW_TYPE_FOOTER) {
             if(addedAll) {
@@ -175,6 +187,7 @@ public class MyFriendAdapter extends RecyclerView.Adapter<MyFriendAdapter.ViewHo
         TextView user_name;
         ParseImageView profile_image;
         TextView stamp_count;
+        View my_friend_card;
 
         View footer_progress_in;
         TextView footer_progress_end;
@@ -185,6 +198,7 @@ public class MyFriendAdapter extends RecyclerView.Adapter<MyFriendAdapter.ViewHo
                 user_name = (TextView)itemView.findViewById(R.id.my_friends_name);
                 profile_image = (ParseImageView)itemView.findViewById(R.id.my_friends_profile_image);
                 stamp_count = (TextView)itemView.findViewById(R.id.my_friends_stamp_count);
+                my_friend_card = itemView.findViewById(R.id.my_friend_card);
             }
             else if(viewType == VIEW_TYPE_FOOTER) {
                 footer_progress_in = itemView.findViewById(R.id.progress_in);

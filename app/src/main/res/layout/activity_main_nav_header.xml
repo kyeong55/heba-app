@@ -5,20 +5,29 @@
         android:id="@+id/option_cover_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:src="@drawable/cover_image_default"/>
+        android:src="@drawable/cover_image_default"
+        android:scaleType="centerCrop"/>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/cover_photo_background"
         android:orientation="horizontal">
-        <com.parse.ParseImageView
-            android:id="@+id/option_profile_image"
-            android:layout_height="@dimen/profile_image_width"
+        <android.support.v7.widget.CardView
+            xmlns:card_view="http://schemas.android.com/apk/res-auto"
             android:layout_width="@dimen/profile_image_width"
-            android:src="@mipmap/ic_user"
+            android:layout_height="@dimen/profile_image_width"
             android:layout_gravity="bottom"
             android:layout_marginLeft="@dimen/profile_image_padding"
-            android:layout_marginBottom="@dimen/profile_image_padding"/>
+            android:layout_marginBottom="@dimen/profile_image_padding"
+            card_view:cardCornerRadius="@dimen/profile_image_radius">
+            <com.parse.ParseImageView
+                android:id="@+id/option_profile_image"
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:src="@mipmap/ic_user"
+                android:scaleType="centerCrop"
+                android:padding="@dimen/profile_image_border"/>
+        </android.support.v7.widget.CardView>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

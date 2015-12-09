@@ -1,5 +1,6 @@
 package com.example.my8;
 
+import android.app.*;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -38,9 +39,11 @@ public class MyStampInfoActivity extends AppCompatActivity {
         Intent intent = getIntent();
         int pos = intent.getIntExtra("clicked_stamp_pos", 0);
         ArrayList<String> stampIdList = intent.getStringArrayListExtra("stamp_id_list");
+        ArrayList<String> eventIdList = intent.getStringArrayListExtra("event_id_list");
+        ArrayList<String> eventTitleList = intent.getStringArrayListExtra("event_title_list");
 
         // Create the adapter that will return a fragment for each activity.
-        StampInfoPagerAdapter mStampInfoPagerAdapter = new StampInfoPagerAdapter(getSupportFragmentManager(), stampIdList);
+        StampInfoPagerAdapter mStampInfoPagerAdapter = new StampInfoPagerAdapter(getSupportFragmentManager(), stampIdList, eventIdList, eventTitleList);
 
         // Set up the ViewPager with the sections adapter.
         ViewPager mViewPager = (ViewPager) findViewById(R.id.pager);
@@ -57,16 +60,20 @@ public class MyStampInfoActivity extends AppCompatActivity {
     public class StampInfoPagerAdapter extends FragmentStatePagerAdapter {
 
         ArrayList<String> stampIdList;
-        public StampInfoPagerAdapter(FragmentManager fm, ArrayList<String> stampIdList) {
+        ArrayList<String> eventIdList;
+        ArrayList<String> eventTitleList;
+        public StampInfoPagerAdapter(FragmentManager fm, ArrayList<String> stampIdList, ArrayList<String> eventIdList, ArrayList<String> eventTitleList) {
             super(fm);
             this.stampIdList = stampIdList;
+            this.eventIdList = eventIdList;
+            this.eventTitleList = eventTitleList;
         }
 
         @Override
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
-            return StampInfoFragment.newInstance(stampIdList.get(position));
+            return StampInfoFragment.newInstance(stampIdList.get(position), eventIdList.get(position), eventTitleList.get(position));
         }
 
         @Override
@@ -85,14 +92,18 @@ public class MyStampInfoActivity extends AppCompatActivity {
          */
         private boolean is_text_visible = true;
         private static final String ARG_STAMP_ID = "stamp_ID";
+        private static final String ARG_EVENT_ID = "event_ID";
+        private static final String ARG_EVENT_TITLE = "event_title";
         /**
          * Returns a new instance of this fragment for the given section
          * number.
          */
-        public static StampInfoFragment newInstance(String stampID) {
+        public static StampInfoFragment newInstance(String stampID, String eventID, String eventTitle) {
             StampInfoFragment fragment = new StampInfoFragment();
             Bundle args = new Bundle();
             args.putString(ARG_STAMP_ID, stampID);
+            args.putString(ARG_EVENT_ID, eventID);
+            args.putString(ARG_EVENT_TITLE, eventTitle);
             fragment.setArguments(args);
             return fragment;
         }
@@ -107,6 +118,7 @@ public class MyStampInfoActivity extends AppCompatActivity {
             final TextView textView = (TextView) rootView.findViewById(R.id.stamp_info_text);
             final ProgressBar progressBar = (ProgressBar) rootView.findViewById(R.id.stamp_info_progressbar);
             final LinearLayout llayout = (LinearLayout) rootView.findViewById(R.id.stamp_info_linear_layout);
+            final TextView titleView = (TextView) rootView.findViewById(R.id.stamp_info_event_title);
 
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -130,6 +142,16 @@ public class MyStampInfoActivity extends AppCompatActivity {
                 public void done(Stamp stamp, ParseException e) {
                     imageView.setParseFile(stamp.getThumbnail());
                     imageView.loadInBackground();
+                    titleView.setText(getArguments().getString(ARG_EVENT_TITLE));
+                    titleView.setOnClickListener(new View.OnClickListener() {
+                        public void onClick(View view) {
+                            Intent intent = new Intent(getContext(), EventInfoActivity.class);
+                            intent.putExtra("event_id", getArguments().getString(ARG_EVENT_ID));
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            getContext().startActivity(intent);
+                            ((android.app.Activity)getContext()).overridePendingTransition(R.anim.trans_activity_slide_left_in, R.anim.trans_activity_slide_left_out);
+                        }
+                    });
                     textView.setText(stamp.getComment());
                     progressBar.setVisibility(View.GONE);
                 }

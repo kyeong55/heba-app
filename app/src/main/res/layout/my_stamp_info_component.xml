@@ -11,16 +11,34 @@
         android:layout_height="match_parent"/>
     <LinearLayout
         android:id="@+id/stamp_info_linear_layout"
-        android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:background="@drawable/info_text_background"
-        android:layout_gravity="bottom">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
         <TextView
-            android:id="@+id/stamp_info_text"
+            android:id="@+id/stamp_info_event_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/colorWhite"
-            android:padding="@dimen/stamp_info_text_padding"/>
+            android:background="@color/colorSelectTitle"
+            android:textStyle="bold"
+            android:padding="@dimen/create_text_margin"
+            android:gravity="center_vertical|center_horizontal"
+            android:textSize="@dimen/select_title_size"
+            android:textColor="@color/colorWhite" />
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:background="@drawable/info_text_background">
+            <TextView
+                android:id="@+id/stamp_info_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorWhite"
+                android:padding="@dimen/stamp_info_text_padding"/>
+        </LinearLayout>
     </LinearLayout>
     <ProgressBar
         android:id="@+id/stamp_info_progressbar"
