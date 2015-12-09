@@ -224,9 +224,6 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
                     friendACL.setWriteAccess(ParseUser.getCurrentUser().getObjectId(), true);
                     friend.setACL(friendACL);
 
-                    user.addUnique(User.REQUESTLIST, item.getId());
-                    user.saveInBackground();
-
                     friend.saveInBackground(new SaveCallback() {
                         @Override
                         public void done(ParseException e) {
@@ -326,18 +323,32 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
         ParseQuery<Friend> friendToQuery = Friend.getQuery();
         friendToQuery.whereEqualTo(Friend.TO_USER_ID, userId);
 
+        ParseQuery<ParseUser> userToQuery = ParseUser.getQuery();
+        userToQuery.whereMatchesKeyInQuery(User.ID, Friend.FROM_USER_ID, friendToQuery);
+
+        ParseQuery<Friend> friendFromQuery = Friend.getQuery();
+        friendFromQuery.whereEqualTo(Friend.FROM_USER_ID, userId);
+
+        ParseQuery<ParseUser> userFromQuery = ParseUser.getQuery();
+        userFromQuery.whereMatchesKeyInQuery(User.ID, Friend.TO_USER_ID, friendFromQuery);
+
+        List<ParseQuery<ParseUser>> userQueries = new ArrayList<ParseQuery<ParseUser>>();
+        userQueries.add(userToQuery);
+        userQueries.add(userFromQuery);
+
+        ParseQuery<ParseUser> userQuery = ParseQuery.or(userQueries);
+
         ParseQuery<ParseUser> query = ParseUser.getQuery();
         query.whereNotEqualTo(User.ID, userId);
-        query.whereDoesNotMatchKeyInQuery(User.ID, Friend.FROM_USER_ID, friendToQuery);
-        if (user.getList(User.REQUESTLIST) != null)
-            query.whereNotContainedIn(User.ID, user.getList(User.REQUESTLIST));
-        query.orderByDescending(User.ID);
-        if (items.size() == nRequest) {
-        } else {
+        query.whereDoesNotMatchKeyInQuery(User.ID, User.ID, userQuery);
+
+        query.orderByAscending(User.NAME);
+        if (items.size() != nRequest){
             Friends_item oldestItem = items.get(items.size() - 1);
-            query.whereLessThan(User.ID, oldestItem.getId());
+            query.whereGreaterThan(User.ID, oldestItem.getName());
         }
-        query.setLimit(5);
+
+        query.setLimit(15);
         query.findInBackground(new FindCallback<ParseUser>() {
             @Override
             public void done(List<ParseUser> users, ParseException e) {
