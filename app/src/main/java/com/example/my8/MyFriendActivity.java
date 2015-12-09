@@ -10,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 public class MyFriendActivity extends AppCompatActivity {
+    private MyFriendAdapter myFriendAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,11 +25,34 @@ public class MyFriendActivity extends AppCompatActivity {
         RecyclerView myFriendView = (RecyclerView) findViewById(R.id.my_friend_list);
         myFriendView.setHasFixedSize(true);
         myFriendView.setLayoutManager(layoutManager);
-//        myFriendView.addOnChildAttachStateChangeListener(new ChildAttachListener(layoutManager));
+        myFriendView.addOnChildAttachStateChangeListener(new ChildAttachListener(layoutManager));
 
-        MyFriendAdapter myFriendAdapter = new MyFriendAdapter(getApplicationContext());
+        myFriendAdapter = new MyFriendAdapter(getApplicationContext());
         myFriendView.setAdapter(myFriendAdapter);
         myFriendAdapter.add();
+    }
+
+    private class ChildAttachListener implements RecyclerView.OnChildAttachStateChangeListener {
+        LinearLayoutManager llm;
+
+        public ChildAttachListener(LinearLayoutManager llm){
+            super();
+            this.llm = llm;
+        }
+
+        @Override
+        public void onChildViewAttachedToWindow(View view) {
+            if (myFriendAdapter.getItemCount() - 3 <= llm.findLastVisibleItemPosition()) {
+                if(!myFriendAdapter.isAdding() && (!myFriendAdapter.addedAll)) {
+                    myFriendAdapter.add();
+                }
+            }
+        }
+
+        @Override
+        public void onChildViewDetachedFromWindow(View view) {
+
+        }
     }
 
     @Override

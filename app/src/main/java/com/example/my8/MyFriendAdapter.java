@@ -9,8 +9,13 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.parse.FindCallback;
+import com.parse.GetDataCallback;
+import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseImageView;
+import com.parse.ParseQuery;
+import com.parse.ParseUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,14 +24,24 @@ import java.util.List;
  * Created by 이태경 on 2015-12-09.
  */
 class MyFriends_item{
-    ParseFile getProfileImageFile() {
-        return null;
+    private ParseUser user;
+
+    public MyFriends_item(ParseUser user) {
+        this.user = user;
     }
-    String getName() {
-        return "";
+
+    public ParseFile getProfile() {
+        return user.getParseFile(User.PROFILE);
     }
-    int getStampCount() {
-        return 0;
+
+    public String getName() {
+        return user.getUsername();
+    }
+
+    public String getStampCount() {
+        if (user.getList(User.DONELIST) == null)
+            return 0+"";
+        return user.getList(User.DONELIST).size()+"";
     }
 }
 public class MyFriendAdapter extends RecyclerView.Adapter<MyFriendAdapter.ViewHolder>{
@@ -39,10 +54,12 @@ public class MyFriendAdapter extends RecyclerView.Adapter<MyFriendAdapter.ViewHo
 
     public boolean addedAll = true;
     private boolean inAdding;
+
     public MyFriendAdapter(Context context){
         this.context = context;
         this.items = new ArrayList<>();
     }
+
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v=null;
@@ -52,15 +69,27 @@ public class MyFriendAdapter extends RecyclerView.Adapter<MyFriendAdapter.ViewHo
             v= LayoutInflater.from(parent.getContext()).inflate(R.layout.playground_card_footer,parent,false);
         return new ViewHolder(v, viewType);
     }
+
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         int viewType = getItemViewType(position);
         if(viewType == VIEW_TYPE_ITEM) {
             final MyFriends_item item = items.get(position);
             //TODO: set info of user
-            holder.user_name.setText("이태경");
-            holder.stamp_count.setText("0");
-//            holder.profile_image
+            holder.user_name.setText(item.getName());
+            holder.stamp_count.setText(item.getStampCount());
+
+            ParseFile profile = item.getProfile();
+            if (profile != null) {
+                ParseImageView userProfile = (ParseImageView) holder.profile_image;
+                userProfile.setParseFile(item.getProfile());
+                userProfile.loadInBackground(new GetDataCallback() {
+                    @Override
+                    public void done(byte[] data, ParseException e) {
+                        //nothing to do
+                    }
+                });
+            }
         }
         else if(viewType == VIEW_TYPE_FOOTER) {
             if(addedAll) {
@@ -73,10 +102,17 @@ public class MyFriendAdapter extends RecyclerView.Adapter<MyFriendAdapter.ViewHo
             }
         }
     }
+
     @Override
     public int getItemCount() {
         return items.size() + 1;
     }
+
+    public boolean isAdding() {
+        return inAdding;
+    }
+
+
     @Override
     public int getItemViewType(int position) {
         if (position == getItemCount() - 1)
@@ -85,10 +121,52 @@ public class MyFriendAdapter extends RecyclerView.Adapter<MyFriendAdapter.ViewHo
             return VIEW_TYPE_ITEM;
     }
 
-    //TODO: test용
     public void add(){
-        items.add(new MyFriends_item());
-        notifyDataSetChanged();
+        inAdding = true;
+        String userId = ParseUser.getCurrentUser().getObjectId();
+
+        ParseQuery<Friend> friendToQuery = Friend.getQuery();
+        friendToQuery.whereEqualTo(Friend.STATE, Friend.APPROVED);
+        friendToQuery.whereEqualTo(Friend.TO_USER_ID, userId);
+
+        ParseQuery<ParseUser> userToQuery = ParseUser.getQuery();
+        userToQuery.whereMatchesKeyInQuery(User.ID, Friend.FROM_USER_ID, friendToQuery);
+
+        ParseQuery<Friend> friendFromQuery = Friend.getQuery();
+        friendToQuery.whereEqualTo(Friend.STATE, Friend.APPROVED);
+        friendToQuery.whereEqualTo(Friend.FROM_USER_ID, userId);
+
+        ParseQuery<ParseUser> userFromQuery = ParseUser.getQuery();
+        userToQuery.whereMatchesKeyInQuery(User.ID, Friend.TO_USER_ID, friendToQuery);
+
+        List<ParseQuery<ParseUser>> queries = new ArrayList<ParseQuery<ParseUser>>();
+        queries.add(userToQuery);
+        queries.add(userFromQuery);
+
+        ParseQuery<ParseUser> query = ParseQuery.or(queries);
+        query.orderByAscending(User.NAME);
+        if (items.size() != 0){
+            MyFriends_item oldestItem = items.get(items.size() - 1);
+            query.whereLessThan(User.ID, oldestItem.getName());
+        }
+        query.setLimit(5);
+        query.findInBackground(new FindCallback<ParseUser>() {
+            @Override
+            public void done(List<ParseUser> users, ParseException e) {
+                if (e == null) {
+                    int pos = items.size();
+                    for (ParseUser user : users) {
+                        items.add(new MyFriends_item(user));
+                    }
+                    if (items.size() == pos) {
+                        addedAll = true;
+                        notifyItemChanged(getItemCount() - 1);
+                    } else
+                        notifyItemRangeInserted(pos, items.size() - pos);
+                    inAdding = false;
+                }
+            }
+        });
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{

@@ -117,8 +117,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
         else if(viewType == VIEW_TYPE_ITEM_REQUEST) {
             final Friends_item item = items.get(getItemRequestPosition(position));
 
-            ParseFile profile = item.getProfile();
-            if (profile != null) {
+            if(item.getProfile() != null) {
                 ParseImageView userProfile = (ParseImageView) holder.profile_image;
                 userProfile.setParseFile(item.getProfile());
                 userProfile.loadInBackground(new GetDataCallback() {
@@ -175,8 +174,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
         } else if(viewType == VIEW_TYPE_ITEM_SUGGEST) {
             final Friends_item item = items.get(getItemSuggestPosition(position));
 
-            ParseFile profile = item.getProfile();
-            if (profile != null) {
+            if(item.getProfile() != null) {
                 ParseImageView userProfile = (ParseImageView) holder.profile_image;
                 userProfile.setParseFile(item.getProfile());
                 userProfile.loadInBackground(new GetDataCallback() {

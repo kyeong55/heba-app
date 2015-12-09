@@ -5,6 +5,7 @@ package com.example.my8;
  */
 public class User {
     final public static String ID = "objectId";
+    final public static String NAME = "username";
     final public static String PROFILE = "profile";
     final public static String WISHLIST = "wishlist";
     final public static String DONELIST = "donelist";
