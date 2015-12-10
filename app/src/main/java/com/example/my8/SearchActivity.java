@@ -61,6 +61,33 @@ implements SearchView.OnQueryTextListener{
         searchAdapter = new SearchAdapter(getApplicationContext(),metrics.widthPixels*6/(7*columnNum), columnNum);
 
         searchResult.setAdapter(searchAdapter);
+
+        ParseQuery<ParseUser> userQuery = ParseUser.getQuery();
+        userQuery.orderByDescending(User.DONE);
+        userQuery.setLimit(3);
+        userQuery.findInBackground(new FindCallback<ParseUser>() {
+            @Override
+            public void done(List<ParseUser> users, ParseException e) {
+                ParseQuery<Event> eventQuery = Event.getQuery();
+                eventQuery.orderByDescending(Event.PARTICIPANT);
+                eventQuery.setLimit(3);
+                List<Event> events = new ArrayList<>();
+                try {
+                    events = eventQuery.find();
+                } catch (ParseException e1) {
+                    e1.printStackTrace();
+                }
+                List<Search_item> items = new ArrayList<>();
+                for (ParseUser user : users) {
+                    items.add(new Search_item(user));
+                }
+                for (Event event : events) {
+                    items.add(new Search_item(event));
+                }
+                searchAdapter.setItems(items);
+                searchAdapter.notifyDataSetChanged();
+            }
+        });
     }
     @Override
     public boolean onSupportNavigateUp(){
@@ -77,7 +104,7 @@ implements SearchView.OnQueryTextListener{
         if (query != "") {
             ParseQuery<ParseUser> userQuery = ParseUser.getQuery();
             userQuery.whereStartsWith(User.NAME, query);
-            userQuery.orderByAscending(User.NAME);
+            userQuery.orderByAscending(User.DONE);
             userQuery.setLimit(12);
             userQuery.findInBackground(new FindCallback<ParseUser>() {
                 @Override
@@ -112,7 +139,7 @@ implements SearchView.OnQueryTextListener{
         // TODO: auto search
         ParseQuery<ParseUser> userQuery = ParseUser.getQuery();
         userQuery.whereStartsWith(User.NAME, newText);
-        userQuery.orderByAscending(User.NAME);
+        userQuery.orderByAscending(User.DONE);
         userQuery.setLimit(3);
         userQuery.findInBackground(new FindCallback<ParseUser>() {
             @Override

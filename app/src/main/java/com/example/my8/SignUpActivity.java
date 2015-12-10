@@ -113,6 +113,7 @@ public class SignUpActivity extends AppCompatActivity {
 
         user.put(User.WISHLIST, new ArrayList<>());
         user.put(User.DONELIST, new ArrayList<>());
+        user.put(User.DONE, 0);
 
         // Call the Parse signup method
         user.signUpInBackground(new SignUpCallback() {

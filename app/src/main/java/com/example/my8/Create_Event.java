@@ -208,6 +208,7 @@ public class Create_Event extends AppCompatActivity {
                             eventIds.add(eventId);
                             ParseUser.getCurrentUser().removeAll(User.WISHLIST, eventIds);
                             ParseUser.getCurrentUser().addUnique(User.DONELIST, eventId);
+                            ParseUser.getCurrentUser().increment(User.DONE);
                             ParseUser.getCurrentUser().saveInBackground();
 
                             ActionContract actionContract = new ActionContract(ParseUser.getCurrentUser(), ActionContract.STAMP, event);
@@ -256,6 +257,7 @@ public class Create_Event extends AppCompatActivity {
                 eventIds.add(eventId);
                 ParseUser.getCurrentUser().removeAll(User.WISHLIST, eventIds);
                 ParseUser.getCurrentUser().addUnique(User.DONELIST, eventId);
+                ParseUser.getCurrentUser().increment(User.DONE);
 
                 ParseQuery<Event> query = Event.getQuery();
                 query.getInBackground(eventId, new GetCallback<Event>() {

@@ -12,5 +12,5 @@ public class User {
     final public static String COVER = "cover";
     final public static String WISHLIST = "wishlist";
     final public static String DONELIST = "donelist";
-    final public static String REQUESTLIST = "requestList";
+    final public static String DONE = "nDone";
 }
