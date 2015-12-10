@@ -55,6 +55,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.GetDataCallback;
+import com.parse.LogInCallback;
 import com.parse.LogOutCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -266,28 +267,52 @@ public class MainActivity extends AppCompatActivity
             editPWDialogBuild.setPositiveButton("확인", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    String new_pw = ((TextView) dialog_layout.findViewById(R.id.dialog_new_password)).getText().toString().trim();
-                    String new_pw_again = ((TextView) dialog_layout.findViewById(R.id.dialog_new_password_again)).getText().toString().trim();
-                    if (new_pw.length() > 0) {
-                        if (new_pw.equals(new_pw_again)) {
-                            final ProgressDialog editPWProgressDialog = new ProgressDialog(MainActivity.this);
-                            editPWProgressDialog.setMessage(getString(R.string.progress_edit_password));
-                            editPWProgressDialog.show();
-                            ParseUser currentUser = ParseUser.getCurrentUser();
-                            currentUser.getCurrentUser().setPassword(new_pw);
-                            currentUser.saveInBackground(new SaveCallback() {
-                                @Override
-                                public void done(ParseException e) {
-                                    editPWProgressDialog.dismiss();
-                                    Toast.makeText(getApplicationContext(), "비밀번호가 변경되었습니다.", Toast.LENGTH_SHORT).show();
+                    final String oldPass = ((TextView) dialog_layout.findViewById(R.id.dialog_current_password)).getText().toString().trim();
+                    final String newPass = ((TextView) dialog_layout.findViewById(R.id.dialog_new_password)).getText().toString().trim();
+                    final String newPassAgain = ((TextView) dialog_layout.findViewById(R.id.dialog_new_password_again)).getText().toString().trim();
+
+                    final ParseUser currentUser = ParseUser.getCurrentUser();
+                    final String userName = ParseUser.getCurrentUser().getUsername();
+
+                    ParseUser.logInInBackground(userName, oldPass, new LogInCallback() {
+                        @Override
+                        public void done(ParseUser user, ParseException e) {
+                            if (user != null) {
+                                if (newPass.length() > 0) {
+                                    if (newPass.equals(newPassAgain)) {
+                                        final ProgressDialog editPWProgressDialog = new ProgressDialog(MainActivity.this);
+                                        editPWProgressDialog.setMessage(getString(R.string.progress_edit_password));
+                                        editPWProgressDialog.show();
+
+                                        currentUser.setPassword(newPass);
+                                        currentUser.saveInBackground(new SaveCallback() {
+                                            @Override
+                                            public void done(ParseException e) {
+                                                if (e == null) {
+                                                    ParseUser.logOut();
+                                                    ParseUser.logInInBackground(userName, newPass, new LogInCallback() {
+                                                        @Override
+                                                        public void done(ParseUser parseUser, ParseException e) {
+                                                            if (e == null) {
+                                                                editPWProgressDialog.dismiss();
+                                                                Toast.makeText(getApplicationContext(), "비밀번호가 변경되었습니다.", Toast.LENGTH_SHORT).show();
+                                                            }
+                                                        }
+                                                    });
+                                                }
+                                            }
+                                        });
+                                    } else {
+                                        Toast.makeText(getApplicationContext(), "비밀번호를 확인해 주세요.", Toast.LENGTH_SHORT).show();
+                                    }
+                                } else {
+                                    Toast.makeText(getApplicationContext(), "비밀번호를 입력해 주세요.", Toast.LENGTH_SHORT).show();
                                 }
-                            });
-                        } else {
-                            Toast.makeText(getApplicationContext(), "비밀번호를 확인해 주세요.", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(getApplicationContext(), "현재 비밀번호가 맞지 않습니다.", Toast.LENGTH_SHORT).show();
+                            }
                         }
-                    } else {
-                        Toast.makeText(getApplicationContext(), "비밀번호를 입력해 주세요.", Toast.LENGTH_SHORT).show();
-                    }
+                    });
                 }
             });
             editPWDialogBuild.setNegativeButton("취소", new DialogInterface.OnClickListener() {

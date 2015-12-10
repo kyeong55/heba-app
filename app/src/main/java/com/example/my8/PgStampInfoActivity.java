@@ -144,7 +144,7 @@ public class PgStampInfoActivity extends AppCompatActivity {
                         }
                     });
                     textView.setText(stamp.getComment());
-                    //TODO: writer profile, name, time
+
                     ParseUser user = stamp.getUser();
                     writerName.setText(user.getUsername());
                     writerProfile.setParseFile(user.getParseFile(User.PROFILE));
