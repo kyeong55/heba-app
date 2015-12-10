@@ -69,27 +69,5 @@
                 android:scaleType="centerCrop"/>
         </android.support.v7.widget.CardView>
         </LinearLayout>
-        <!--
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/wishlist_margin_side"
-            android:paddingRight="@dimen/wishlist_margin_side"
-            android:paddingTop="@dimen/wishlist_margin_in"
-            android:paddingBottom="@dimen/wishlist_margin_out">
-            <TextView android:id="@+id/wl_participate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:layout_gravity="center_vertical"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="명이 참여했습니다"
-                android:layout_weight="1"
-                android:layout_gravity="center_vertical"/>
-        </LinearLayout>
-        -->
     </LinearLayout>
 </FrameLayout>

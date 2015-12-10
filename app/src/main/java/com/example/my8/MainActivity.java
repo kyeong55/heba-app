@@ -1059,7 +1059,18 @@ public class MainActivity extends AppCompatActivity
             wlView.setLayoutManager(layoutManager);
             wlView.addOnChildAttachStateChangeListener(new ChildAttachListener(layoutManager));
 
-            wlAdapter = new WishlistAdapter(container.getContext());
+            DisplayMetrics metrics = new DisplayMetrics();
+            WindowManager windowManager = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
+            windowManager.getDefaultDisplay().getMetrics(metrics);
+
+            float displayWidth = (float)metrics.widthPixels/metrics.xdpi;
+            int columnNum = (int) (displayWidth/1.4);
+            if (columnNum < 2)
+                columnNum = 2;
+            else if (columnNum > 4)
+                columnNum = 4;
+
+            wlAdapter = new WishlistAdapter(container.getContext(), metrics.widthPixels*6/(7*columnNum), columnNum);
             wlView.setAdapter(wlAdapter);
             refresh();
             return rootView;

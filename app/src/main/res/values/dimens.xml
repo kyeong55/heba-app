@@ -53,9 +53,10 @@
     <dimen name="stamp_info_time_size">12sp</dimen>
     <!-- Wishlist -->
     <dimen name="wishlist_margin_side">24dp</dimen>
+    <dimen name="wishlist_margin_top">16dp</dimen>
     <dimen name="wishlist_margin_in">8dp</dimen>
     <dimen name="wishlist_margin_out">12dp</dimen>
-    <dimen name="wishlist_title_text_size">26sp</dimen>
+    <dimen name="wishlist_title_text_size">20sp</dimen>
     <!-- Select Event -->
     <dimen name="select_text_margin">16dp</dimen>
     <dimen name="select_title_size">16sp</dimen>

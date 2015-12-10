@@ -50,13 +50,12 @@
                 android:layout_gravity="center_vertical"/>
         </LinearLayout>
         <TextView android:id="@+id/pg_title"
-            android:text="테스트이벤트"
             android:layout_marginLeft="@dimen/pg_margin_side"
             android:layout_marginRight="@dimen/pg_margin_side"
             android:layout_marginTop="@dimen/pg_margin_in"
             android:layout_marginBottom="@dimen/pg_margin_in"
             android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:textStyle="bold" android:textSize="@dimen/wishlist_title_text_size"
+            android:textStyle="bold" android:textSize="@dimen/pg_title_text_size"
             android:textColor="@color/colorBlack"/>
 
         <android.support.v7.widget.RecyclerView

@@ -64,7 +64,7 @@
     <string name="dialog_new_password">새 비밀번호</string>
     <string name="dialog_new_password_again">새 비밀번호 확인</string>
     <!-- String related to Search ActionContract -->
-    <string name="search_hint_text">이벤트 검색</string>
+    <string name="search_hint_text">이벤트 또는 친구 검색</string>
     <!-- String related to Event Info ActionContract -->
     <string name="title_activity_event_info">EventInfoActivity</string>
     <string name="event_info_stamp_count">명이 참여했습니다</string>

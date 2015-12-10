@@ -59,9 +59,14 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.ViewHo
     public boolean addedAll=false;
     private boolean inAdding=false;
 
-    public WishlistAdapter(Context context){
+    private int imageHeight;
+    private int numOfThumbNails;
+
+    public WishlistAdapter(Context context, int imageHeight, int numOfThumbNails){
         this.context = context;
         this.items = new ArrayList<>();
+        this.imageHeight = imageHeight;
+        this.numOfThumbNails = numOfThumbNails;
     }
 
     public void setItems(List<Wishlist_item> items) {
@@ -74,7 +79,7 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.ViewHo
         if(viewType == VIEW_TYPE_FOOTER)
             v= LayoutInflater.from(parent.getContext()).inflate(R.layout.playground_card_footer, parent, false);
         else
-            v= LayoutInflater.from(parent.getContext()).inflate(R.layout.wishlist_card, parent, false);
+            v= LayoutInflater.from(parent.getContext()).inflate(R.layout.wishlist_card_new, parent, false);
         return new ViewHolder(v,viewType);
     }
 
@@ -92,7 +97,7 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.ViewHo
             final Wishlist_item item = items.get(position);
 
             holder.title.setText(item.getTitle());
-            holder.title.setOnClickListener(new View.OnClickListener() {
+            holder.wl_card.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(context, EventInfoActivity.class);
@@ -102,72 +107,103 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.ViewHo
                     ((Activity)context).overridePendingTransition(R.anim.trans_activity_slide_left_in, R.anim.trans_activity_slide_left_out);
                 }
             });
+//            ParseFile thumbnail1 = item.getThumbnail(1);
+//            if (thumbnail1 != null) {
+//                ParseImageView stampImage = (ParseImageView)holder.thumbnail1;
+//                stampImage.setParseFile(thumbnail1);
+//                stampImage.loadInBackground(new GetDataCallback() {
+//                    @Override
+//                    public void done(byte[] data, ParseException e) {
+//                        //nothing to do
+//                    }
+//                });
+//            }
+//            holder.thumbnail1.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    //TODO: Magnify the stamp
+//                    //Intent intent = new Intent(context, ???.class);
+//                    //context.startActivity(intent);
+//                }
+//            });
+//
+//            ParseFile thumbnail2 = item.getThumbnail(2);
+//            if (thumbnail2 != null) {
+//                ParseImageView stampImage = (ParseImageView)holder.thumbnail2;
+//                stampImage.setParseFile(thumbnail2);
+//                stampImage.loadInBackground(new GetDataCallback() {
+//                    @Override
+//                    public void done(byte[] data, ParseException e) {
+//                        //nothing to do
+//                    }
+//                });
+//            }
+//            holder.thumbnail2.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    //TODO: Magnify the stamp
+//                    //Intent intent = new Intent(context, ???.class);
+//                    //context.startActivity(intent);
+//                }
+//            });
+//
+//            ParseFile thumbnail3 = item.getThumbnail(3);
+//            if (thumbnail3 != null) {
+//                ParseImageView stampImage = (ParseImageView)holder.thumbnail3;
+//                stampImage.setParseFile(thumbnail3);
+//                stampImage.loadInBackground(new GetDataCallback() {
+//                    @Override
+//                    public void done(byte[] data, ParseException e) {
+//                        //nothing to do
+//                    }
+//                });
+//            }
+//            holder.thumbnail3.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    //TODO: Magnify the stamp
+//                    //Intent intent = new Intent(context, ???.class);
+//                    //context.startActivity(intent);
+//                }
+//            });
+
             ParseFile thumbnail1 = item.getThumbnail(1);
-            if (thumbnail1 != null) {
-                ParseImageView stampImage = (ParseImageView)holder.thumbnail1;
-                stampImage.setParseFile(thumbnail1);
-                stampImage.loadInBackground(new GetDataCallback() {
-                    @Override
-                    public void done(byte[] data, ParseException e) {
-                        //nothing to do
-                    }
-                });
-            }
-            holder.thumbnail1.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    //TODO: Magnify the stamp
-                    //Intent intent = new Intent(context, ???.class);
-                    //context.startActivity(intent);
-                }
-            });
-
             ParseFile thumbnail2 = item.getThumbnail(2);
-            if (thumbnail2 != null) {
-                ParseImageView stampImage = (ParseImageView)holder.thumbnail2;
-                stampImage.setParseFile(thumbnail2);
-                stampImage.loadInBackground(new GetDataCallback() {
-                    @Override
-                    public void done(byte[] data, ParseException e) {
-                        //nothing to do
-                    }
-                });
-            }
-            holder.thumbnail2.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    //TODO: Magnify the stamp
-                    //Intent intent = new Intent(context, ???.class);
-                    //context.startActivity(intent);
-                }
-            });
 
-            ParseFile thumbnail3 = item.getThumbnail(3);
-            if (thumbnail3 != null) {
-                ParseImageView stampImage = (ParseImageView)holder.thumbnail3;
-                stampImage.setParseFile(thumbnail3);
-                stampImage.loadInBackground(new GetDataCallback() {
-                    @Override
-                    public void done(byte[] data, ParseException e) {
-                        //nothing to do
-                    }
-                });
+            if(thumbnail1 != null) {
+                holder.thumbnail1.setParseFile(thumbnail1);
+                holder.thumbnail1.loadInBackground();
             }
-            holder.thumbnail3.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    //TODO: Magnify the stamp
-                    //Intent intent = new Intent(context, ???.class);
-                    //context.startActivity(intent);
+            if(thumbnail2 != null) {
+                holder.thumbnail2.setParseFile(thumbnail2);
+                holder.thumbnail2.loadInBackground();
+            }
+            if (numOfThumbNails > 2) {
+                holder.thumbnail3.setVisibility(View.VISIBLE);
+                ParseFile thumbnail3 = item.getThumbnail(3);
+                if(thumbnail3 != null) {
+                    holder.thumbnail3.setParseFile(thumbnail3);
+                    holder.thumbnail3.loadInBackground();
                 }
-            });
+            }
+            if (numOfThumbNails == 4) {
+                holder.thumbnail4.setVisibility(View.VISIBLE);
+                ParseFile thumbnail4 = item.getThumbnail(4);
+                if(thumbnail4 != null) {
+                    holder.thumbnail4.setParseFile(thumbnail4);
+                    holder.thumbnail4.loadInBackground();
+                }
+            }
+            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) holder.thumbnail_layout.getLayoutParams();
+            params.height = imageHeight;
+            holder.thumbnail_layout.setLayoutParams(params);
 
-            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) holder.wishCard.getLayoutParams();
-            DisplayMetrics metrics = new DisplayMetrics();
-            WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-            windowManager.getDefaultDisplay().getMetrics(metrics);
-            params.height = metrics.widthPixels*1/3;
-            holder.wishCard.setLayoutParams(params);
+//            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) holder.thumbnail_layout.getLayoutParams();
+//            DisplayMetrics metrics = new DisplayMetrics();
+//            WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+//            windowManager.getDefaultDisplay().getMetrics(metrics);
+//            params.height = metrics.widthPixels*1/3;
+//            holder.thumbnail_layout.setLayoutParams(params);
         }
     }
 
@@ -232,7 +268,9 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.ViewHo
         ParseImageView thumbnail1;
         ParseImageView thumbnail2;
         ParseImageView thumbnail3;
-        View wishCard;
+        ParseImageView thumbnail4;
+        View thumbnail_layout;
+        View wl_card;
 
         View footer_progress_in;
         TextView footer_progress_end;
@@ -244,7 +282,9 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.ViewHo
                 thumbnail1 = (ParseImageView) itemView.findViewById(R.id.wl_image_1);
                 thumbnail2 = (ParseImageView) itemView.findViewById(R.id.wl_image_2);
                 thumbnail3 = (ParseImageView) itemView.findViewById(R.id.wl_image_3);
-                wishCard = (View) itemView.findViewById(R.id.wl_image_layout);
+                thumbnail4 = (ParseImageView) itemView.findViewById(R.id.wl_image_4);
+                thumbnail_layout = (View) itemView.findViewById(R.id.wl_image_layout);
+                wl_card = itemView.findViewById(R.id.wl_card);
             }
             else if(viewType == VIEW_TYPE_FOOTER) {
                 footer_progress_in = itemView.findViewById(R.id.progress_in);
