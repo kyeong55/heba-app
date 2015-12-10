@@ -46,8 +46,7 @@
                     android:layout_height="wrap_content"
                     android:textStyle="bold"
                     android:textSize="15sp"
-                    android:textColor="@color/colorWhite"
-                    android:text="누구야"/>
+                    android:textColor="@color/colorWhite"/>
                 <TextView
                     android:id="@+id/pg_stamp_info_time"
                     android:layout_width="wrap_content"

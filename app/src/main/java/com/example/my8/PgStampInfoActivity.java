@@ -145,8 +145,28 @@ public class PgStampInfoActivity extends AppCompatActivity {
                     });
                     textView.setText(stamp.getComment());
 
-                    ParseUser user = stamp.getUser();
+                    final ParseUser user = stamp.getUser();
                     writerName.setText(user.getUsername());
+                    writerName.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent = new Intent(getContext(), UserInfoActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            intent.putExtra("user_id", user.getObjectId());
+                            intent.putExtra("already_friend", UserInfoActivity.FRIEND_APPLYED);
+                            getContext().startActivity(intent);
+                        }
+                    });
+                    imageView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent = new Intent(getContext(), UserInfoActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            intent.putExtra("user_id", user.getObjectId());
+                            intent.putExtra("already_friend", UserInfoActivity.FRIEND_APPLYED);
+                            getContext().startActivity(intent);
+                        }
+                    });
                     writerProfile.setParseFile(user.getParseFile(User.PROFILE));
                     writerProfile.loadInBackground();
                     time.setText(stamp.getDatetime().toString());

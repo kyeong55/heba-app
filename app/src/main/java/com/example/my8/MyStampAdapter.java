@@ -114,6 +114,7 @@ public class MyStampAdapter extends RecyclerView.Adapter<MyStampAdapter.ViewHold
                     intent.putExtra("stamp_id_list", stampIdList);
                     intent.putExtra("event_id_list", eventIdList);
                     intent.putExtra("event_title_list", eventTitleList);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(intent);
                 }
             });

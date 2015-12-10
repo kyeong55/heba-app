@@ -237,6 +237,16 @@ public class PgAdapter extends RecyclerView.Adapter<PgAdapter.ViewHolder> {
                     context.startActivity(intent);
                 }
             });
+            holder.writer_photo.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, UserInfoActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.putExtra("user_id", user.getObjectId());
+                    intent.putExtra("already_friend", UserInfoActivity.FRIEND_APPLYED);
+                    context.startActivity(intent);
+                }
+            });
 
             holder.description.setText(item.getDescription());
 
