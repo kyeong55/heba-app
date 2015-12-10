@@ -164,12 +164,13 @@ public class Create_Event extends AppCompatActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(final MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if(id == R.id.action_commit) {
+            item.setVisible(false);
             final ProgressDialog dialog = new ProgressDialog(Create_Event.this);
             dialog.setMessage("업로드 중");
             dialog.show();
@@ -244,6 +245,7 @@ public class Create_Event extends AppCompatActivity {
                                     } else {
                                         dialog.dismiss();
                                         Toast.makeText(Create_Event.this, "업로드에 실패하였습니다.", Toast.LENGTH_SHORT).show();
+                                        item.setVisible(true);
                                     }
                                 }
                             });

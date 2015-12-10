@@ -372,12 +372,13 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
                     int pos = items.size();
                     for (ParseUser user : users) {
                         items.add(new Friends_item(user));
+                        notifyItemInserted(getItemCount()-2);
                     }
                     if (items.size() == pos) {
                         addedAll = true;
                         notifyItemChanged(getItemCount() - 1);
-                    } else
-                        notifyItemRangeInserted(pos, items.size() - pos);
+                    } //else
+                        //notifyItemRangeInserted(pos, items.size() - pos);
                     inAdding = false;
                 }
             }
