@@ -740,7 +740,7 @@ public class MainActivity extends AppCompatActivity
 
             ParseQuery<ActionContract> query = ParseQuery.or(queries);
             query.orderByDescending("updatedAt");
-            query.setLimit(5);
+            query.setLimit(6);
             query.include(ActionContract.USER);
             query.include(ActionContract.EVENT);
             query.include(ActionContract.EVENT + "." + "stamp0");
@@ -756,24 +756,29 @@ public class MainActivity extends AppCompatActivity
                         List<Playground_item> items = new ArrayList<>();
                         List<Event> checkList = new ArrayList<>();
                         List<Event> myList = new ArrayList<>();
+                        List<Event> priorList = new ArrayList<>();
                         int idx = 1;
                         for (ActionContract action : actions) {
-                            Log.d("idx", idx+"");
                             if (idx == 1)
                                 pgadapter.setLastUpdate(action.getUpdatedAt());
                             int eventIdx = checkList.indexOf(action.getEvent());
-                            Log.d("eventIdx", eventIdx+"");
-                            Log.d("event: ", action.getEvent().getTitle());
+                            int myIdx = myList.indexOf(action.getEvent());
+                            int priorIdx = priorList.indexOf(action.getEvent());
                             if (eventIdx == -1) {
-                                Log.d("new event: ", action.getEvent().getTitle());
                                 checkList.add(action.getEvent());
                                 if (action.getUser() == user) {
-                                    Log.d("my", "event");
                                     myList.add(action.getEvent());
                                 }
+                                if (action.getAction() == ActionContract.WISHLIST) {
+                                    priorList.add(action.getEvent());
+                                }
                                 items.add(new Playground_item(container, action, container.getContext()));
-                            } else if (myList.contains(action.getEvent())) {
-                                Log.d("my event", "corruption");
+                            } else if (myIdx != -1) {
+                                myList.remove(myIdx);
+                                Playground_item item = items.get(eventIdx);
+                                item.changeItem(action);
+                            } else if ((priorIdx != -1) && (action.getAction() == ActionContract.STAMP)) {
+                                priorList.remove(priorIdx);
                                 Playground_item item = items.get(eventIdx);
                                 item.changeItem(action);
                             }
@@ -783,6 +788,7 @@ public class MainActivity extends AppCompatActivity
                         }
                         pgadapter.setCheckList(checkList);
                         pgadapter.setMyList(myList);
+                        pgadapter.setPriorList(priorList);
                         pgadapter.setItems(items);
                         pgadapter.notifyDataSetChanged();
                         mySwipeRefreshLayout.setRefreshing(false);
@@ -804,12 +810,9 @@ public class MainActivity extends AppCompatActivity
 
             @Override
             public void onChildViewAttachedToWindow(View view) {
-                Log.d("ggg","gggg");
                 if (pgadapter.getItemCount() - 3 <= llm.findLastVisibleItemPosition()) {
-                    Log.d("ggg","gggg2");
                     if(!pgadapter.isAdding() && (!pgadapter.addedAll)) {
                         pgadapter.add(true);
-                        Log.d("ggg", "gggg3");
                     }
                 }
             }

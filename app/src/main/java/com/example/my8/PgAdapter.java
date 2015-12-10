@@ -136,6 +136,7 @@ public class PgAdapter extends RecyclerView.Adapter<PgAdapter.ViewHolder> {
     private List<Playground_item> items;
     private List<Event> checkList;
     private List<Event> myList;
+    private List<Event> priorList;
 
     final private int VIEW_TYPE_FOOTER=0;
     final private int VIEW_TYPE_ITEM=1;
@@ -155,6 +156,7 @@ public class PgAdapter extends RecyclerView.Adapter<PgAdapter.ViewHolder> {
         items = new ArrayList<>();
         checkList = new ArrayList<>();
         myList = new ArrayList<>();
+        priorList = new ArrayList<>();
     }
 
     public void setItems(List<Playground_item> items) {
@@ -167,6 +169,10 @@ public class PgAdapter extends RecyclerView.Adapter<PgAdapter.ViewHolder> {
 
     public void setMyList(List<Event> myList) {
         this.myList = myList;
+    }
+
+    public void setPriorList(List<Event> myList) {
+        this.priorList = priorList;
     }
 
     public void setLastUpdate(Date update) {
@@ -352,7 +358,7 @@ public class PgAdapter extends RecyclerView.Adapter<PgAdapter.ViewHolder> {
         query.orderByDescending("updatedAt");
         if (items.size() > 0)
             query.whereLessThan("updatedAt", lastUpdate);
-        query.setLimit(5);
+        query.setLimit(6);
         query.include(ActionContract.USER);
         query.include(ActionContract.EVENT);
         query.include(ActionContract.EVENT + "." + "stamp0");
@@ -361,57 +367,50 @@ public class PgAdapter extends RecyclerView.Adapter<PgAdapter.ViewHolder> {
         query.include(ActionContract.EVENT + "." + "stamp3");
         query.include(ActionContract.EVENT + "." + "stamp4");
         query.include(ActionContract.EVENT + "." + "stamp5");
-        Log.d("ooh", "ooh");
         query.findInBackground(new FindCallback<ActionContract>() {
             @Override
             public void done(List<ActionContract> actions, ParseException e) {
                 if (e == null) {
-                    Log.d("done", "entrance");
                     int pos = items.size();
-                    Log.d("pos", pos+"");
                     int idx = 1;
                     for (ActionContract action : actions) {
-                        Log.d("idx", idx+"");
                         int eventIdx = checkList.indexOf(action.getEvent());
-                        Log.d("eventIdx", eventIdx+"");
-                        Log.d("event: ", action.getEvent().getTitle());
+                        int myIdx = myList.indexOf(action.getEvent());
+                        int priorIdx = priorList.indexOf(action.getEvent());
                         if (eventIdx == -1) {
-                            Log.d("new event: ", action.getEvent().getTitle());
                             checkList.add(action.getEvent());
                             if (action.getUser() == user) {
                                 myList.add(action.getEvent());
-                                Log.d("my", "event");
+                            }
+                            if (action.getAction() == ActionContract.WISHLIST) {
+                                priorList.add(action.getEvent());
                             }
                             items.add(new Playground_item(container, action, context));
-                        } else if (myList.contains(action.getEvent()) && eventIdx >= pos) {
-                            Log.d("my event", "corruption");
-                            Playground_item item = items.get(eventIdx);
-                            item.changeItem(action);
+                        } else if(eventIdx >= pos) {
+                            if ((myIdx != -1) && eventIdx >= pos) {
+                                myList.remove(myIdx);
+                                Playground_item item = items.get(eventIdx);
+                                item.changeItem(action);
+                            } else if ((priorIdx != -1) && (action.getAction() == ActionContract.STAMP)) {
+                                priorList.remove(priorIdx);
+                                Playground_item item = items.get(eventIdx);
+                                item.changeItem(action);
+                            }
                         }
                         if (idx == actions.size())
                             lastUpdate = action.getUpdatedAt();
                         idx = idx + 1;
                     }
-                    Log.d("items size", items.size() + "");
-                    Log.d("idx", idx + "");
                     if(idx == 1){ // 더 이상 받아올게 없음
-                        Log.d("I'm", "here");
                         addedAll=true;
                         notifyItemChanged(pos);
                     } else if (items.size() > pos) {
-                        Log.d("I'm", "here2");
                         notifyItemRangeInserted(pos, items.size() - pos);
                     } else {
                         add(false);
                     }
                     if (first)
                         inAdding=false;
-                    Log.d("inAdding", inAdding+"");
-                    Log.d("addedAll", addedAll+"");
-                    Log.d("checkList", checkList.size()+"");
-                    Log.d("myList", myList.size()+"");
-                } else {
-                    Log.d("error??", e.getMessage());
                 }
             }
         });
