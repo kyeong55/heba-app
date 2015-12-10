@@ -3,6 +3,7 @@ package com.example.my8;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
@@ -55,6 +56,7 @@ public class SelectEvent extends AppCompatActivity implements OnMapReadyCallback
 
     private GoogleMap mMap;
     private List<Marker> markers;
+    private Marker newStampMarker;
 
     public static Activity selectEventActivity;
     private ViewPager selectViewPager;
@@ -69,7 +71,12 @@ public class SelectEvent extends AppCompatActivity implements OnMapReadyCallback
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         selectEventActivity = SelectEvent.this;
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
         setContentView(R.layout.activity_select_event);
+
+//        setRequestedOrientation();
+//        Log.d("dddd", "get requested ori  "+getRequestedOrientation());
+//        ActivityInfo
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.select_toolbar);
         setSupportActionBar(toolbar);
@@ -152,6 +159,7 @@ public class SelectEvent extends AppCompatActivity implements OnMapReadyCallback
                         //                        }
                         //                    }
                         selectViewPager.setAdapter(new SelectEventPagerAdapter(getSupportFragmentManager(), events, imagePath));
+                        setMarker(events);
                         dialog.dismiss();
                         //                    selectEventImageAdapter.setItems(items);
                         //                    selectEventImageAdapter.notifyDataSetChanged();
@@ -234,40 +242,13 @@ public class SelectEvent extends AppCompatActivity implements OnMapReadyCallback
             e.printStackTrace();
         }
 
-        // Add a marker in Sydney and move the camera
-        //LatLng loc = new LatLng(Double.parseDouble(intent.getStringExtra("latitude")), Double.parseDouble(intent.getStringExtra("longitude")));
         LatLng loc = new LatLng(geoPoint[0],geoPoint[1]);
         MarkerOptions marker = new MarkerOptions();
         marker.title(location);
         marker.position(loc);
-//        marker.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
 
-        MarkerOptions marker2 = new MarkerOptions();
-        marker2.title("하하");
-        marker2.position(new LatLng(geoPoint[0], geoPoint[1] + 0.005));
-        marker2.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE));
-        marker2.alpha((float) 0.5);
-
-        MarkerOptions marker3 = new MarkerOptions();
-        marker3.title("하하");
-        marker3.position(new LatLng(geoPoint[0], geoPoint[1] - 0.005));
-        marker3.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE));
-        marker3.alpha((float) 0.5);
-
-//        mMap.addMarker(marker2).showInfoWindow();
-        mMap.addMarker(marker3);
-        mMap.addMarker(marker);
-//        mMap.addMarker(marker).showInfoWindow();
+        newStampMarker = mMap.addMarker(marker);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(loc, 14));
-        mMap.addMarker(marker2).showInfoWindow();
-
-        CircleOptions circle = new CircleOptions();
-        circle.center(loc);
-        circle.radius(1000);
-        circle.strokeColor(ContextCompat.getColor(getApplicationContext(), R.color.colorMapCircleStroke));
-        circle.fillColor(ContextCompat.getColor(getApplicationContext(), R.color.colorMapCircleFill));
-
-        mMap.addCircle(circle);
     }
 
     public void setMarker(List<Event> events){
@@ -275,8 +256,8 @@ public class SelectEvent extends AppCompatActivity implements OnMapReadyCallback
         Geocoder gc = new Geocoder(this, Locale.KOREAN);
         for (Event event : events){
             //TODO: set lat long of event
-            double latitude = 0;
-            double longitude = 0;
+            double latitude = event.getMeanLa();
+            double longitude = event.getMeanLo();
             String location = "";
             try {
                 List<Address> addresses = gc.getFromLocation(latitude, longitude, 1);
@@ -292,6 +273,8 @@ public class SelectEvent extends AppCompatActivity implements OnMapReadyCallback
             markers.add(mMap.addMarker((new MarkerOptions()).title(location).position(new LatLng(latitude, longitude)).alpha((float) 0.6)
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE))));
         }
+        markers.add(newStampMarker);
+
         selectViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
@@ -302,7 +285,7 @@ public class SelectEvent extends AppCompatActivity implements OnMapReadyCallback
                     if (i == position)
                         m.setAlpha((float)1.0);
                     else
-                        markers.get(position).setAlpha((float)0.6);
+                        markers.get(i).setAlpha((float)0.6);
                 }
             }
 
@@ -313,6 +296,15 @@ public class SelectEvent extends AppCompatActivity implements OnMapReadyCallback
             public void onPageScrollStateChanged(int state) {
             }
         });
+        Marker m = markers.get(0);
+        m.showInfoWindow();
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(m.getPosition(), 14));
+        for (int i=0; i<markers.size();i++){
+            if (i == 0)
+                m.setAlpha((float)1.0);
+            else
+                markers.get(i).setAlpha((float)0.6);
+        }
     }
 
     @Override

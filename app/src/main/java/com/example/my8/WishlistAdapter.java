@@ -92,7 +92,6 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.ViewHo
             final Wishlist_item item = items.get(position);
 
             holder.title.setText(item.getTitle());
-            holder.nParticipant.setText(item.getNParticipant());
             holder.title.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -230,7 +229,6 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.ViewHo
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView title;
-        TextView nParticipant;
         ParseImageView thumbnail1;
         ParseImageView thumbnail2;
         ParseImageView thumbnail3;
@@ -243,7 +241,6 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.ViewHo
             super(itemView);
             if(viewType == VIEW_TYPE_ITEM) {
                 title = (TextView) itemView.findViewById(R.id.wl_title);
-                nParticipant = (TextView) itemView.findViewById(R.id.wl_participate);
                 thumbnail1 = (ParseImageView) itemView.findViewById(R.id.wl_image_1);
                 thumbnail2 = (ParseImageView) itemView.findViewById(R.id.wl_image_2);
                 thumbnail3 = (ParseImageView) itemView.findViewById(R.id.wl_image_3);
