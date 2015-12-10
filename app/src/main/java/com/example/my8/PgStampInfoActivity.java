@@ -24,6 +24,7 @@ import com.parse.GetDataCallback;
 import com.parse.ParseException;
 import com.parse.ParseImageView;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -131,6 +132,7 @@ public class PgStampInfoActivity extends AppCompatActivity {
             });
             // recall stamp from the server
             ParseQuery<Stamp> query = Stamp.getQuery();
+            query.include(Stamp.USER);
             query.getInBackground(getArguments().getString(ARG_STAMP_ID), new GetCallback<Stamp>() {
                 @Override
                 public void done(Stamp stamp, ParseException e) {
@@ -143,7 +145,10 @@ public class PgStampInfoActivity extends AppCompatActivity {
                     });
                     textView.setText(stamp.getComment());
                     //TODO: writer profile, name, time
-//                    writerName.setText(stamp.getUser().getUsername());
+                    ParseUser user = stamp.getUser();
+                    writerName.setText(user.getUsername());
+                    writerProfile.setParseFile(user.getParseFile(User.PROFILE));
+                    writerProfile.loadInBackground();
                     time.setText(stamp.getDatetime().toString());
                 }
             });

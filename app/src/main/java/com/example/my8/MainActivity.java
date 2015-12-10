@@ -124,7 +124,7 @@ public class MainActivity extends AppCompatActivity
                 else
                     invis();
                 if (position == 1) {
-                    refresh(1);
+                    //refresh(1);
                 }
             }
 
