@@ -4,4 +4,7 @@
     <item android:id="@+id/action_apply_friend"
         android:title="@string/user_info_apply_friend"
         app:showAsAction="always" />
+    <item android:id="@+id/action_reject_friend"
+        android:title="@string/user_info_reject_friend"
+        app:showAsAction="always" />
 </menu>

@@ -12,6 +12,19 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Toast;
+
+import com.parse.FindCallback;
+import com.parse.GetCallback;
+import com.parse.GetDataCallback;
+import com.parse.ParseACL;
+import com.parse.ParseException;
+import com.parse.ParseQuery;
+import com.parse.ParseUser;
+import com.parse.SaveCallback;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserInfoActivity extends AppCompatActivity {
 
@@ -21,6 +34,12 @@ public class UserInfoActivity extends AppCompatActivity {
     public static final int FRIEND_APPLYED = 1; //이미 친구
     public static final int FRIEND_NONE = 2;    //아무 사이 아님
     public static final int FRIEND_DONE = 3;    //reject했거나 내가 요청을 보냄 (버튼 x)
+
+    String userId;
+    Friend friend;
+    MenuItem applyButton;
+    MenuItem rejectButton;
+    MenuItem addButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +53,7 @@ public class UserInfoActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("사용자 정보");
 
-        String userId = getIntent().getStringExtra("user_id");
+        userId = getIntent().getStringExtra("user_id");
         friendState = getIntent().getIntExtra("already_friend",-1);
 
         DisplayMetrics metrics = new DisplayMetrics();
@@ -75,15 +94,61 @@ public class UserInfoActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(final Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        if (friendState == FRIEND_APPLYED){
-        } else if (friendState == FRIEND_REQUEST){
-            getMenuInflater().inflate(R.menu.user_info_apply_menu, menu);
-        } else if (friendState == FRIEND_NONE){
-            getMenuInflater().inflate(R.menu.user_info_add_menu, menu);
-        } else if (friendState == FRIEND_DONE){
-        }
+
+        getMenuInflater().inflate(R.menu.user_info_apply_menu, menu);
+        getMenuInflater().inflate(R.menu.user_info_add_menu, menu);
+
+        applyButton = menu.findItem(R.id.action_apply_friend).setVisible(false);
+        rejectButton = menu.findItem(R.id.action_reject_friend).setVisible(false);
+        addButton = menu.findItem(R.id.action_add_friend).setVisible(false);
+
+        String myUserId = ParseUser.getCurrentUser().getObjectId();
+
+        ParseQuery<Friend> friendToQuery = Friend.getQuery();
+        friendToQuery.whereEqualTo(Friend.TO_USER_ID, userId);
+        friendToQuery.whereEqualTo(Friend.FROM_USER_ID, myUserId);
+
+        ParseQuery<Friend> friendFromQuery = Friend.getQuery();
+        friendFromQuery.whereEqualTo(Friend.FROM_USER_ID, userId);
+        friendFromQuery.whereEqualTo(Friend.TO_USER_ID, myUserId);
+
+        List<ParseQuery<Friend>> queries = new ArrayList<>();
+        queries.add(friendToQuery);
+        queries.add(friendFromQuery);
+
+        ParseQuery<Friend> query = ParseQuery.or(queries);
+
+        query.findInBackground(new FindCallback<Friend>() {
+            @Override
+            public void done(List<Friend> friends, ParseException e) {
+                if (e == null) {
+                    if (friends.size() == 0) {
+                        //No request
+                        addButton.setVisible(true);
+                    } else {
+                        friend = friends.get(0);
+
+                        switch(friend.getState()) {
+                            case Friend.APPROVED:
+                                //they are friends
+                                break;
+                            case Friend.REJECTED:
+                                //One of them rejected friend request.
+                                break;
+                            case Friend.REQUESTED:
+                                if (friend.getToUserId() == userId) {
+                                    //I requested.
+                                } else {
+                                    applyButton.setVisible(true);
+                                    rejectButton.setVisible(true);
+                                }
+                        }
+                    }
+                }
+            }
+        });
         return true;
     }
 
@@ -94,10 +159,55 @@ public class UserInfoActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_add_friend) {
-            //TODO: add friend
+            addButton.setVisible(false);
+            Friend friend = new Friend(ParseUser.getCurrentUser(), userId);
+
+            ParseACL friendACL = new ParseACL();
+            friendACL.setPublicReadAccess(true);
+            friendACL.setWriteAccess(userId, true);
+            friendACL.setWriteAccess(ParseUser.getCurrentUser().getObjectId(), true);
+            friend.setACL(friendACL);
+
+            friend.saveInBackground(new SaveCallback() {
+                @Override
+                public void done(ParseException e) {
+                    if (e == null) {
+                        Toast.makeText(getApplicationContext(), "친구 요청 되었습니다", Toast.LENGTH_SHORT).show();
+                        MainActivity mainActivity = (MainActivity) MainActivity.mainActivity;
+                        mainActivity.refresh(1);
+                    }
+                }
+            });
         }
         else if (id == R.id.action_apply_friend) {
-            //TODO: apply friend
+            applyButton.setVisible(false);
+            rejectButton.setVisible(false);
+            friend.setState(Friend.APPROVED);
+            friend.saveInBackground(new SaveCallback() {
+                @Override
+                public void done(ParseException e) {
+                    if (e == null) {
+                        Toast.makeText(getApplicationContext(), "친구 추가 되었습니다", Toast.LENGTH_SHORT).show();
+                        MainActivity mainActivity = (MainActivity) MainActivity.mainActivity;
+                        mainActivity.refresh(1);
+                    }
+                }
+            });
+        }
+        else if (id == R.id.action_reject_friend) {
+            applyButton.setVisible(false);
+            rejectButton.setVisible(false);
+            friend.setState(Friend.REJECTED);
+            friend.saveInBackground(new SaveCallback() {
+                @Override
+                public void done(ParseException e) {
+                    if (e == null) {
+                        Toast.makeText(getApplicationContext(), "친구 거절 되었습니다", Toast.LENGTH_SHORT).show();
+                        MainActivity mainActivity = (MainActivity) MainActivity.mainActivity;
+                        mainActivity.refresh(1);
+                    }
+                }
+            });
         }
         return super.onOptionsItemSelected(item);
     }

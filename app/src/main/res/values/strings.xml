@@ -81,6 +81,7 @@
     <!-- STring related to User Info Activity -->
     <string name="user_info_progress">스탬프를 불러오는 중</string>
     <string name="user_info_end_progress">더 이상 불러올 스탬프가 없습니다</string>
-    <string name="user_info_add_friend">친구 추가</string>
-    <string name="user_info_apply_friend">친구 요청 수락</string>
+    <string name="user_info_add_friend">친구추가</string>
+    <string name="user_info_apply_friend">친구수락</string>
+    <string name="user_info_reject_friend">거절</string>
 </resources>
