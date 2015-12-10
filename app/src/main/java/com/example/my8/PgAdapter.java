@@ -48,6 +48,12 @@ class Playground_item {
         this.user = action.getUser();
     }
 
+    public void changeItem(ActionContract action) {
+        this.action = action;
+        this.event = action.getEvent();
+        this.user = action.getUser();
+    }
+
     public String getEventId() {
         return event.getObjectId();
     }
@@ -129,6 +135,7 @@ public class PgAdapter extends RecyclerView.Adapter<PgAdapter.ViewHolder> {
     private Context context;
     private List<Playground_item> items;
     private List<Event> checkList;
+    private List<Event> myList;
 
     final private int VIEW_TYPE_FOOTER=0;
     final private int VIEW_TYPE_ITEM=1;
@@ -147,6 +154,7 @@ public class PgAdapter extends RecyclerView.Adapter<PgAdapter.ViewHolder> {
         this.context = container.getContext();
         items = new ArrayList<>();
         checkList = new ArrayList<>();
+        myList = new ArrayList<>();
     }
 
     public void setItems(List<Playground_item> items) {
@@ -155,6 +163,10 @@ public class PgAdapter extends RecyclerView.Adapter<PgAdapter.ViewHolder> {
 
     public void setCheckList(List<Event> checkList) {
         this.checkList = checkList;
+    }
+
+    public void setMyList(List<Event> myList) {
+        this.myList = myList;
     }
 
     public void setLastUpdate(Date update) {
@@ -290,9 +302,11 @@ public class PgAdapter extends RecyclerView.Adapter<PgAdapter.ViewHolder> {
 
     public void setIsAdding(boolean inAdding){this.inAdding = inAdding;}
 
-    public void add(){
-        inAdding = true;
-        String userId = ParseUser.getCurrentUser().getObjectId();
+    public void add(final Boolean first){
+        if (first)
+            inAdding = true;
+        final ParseUser user = ParseUser.getCurrentUser();
+        String userId = user.getObjectId();
 
         ParseQuery<Friend> friendToQuery = Friend.getQuery();
         friendToQuery.whereEqualTo(Friend.STATE, Friend.APPROVED);
@@ -337,27 +351,57 @@ public class PgAdapter extends RecyclerView.Adapter<PgAdapter.ViewHolder> {
         query.include(ActionContract.EVENT + "." + "stamp3");
         query.include(ActionContract.EVENT + "." + "stamp4");
         query.include(ActionContract.EVENT + "." + "stamp5");
+        Log.d("ooh", "ooh");
         query.findInBackground(new FindCallback<ActionContract>() {
             @Override
             public void done(List<ActionContract> actions, ParseException e) {
                 if (e == null) {
+                    Log.d("done", "entrance");
                     int pos = items.size();
+                    Log.d("pos", pos+"");
                     int idx = 1;
                     for (ActionContract action : actions) {
-                        if (!checkList.contains(action.getEvent())) {
+                        Log.d("idx", idx+"");
+                        int eventIdx = checkList.indexOf(action.getEvent());
+                        Log.d("eventIdx", eventIdx+"");
+                        Log.d("event: ", action.getEvent().getTitle());
+                        if (eventIdx == -1) {
+                            Log.d("new event: ", action.getEvent().getTitle());
                             checkList.add(action.getEvent());
+                            if (action.getUser() == user) {
+                                myList.add(action.getEvent());
+                                Log.d("my", "event");
+                            }
                             items.add(new Playground_item(container, action, context));
+                        } else if (myList.contains(action.getEvent()) && eventIdx >= pos) {
+                            Log.d("my event", "corruption");
+                            Playground_item item = items.get(eventIdx);
+                            item.changeItem(action);
                         }
                         if (idx == actions.size())
                             lastUpdate = action.getUpdatedAt();
                         idx = idx + 1;
                     }
-                    if(items.size() == pos && idx == 1){ // 더 이상 받아올게 없음
+                    Log.d("items size", items.size() + "");
+                    Log.d("idx", idx + "");
+                    if(idx == 1){ // 더 이상 받아올게 없음
+                        Log.d("I'm", "here");
                         addedAll=true;
                         notifyItemChanged(pos);
-                    } else
+                    } else if (items.size() > pos) {
+                        Log.d("I'm", "here2");
                         notifyItemRangeInserted(pos, items.size() - pos);
-                    inAdding=false;
+                    } else {
+                        add(false);
+                    }
+                    if (first)
+                        inAdding=false;
+                    Log.d("inAdding", inAdding+"");
+                    Log.d("addedAll", addedAll+"");
+                    Log.d("checkList", checkList.size()+"");
+                    Log.d("myList", myList.size()+"");
+                } else {
+                    Log.d("error??", e.getMessage());
                 }
             }
         });

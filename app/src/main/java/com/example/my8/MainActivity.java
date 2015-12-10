@@ -705,7 +705,8 @@ public class MainActivity extends AppCompatActivity
 
         public void refresh() {
             pgadapter.setIsAdding(true);
-            String userId = ParseUser.getCurrentUser().getObjectId();
+            final ParseUser user = ParseUser.getCurrentUser();
+            String userId = user.getObjectId();
 
             ParseQuery<Friend> friendToQuery = Friend.getQuery();
             friendToQuery.whereEqualTo(Friend.STATE, Friend.APPROVED);
@@ -754,19 +755,34 @@ public class MainActivity extends AppCompatActivity
                     if (e == null) {
                         List<Playground_item> items = new ArrayList<>();
                         List<Event> checkList = new ArrayList<>();
+                        List<Event> myList = new ArrayList<>();
                         int idx = 1;
                         for (ActionContract action : actions) {
+                            Log.d("idx", idx+"");
                             if (idx == 1)
                                 pgadapter.setLastUpdate(action.getUpdatedAt());
-                            if (!checkList.contains(action.getEvent())) {
+                            int eventIdx = checkList.indexOf(action.getEvent());
+                            Log.d("eventIdx", eventIdx+"");
+                            Log.d("event: ", action.getEvent().getTitle());
+                            if (eventIdx == -1) {
+                                Log.d("new event: ", action.getEvent().getTitle());
                                 checkList.add(action.getEvent());
+                                if (action.getUser() == user) {
+                                    Log.d("my", "event");
+                                    myList.add(action.getEvent());
+                                }
                                 items.add(new Playground_item(container, action, container.getContext()));
+                            } else if (myList.contains(action.getEvent())) {
+                                Log.d("my event", "corruption");
+                                Playground_item item = items.get(eventIdx);
+                                item.changeItem(action);
                             }
                             if (idx == actions.size())
                                 pgadapter.setLastUpdate(action.getUpdatedAt());
                             idx = idx + 1;
                         }
                         pgadapter.setCheckList(checkList);
+                        pgadapter.setMyList(myList);
                         pgadapter.setItems(items);
                         pgadapter.notifyDataSetChanged();
                         mySwipeRefreshLayout.setRefreshing(false);
@@ -788,9 +804,13 @@ public class MainActivity extends AppCompatActivity
 
             @Override
             public void onChildViewAttachedToWindow(View view) {
+                Log.d("ggg","gggg");
                 if (pgadapter.getItemCount() - 3 <= llm.findLastVisibleItemPosition()) {
-                    if(!pgadapter.isAdding() && (!pgadapter.addedAll))
-                        pgadapter.add();
+                    Log.d("ggg","gggg2");
+                    if(!pgadapter.isAdding() && (!pgadapter.addedAll)) {
+                        pgadapter.add(true);
+                        Log.d("ggg", "gggg3");
+                    }
                 }
             }
 
