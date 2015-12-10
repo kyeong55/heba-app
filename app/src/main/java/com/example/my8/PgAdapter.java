@@ -388,7 +388,7 @@ public class PgAdapter extends RecyclerView.Adapter<PgAdapter.ViewHolder> {
                             }
                             items.add(new Playground_item(container, action, context));
                         } else if(eventIdx >= pos) {
-                            if ((myIdx != -1) && eventIdx >= pos) {
+                            if ((myIdx != -1) && eventIdx >= pos && (action.getUser() != user)){
                                 myList.remove(myIdx);
                                 Playground_item item = items.get(eventIdx);
                                 item.changeItem(action);

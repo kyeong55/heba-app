@@ -773,7 +773,7 @@ public class MainActivity extends AppCompatActivity
                                     priorList.add(action.getEvent());
                                 }
                                 items.add(new Playground_item(container, action, container.getContext()));
-                            } else if (myIdx != -1) {
+                            } else if ((myIdx != -1) && (action.getUser() != user)) {
                                 myList.remove(myIdx);
                                 Playground_item item = items.get(eventIdx);
                                 item.changeItem(action);
