@@ -21,8 +21,8 @@ public class Event extends ParseObject {
     public Event() {}
 
     private static final String CLASSNAME = "Event";
-    private static final String TITLE = "title";
-    private static final String PARTICIPANT = "nParticipant";
+    public static final String TITLE = "title";
+    public static final String PARTICIPANT = "nParticipant";
     private static final String THUMBNAIL = "thumbnail";
     private static final String STAMP = "stamp";
     private static final String INDEX = "thumbnailIndex";

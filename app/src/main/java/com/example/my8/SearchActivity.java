@@ -19,6 +19,14 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseQuery;
+import com.parse.ParseUser;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class SearchActivity extends AppCompatActivity
 implements SearchView.OnQueryTextListener{
 
@@ -60,18 +68,76 @@ implements SearchView.OnQueryTextListener{
         return true;
     }
     @Override
-    public boolean onQueryTextSubmit(String query) {
+    public boolean onQueryTextSubmit(final String query) {
 //        InputMethodManager imm= (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
 //        imm.hideSoftInputFromWindow(searchView.getWindowToken(), 0);
 //        searchView.setQuery("", false);
 //        searchView.setIconified(true);
         // TODO: search after submit
-        Toast.makeText(this, "Search: "+query, Toast.LENGTH_LONG).show();
+        if (query != "") {
+            ParseQuery<ParseUser> userQuery = ParseUser.getQuery();
+            userQuery.whereStartsWith(User.NAME, query);
+            userQuery.orderByAscending(User.NAME);
+            userQuery.setLimit(12);
+            userQuery.findInBackground(new FindCallback<ParseUser>() {
+                @Override
+                public void done(List<ParseUser> users, ParseException e) {
+                    ParseQuery<Event> eventQuery = Event.getQuery();
+                    eventQuery.whereStartsWith(Event.TITLE, query);
+                    eventQuery.orderByDescending(Event.PARTICIPANT);
+                    List<Event> events = new ArrayList<>();
+                    try {
+                        events = eventQuery.find();
+                    } catch (ParseException e1) {
+                        e1.printStackTrace();
+                    }
+                    List<Search_item> items = new ArrayList<>();
+                    for (ParseUser user : users) {
+                        items.add(new Search_item(user));
+                    }
+                    for (Event event : events) {
+                        items.add(new Search_item(event));
+                    }
+                    searchAdapter.setItems(items);
+                    searchAdapter.notifyDataSetChanged();
+                }
+            });
+        }
+
+        //Toast.makeText(this, "Search: "+query, Toast.LENGTH_LONG).show();
         return false;
     }
     @Override
-    public boolean onQueryTextChange(String newText) {
+    public boolean onQueryTextChange(final String newText) {
         // TODO: auto search
+        ParseQuery<ParseUser> userQuery = ParseUser.getQuery();
+        userQuery.whereStartsWith(User.NAME, newText);
+        userQuery.orderByAscending(User.NAME);
+        userQuery.setLimit(3);
+        userQuery.findInBackground(new FindCallback<ParseUser>() {
+            @Override
+            public void done(List<ParseUser> users, ParseException e) {
+                ParseQuery<Event> eventQuery = Event.getQuery();
+                eventQuery.whereStartsWith(Event.TITLE, newText);
+                eventQuery.orderByDescending(Event.PARTICIPANT);
+                eventQuery.setLimit(3);
+                List<Event> events = new ArrayList<>();
+                try {
+                    events = eventQuery.find();
+                } catch (ParseException e1) {
+                    e1.printStackTrace();
+                }
+                List<Search_item> items = new ArrayList<>();
+                for (ParseUser user : users) {
+                    items.add(new Search_item(user));
+                }
+                for (Event event : events) {
+                    items.add(new Search_item(event));
+                }
+                searchAdapter.setItems(items);
+                searchAdapter.notifyDataSetChanged();
+            }
+        });
         return false;
     }
 
