@@ -140,8 +140,8 @@ public class PgStampAdapter extends RecyclerView.Adapter<PgStampAdapter.ViewHold
         ParseQuery<Stamp> query = Stamp.getQuery();
         query.whereEqualTo("eventId", eventId);
         query.orderByDescending("updatedAt");
-        if (items.size() == 0) {
-        } else {
+        if (items.size() != 0) {
+            Log.d("Ang?", items.size()+"");
             Playground_Stamp_item oldestItem = items.get(items.size() - 1);
             query.whereLessThan("updatedAt", oldestItem.getUpdateTime());
         }

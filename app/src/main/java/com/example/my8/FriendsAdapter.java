@@ -187,6 +187,10 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
                 holder.done_reject.setVisibility(View.INVISIBLE);
                 holder.done_accept.setVisibility(View.INVISIBLE);
             }
+            else {
+                holder.done_background.setVisibility(View.VISIBLE);
+                holder.done_init.setVisibility(View.INVISIBLE);
+            }
 
             holder.friends_card.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -194,10 +198,6 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
                     Intent intent = new Intent(context, UserInfoActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     intent.putExtra("user_id", item.getId());
-                    if (item.isDone())
-                        intent.putExtra("already_friend", UserInfoActivity.FRIEND_DONE);
-                    else
-                        intent.putExtra("already_friend", UserInfoActivity.FRIEND_REQUEST);
                     context.startActivity(intent);
                 }
             });
@@ -223,6 +223,12 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
                 holder.done_init.setVisibility(View.VISIBLE);
                 holder.done_add.setVisibility(View.INVISIBLE);
                 holder.friends_add_button.setVisibility(View.VISIBLE);
+            }
+            else {
+                holder.done_background.setVisibility(View.VISIBLE);
+                holder.done_init.setVisibility(View.INVISIBLE);
+                holder.done_add.setVisibility(View.VISIBLE);
+                holder.friends_add_button.setVisibility(View.INVISIBLE);
             }
 
             holder.friends_add_button.setOnClickListener(new View.OnClickListener() {
@@ -259,10 +265,6 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
                     Intent intent = new Intent(context, UserInfoActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     intent.putExtra("user_id", item.getId());
-                    if (item.isDone())
-                        intent.putExtra("already_friend", UserInfoActivity.FRIEND_DONE);
-                    else
-                        intent.putExtra("already_friend", UserInfoActivity.FRIEND_NONE);
                     context.startActivity(intent);
                 }
             });

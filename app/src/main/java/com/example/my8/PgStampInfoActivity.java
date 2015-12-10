@@ -153,7 +153,6 @@ public class PgStampInfoActivity extends AppCompatActivity {
                             Intent intent = new Intent(getContext(), UserInfoActivity.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             intent.putExtra("user_id", user.getObjectId());
-                            intent.putExtra("already_friend", UserInfoActivity.FRIEND_APPLYED);
                             getContext().startActivity(intent);
                         }
                     });
@@ -163,7 +162,6 @@ public class PgStampInfoActivity extends AppCompatActivity {
                             Intent intent = new Intent(getContext(), UserInfoActivity.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             intent.putExtra("user_id", user.getObjectId());
-                            intent.putExtra("already_friend", UserInfoActivity.FRIEND_APPLYED);
                             getContext().startActivity(intent);
                         }
                     });

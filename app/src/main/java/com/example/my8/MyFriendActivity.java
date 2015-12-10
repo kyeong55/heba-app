@@ -29,7 +29,7 @@ public class MyFriendActivity extends AppCompatActivity {
 
         myFriendAdapter = new MyFriendAdapter(getApplicationContext());
         myFriendView.setAdapter(myFriendAdapter);
-        myFriendAdapter.add();
+        myFriendAdapter.add(true);
     }
 
     private class ChildAttachListener implements RecyclerView.OnChildAttachStateChangeListener {
@@ -44,7 +44,7 @@ public class MyFriendActivity extends AppCompatActivity {
         public void onChildViewAttachedToWindow(View view) {
             if (myFriendAdapter.getItemCount() - 3 <= llm.findLastVisibleItemPosition()) {
                 if(!myFriendAdapter.isAdding() && (!myFriendAdapter.addedAll)) {
-                    myFriendAdapter.add();
+                    myFriendAdapter.add(false);
                 }
             }
         }

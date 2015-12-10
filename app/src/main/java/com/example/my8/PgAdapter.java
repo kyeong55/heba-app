@@ -68,6 +68,8 @@ class Playground_item {
     }
 
     public int getNThumbnail() {
+        if (event.getNParticipant() > 6)
+            return 6;
         return event.getNParticipant();
     }
 
@@ -240,7 +242,6 @@ public class PgAdapter extends RecyclerView.Adapter<PgAdapter.ViewHolder> {
                     Intent intent = new Intent(context, UserInfoActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     intent.putExtra("user_id", user.getObjectId());
-                    intent.putExtra("already_friend", UserInfoActivity.FRIEND_APPLYED);
                     context.startActivity(intent);
                 }
             });
@@ -250,7 +251,6 @@ public class PgAdapter extends RecyclerView.Adapter<PgAdapter.ViewHolder> {
                     Intent intent = new Intent(context, UserInfoActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     intent.putExtra("user_id", user.getObjectId());
-                    intent.putExtra("already_friend", UserInfoActivity.FRIEND_APPLYED);
                     context.startActivity(intent);
                 }
             });

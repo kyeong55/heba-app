@@ -104,7 +104,6 @@ public class MyFriendAdapter extends RecyclerView.Adapter<MyFriendAdapter.ViewHo
                     Intent intent = new Intent(context, UserInfoActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     intent.putExtra("user_id", item.getUserId());
-                    intent.putExtra("already_friend", UserInfoActivity.FRIEND_APPLYED);
                     context.startActivity(intent);
 //                    ((Activity)context).overridePendingTransition(R.anim.trans_activity_slide_left_in,R.anim.trans_activity_slide_left_out);
                 }
@@ -140,7 +139,7 @@ public class MyFriendAdapter extends RecyclerView.Adapter<MyFriendAdapter.ViewHo
             return VIEW_TYPE_ITEM;
     }
 
-    public void add(){
+    public void add(final boolean refresh){
         inAdding = true;
         String userId = ParseUser.getCurrentUser().getObjectId();
 
@@ -182,6 +181,8 @@ public class MyFriendAdapter extends RecyclerView.Adapter<MyFriendAdapter.ViewHo
                         notifyItemChanged(getItemCount() - 1);
                     } else
                         notifyItemRangeInserted(pos, items.size() - pos);
+                    if(refresh)
+                        notifyDataSetChanged();
                     inAdding = false;
                 }
             }

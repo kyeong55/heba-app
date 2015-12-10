@@ -29,7 +29,6 @@
             android:textStyle="bold"
             android:padding="@dimen/select_text_margin"
             android:gravity="center_vertical"
-            android:text="Event 제목"
             android:textColor="@color/colorWhite"/>
         <TextView android:id="@+id/image_with_title_add"
             android:layout_width="match_parent"

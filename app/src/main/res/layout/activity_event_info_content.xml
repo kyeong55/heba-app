@@ -103,8 +103,7 @@
                     android:id="@+id/event_info_location"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textStyle="bold"
-                    android:text="부산시 부산진구 당감3동 한국과학영재학교" />
+                    android:textStyle="bold" />
             </LinearLayout>
         </LinearLayout>
         <android.support.design.widget.FloatingActionButton android:id="@+id/event_info_fab"

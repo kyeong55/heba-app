@@ -60,6 +60,9 @@ public class EventInfoActivity extends AppCompatActivity implements OnMapReadyCa
         super.onCreate(savedInstanceState);
         eventInfoActivity = EventInfoActivity.this;
         setContentView(R.layout.activity_event_info);
+
+        overridePendingTransition(R.anim.trans_activity_slide_left_in, R.anim.trans_activity_slide_left_out);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.event_info_toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

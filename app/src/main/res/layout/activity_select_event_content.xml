@@ -15,12 +15,6 @@
         class="com.google.android.gms.maps.SupportMapFragment"
         tools:context="com.example.my8.SelectEvent">
     </fragment>
-    <!--
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/select_event_list"
-        android:layout_width="match_parent"
-        android:layout_height="match_content"/>
-        -->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

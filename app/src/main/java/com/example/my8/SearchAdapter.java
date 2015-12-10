@@ -1,6 +1,7 @@
 package com.example.my8;
 
 import android.app.ActionBar;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.CardView;
@@ -33,10 +34,12 @@ import java.util.List;
 class Search_item {
     final int VIEW_TYPE_FRIEND=0;
     final int VIEW_TYPE_EVENT=1;
+    final int VIEW_TYPE_SUBTITLE=2;
 
     private int viewType;
     private ParseUser user;
     private Event event;
+    private String subtitle;
 
     public Search_item(ParseUser user){
         this.viewType = VIEW_TYPE_FRIEND;
@@ -45,6 +48,10 @@ class Search_item {
     public Search_item(Event event){
         this.viewType = VIEW_TYPE_EVENT;
         this.event = event;
+    }
+    public Search_item(String subtitle){
+        this.viewType = VIEW_TYPE_SUBTITLE;
+        this.subtitle = subtitle;
     }
 
     public int getViewType() {return viewType;}
@@ -74,6 +81,7 @@ class Search_item {
     public String getEventNParticipant() {
         return event.getNParticipant()+"";
     }
+    public String getSubtitleText() { return subtitle; }
 }
 public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder>{
 
@@ -82,6 +90,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
 
     public final int VIEW_TYPE_FRIEND=0;
     public final int VIEW_TYPE_EVENT=1;
+    final int VIEW_TYPE_SUBTITLE=2;
 
     private int imageHeight;
     private int numOfThumbNails;
@@ -100,6 +109,8 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
             v = LayoutInflater.from(parent.getContext()).inflate(R.layout.activity_search_friend_card,parent,false);
         else if (viewType == VIEW_TYPE_EVENT)
             v= LayoutInflater.from(parent.getContext()).inflate(R.layout.activity_search_event_card, parent, false);
+        else if (viewType == VIEW_TYPE_SUBTITLE)
+            v= LayoutInflater.from(parent.getContext()).inflate(R.layout.friends_subtitle, parent, false);
         return new ViewHolder(v,viewType);
     }
 
@@ -118,7 +129,10 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
             holder.friend_card.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //TODO: User Info Activity
+                    Intent intent = new Intent(context, UserInfoActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.putExtra("user_id", item.getUserId());
+                    context.startActivity(intent);
                 }
             });
         }
@@ -159,8 +173,15 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
                 @Override
                 public void onClick(View v) {
                     //TODO: Event Info Activity
+                    Intent intent = new Intent(context, EventInfoActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.putExtra("event_id", item.getEventId());
+                    context.startActivity(intent);
                 }
             });
+        }
+        else if (viewType == VIEW_TYPE_SUBTITLE) {
+            holder.subtitle.setText(item.getSubtitleText());
         }
     }
 
@@ -197,6 +218,8 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
         ParseImageView event_image3;
         ParseImageView event_image4;
 
+        TextView subtitle;
+
         public ViewHolder(View itemView, int viewType) {
             super(itemView);
             if(viewType == VIEW_TYPE_FRIEND){
@@ -214,6 +237,9 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
                 event_image2 = (ParseImageView) itemView.findViewById(R.id.search_event_image_2);
                 event_image3 = (ParseImageView) itemView.findViewById(R.id.search_event_image_3);
                 event_image4 = (ParseImageView) itemView.findViewById(R.id.search_event_image_4);
+            }
+            else if (viewType == VIEW_TYPE_SUBTITLE) {
+                subtitle = (TextView) itemView.findViewById(R.id.friends_subtitle_text);
             }
         }
     }

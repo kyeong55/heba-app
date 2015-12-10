@@ -54,7 +54,6 @@ public class UserInfoActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("사용자 정보");
 
         userId = getIntent().getStringExtra("user_id");
-        friendState = getIntent().getIntExtra("already_friend",-1);
 
         DisplayMetrics metrics = new DisplayMetrics();
         WindowManager windowManager = (WindowManager) getApplicationContext().getSystemService(Context.WINDOW_SERVICE);

@@ -78,9 +78,11 @@ implements SearchView.OnQueryTextListener{
                     e1.printStackTrace();
                 }
                 List<Search_item> items = new ArrayList<>();
+                items.add(new Search_item(getString(R.string.search_subtitle_friend)));
                 for (ParseUser user : users) {
                     items.add(new Search_item(user));
                 }
+                items.add(new Search_item(getString(R.string.search_subtitle_event)));
                 for (Event event : events) {
                     items.add(new Search_item(event));
                 }
@@ -119,9 +121,11 @@ implements SearchView.OnQueryTextListener{
                         e1.printStackTrace();
                     }
                     List<Search_item> items = new ArrayList<>();
+                    items.add(new Search_item(getString(R.string.search_subtitle_friend)));
                     for (ParseUser user : users) {
                         items.add(new Search_item(user));
                     }
+                    items.add(new Search_item(getString(R.string.search_subtitle_event)));
                     for (Event event : events) {
                         items.add(new Search_item(event));
                     }
@@ -155,9 +159,11 @@ implements SearchView.OnQueryTextListener{
                     e1.printStackTrace();
                 }
                 List<Search_item> items = new ArrayList<>();
+                items.add(new Search_item(getString(R.string.search_subtitle_friend)));
                 for (ParseUser user : users) {
                     items.add(new Search_item(user));
                 }
+                items.add(new Search_item(getString(R.string.search_subtitle_event)));
                 for (Event event : events) {
                     items.add(new Search_item(event));
                 }

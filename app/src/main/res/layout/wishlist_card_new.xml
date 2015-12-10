@@ -15,8 +15,7 @@
         android:layout_marginBottom="@dimen/wishlist_margin_in"
         android:layout_width="wrap_content" android:layout_height="wrap_content"
         android:textStyle="bold" android:textSize="@dimen/search_event_title_size"
-        android:textColor="@color/colorBlack"
-        android:text="제목"/>
+        android:textColor="@color/colorBlack"/>
     <LinearLayout
         android:id="@+id/wl_image_layout"
         android:layout_width="match_parent"
