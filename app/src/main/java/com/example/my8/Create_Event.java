@@ -193,7 +193,7 @@ public class Create_Event extends AppCompatActivity {
             //event
             if (eventId == null) {
                 eventTitle = titleEditText.getText().toString();
-                final Event event = new Event(eventTitle);
+                final Event event = new Event(eventTitle, stampDatetime);
                 ParseACL eventACL = new ParseACL();
                 eventACL.setPublicReadAccess(true);
                 eventACL.setPublicWriteAccess(true);

@@ -40,12 +40,13 @@ class Playground_item {
 
     public Playground_item(ViewGroup container, ActionContract action, Context context) {
         this.context = context;
-        this.pgStampAdapter = new PgStampAdapter(context, event);
         this.playgroundStampItems = new ArrayList<>();
 
         this.action = action;
         this.event = action.getEvent();
         this.user = action.getUser();
+
+        this.pgStampAdapter = new PgStampAdapter(context, event.getObjectId());
     }
 
     public void changeItem(ActionContract action) {

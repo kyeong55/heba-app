@@ -157,6 +157,8 @@ public class EventInfoActivity extends AppCompatActivity implements OnMapReadyCa
 
                 //TODO: event 대표시간, 위치
                 //TODO: 더보기에 스탬프들 볼 수 있는 listener
+                if (event.getDate("datetime") != null)
+                    timeTextView.setText(event.getString("datetime")+"");
                 locationTextView.setText(getLocation(event.getMeanLa(), event.getMeanLo()));
                 setMap(event.getMeanLa(), event.getMeanLo(), event.getRadius());
 

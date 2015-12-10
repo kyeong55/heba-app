@@ -62,16 +62,16 @@ class Playground_Stamp_item {
 
 public class PgStampAdapter extends RecyclerView.Adapter<PgStampAdapter.ViewHolder> {
     private List<Playground_Stamp_item> items;
-    private Event event;
+    private String eventId;
     private Context context;
 
     public boolean addedAll=false;
     private boolean inAdding=false;
 
     /* Constructors */
-    public PgStampAdapter(Context context, Event event){
+    public PgStampAdapter(Context context, String eventId){
         this.context = context;
-        this.event = event;
+        this.eventId = eventId;
         items = new ArrayList<>();
     }
 
@@ -138,7 +138,7 @@ public class PgStampAdapter extends RecyclerView.Adapter<PgStampAdapter.ViewHold
     public void add(){
         inAdding = true;
         ParseQuery<Stamp> query = Stamp.getQuery();
-        query.whereEqualTo("eventId", event.getObjectId());
+        query.whereEqualTo("eventId", eventId);
         query.orderByDescending("updatedAt");
         if (items.size() == 0) {
         } else {

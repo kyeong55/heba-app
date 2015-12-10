@@ -30,9 +30,11 @@ public class Event extends ParseObject {
     private static final String MEAN_LO = "yMean";
     private static final String VAR_LA = "xVar";
     private static final String VAR_LO = "yVar";
+    public static final String DATETIME = "datetime";
 
-    public Event(String title) {
+    public Event(String title, Date datetime) {
         put(TITLE, title);
+        put(DATETIME, datetime);
         put(PARTICIPANT, 0);
         put(INDEX, 0);
         put(MEAN_LA, 0.0);
